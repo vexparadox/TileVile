@@ -1,6 +1,8 @@
 #ifndef GameObject_hpp
 #define GameObject_hpp
 #include <Axilya/AXMain.h>
+#include <Box2D/Box2D.h>
+extern b2World* world;
 class GameObject{
 protected:
 	AXVector2D position;

@@ -1,78 +1,79 @@
 #include "main.hpp"
+// NOTE OT WILL
+// All dynamic objects have a 1.0f skin around them
+//define the world
+b2World* world;
+b2Body* body;
+b2Body* groundBody;
 int main(int argc, char const *argv[]){
 	AXWindow::init(1280, 720, "My Game", AX_DEFAULT, tick, draw);
+
+	//init the world
+	world = new b2World(b2Vec2(0.0f, 0.0f));
 	//build the player
-	player = new Player(AXVector2D(0, 10), AXVector2D(40, 40));
-	gameobjects.push_back(player);	
-	block = new Block(AXVector2D(100, 0), AXVector2D(40, 40));
-	gameobjects.push_back(block);	
-	return AXWindow::run();
+	b2BodyDef groundDefinitions;
+	groundDefinitions.position.Set(20.0f, 30.0f);
+	//create the body
+	groundBody = world->CreateBody(&groundDefinitions);
+	//size of the body
+	b2PolygonShape groundBox;
+	groundBox.SetAsBox(1.0f, 1.0f);
+	//add fixture
+	groundBody->CreateFixture(&groundBox, 0.0f);
+
+
+	//Now create dynamic
+	b2BodyDef bodyDef;
+	bodyDef.type = b2_dynamicBody;
+	bodyDef.position.Set(10.0f, 10.0f);
+	body = world->CreateBody(&bodyDef);
+
+	//give it a shape
+	b2PolygonShape dynamicBox;
+	dynamicBox.SetAsBox(1.0f, 1.0f);
+	//create ficture
+	b2FixtureDef fixtureDef;
+	fixtureDef.shape = &dynamicBox;
+	fixtureDef.density = 1.0f;
+	fixtureDef.friction = 0.3f;
+	body->CreateFixture(&fixtureDef);
+
+	int ret = AXWindow::run();
+	delete world;
+	return ret;
 }
 
 void tick(){
-	for (auto & go : gameobjects){
-		go->physics();
+	float timeStep = 1.0f/60.0f;
+	int velocityIterations = 6; 
+	int positionIterations = 2;
+	world->Step(timeStep, velocityIterations, positionIterations);
+	if(AXInput::getValue("D")){
+		const b2Vec2 force(200, 0); 
+		body->ApplyForce(force, body->GetWorldCenter(), true);
 	}
-	for (auto & go : gameobjects){
-		go->tick();
+	if(AXInput::getValue("A")){
+		const b2Vec2 force(-200, 0); 
+		body->ApplyForce(force, body->GetWorldCenter(), true);
 	}
-	//collide check
-	for (auto & go1 : gameobjects){
-		for (auto & go2 : gameobjects){
-			if(go1!=go2){
-				while(collideCheck(go1, go2)){
-					std::cout << "Collided" << std::endl;
-				}
-			}
-		}
+	if(AXInput::getValue("W")){
+		const b2Vec2 force(0, -200); 
+		body->ApplyForce(force, body->GetWorldCenter(), true);
+	}
+	if(AXInput::getValue("S")){
+		const b2Vec2 force(0, 200); 
+		body->ApplyForce(force, body->GetWorldCenter(), true);
 	}
 }
 
 void draw(){
+	AXGraphics::fill(0, 0, 0);
+	AXGraphics::drawRect((body->GetPosition().x*10)-5, (body->GetPosition().y*10)-5, 10, 10);
+	AXGraphics::fill(255, 0, 0);
+	AXGraphics::drawRect((groundBody->GetPosition().x*10)-5, (groundBody->GetPosition().y*10)-5, 10, 10);
+	AXGraphics::fill(0, 255, 0);
+	AXGraphics::drawPoint(AXVector2D(groundBody->GetPosition().x, groundBody->GetPosition().y));
 	for (auto & go : gameobjects){
 		go->draw();
 	}
-}
-
-bool collideCheck(GameObject* go1, GameObject* go2){
-	std::cout << "called" << std::endl;
-	AXVector2D& go1pos = go1->getPos();
-	AXVector2D& go1size = go1->getSize();
-	AXVector2D& go2pos = go2->getPos();
-	AXVector2D& go2size = go2->getSize();
-	std::cout << go2size.x << std::endl;
-	float w = 0.5 * (go1size.x + go2size.x);
-	float h = 0.5 * (go1size.y + go2size.y);
-	float deltax = (go1pos.x+(go1size.x/2)) - (go2pos.x+(go2size.x/2));
-	float deltay = (go1pos.y+(go1size.y/2)) - (go2pos.y+(go2size.y/2));
-	if (AXMath::absolute(deltax) < w && AXMath::absolute(deltay) < h)
-	{
-		std::cout << "Any collision" << std::endl;
-	    //by evaluating the 4 quads that the entitiy could have been in before the movement, we can work out where the collision occured.
-	    if((go1pos.y+go1size.y) <= go2pos.y){
-	        // at the top
-	        std::cout << "top collision" << std::endl;
-	        go1->setPos(go1pos.x, go2pos.y-go1size.y);
-	        return true;
-	    }
-	    if((go1pos.y) >= go2pos.y+go2size.y){
-	        // collision at the bottom
-	        std::cout << "bottom collision" << std::endl;
-	        go1->setPos(go1pos.x, go2pos.y+go2size.y);
-	        return true;
-	    }
-	    if((go1pos.x+go1size.x) <= go2pos.x){
-	        // on the left
-	        std::cout << "left collision" << std::endl;
-	        go1->setPos(go2pos.x-go1size.x, go1pos.y);
-	        return true;
-	    }
-	    if(go1pos.x>= go2pos.x+go2size.x){
-	        // on the right
-	        std::cout << "right collision" << std::endl;
-	        go1->setPos(go2pos.x+go2size.x, go1pos.y);
-	        return true;
-	    }
-	}
-	return false;
 }
