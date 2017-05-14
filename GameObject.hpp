@@ -9,6 +9,7 @@ protected:
 	AXVector2D size;
 	AXVector2D velocity; //added on tick
 	bool gravity;
+	b2Body* body;
 	AXResourceManager* rm = AXResourceManager::getInstance();
 	virtual ~GameObject(){};
 	GameObject(AXVector2D position, AXVector2D size, bool gravity);
@@ -18,7 +19,7 @@ public:
 
 	void physics();
 
-	AXVector2D& getPos();
+	AXVector2D getPos();
 	AXVector2D& getSize();
 	void setPos(float x, float y);
 	void setSize(float x, float y);

@@ -5,7 +5,7 @@ Player::Player(AXVector2D position, AXVector2D size) : GameObject(position, size
 }
 
 void Player::draw(){
-	AXGraphics::drawRect(position.x, position.y, size.x, size.y);
+	AXGraphics::drawRect((body->GetPosition().x*10)+size.x/2, body->GetPosition().y*10)+size.y/2, size.x, size.y);
 }
 
 void Player::tick(){
