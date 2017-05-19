@@ -4,9 +4,11 @@ World::~World(){
 	for(auto& texture : textures){
 		delete texture;
 	}
+	delete playerTexture;
 }
 
 World::World(int width, int height, int tilesize) : width(width), height(height), tilesize(tilesize){
+	//input booleans, allows for stepping
 	left = false;
 	right = false;
 	up = false;
@@ -37,13 +39,11 @@ void World::draw(){
 	for(int i = currentOffset.x; i < maxOnScreenX+currentOffset.x; i++){
 		int col = 0;
 		for(int j = currentOffset.y; j < maxOnScreenY+currentOffset.y; j++){
-			// either draw a red box or the texture
+			//draw the background
+			AXGraphics::drawTexture(textures[tiles[i][j]->id], (row*tilesize), (col*tilesize), tilesize, tilesize);
+			//if it's the player, do the player
 			if(row == playerPosition.x && col == playerPosition.y){
-				AXGraphics::fill(255, 0, 0);
-				AXGraphics::drawRect((row*tilesize), (col*tilesize), tilesize, tilesize);
-			}else{
-				AXGraphics::fill(255, 255, 255, 255);
-				AXGraphics::drawTexture(textures[tiles[i][j]->id], (row*tilesize), (col*tilesize), tilesize, tilesize);
+				AXGraphics::drawTexture(playerTexture, (row*tilesize), (col*tilesize), tilesize, tilesize);
 			}
 			col++; // advance the col draw position
 		}
@@ -93,27 +93,27 @@ void World::tick(){
 	//this will move the world!
 	
 	//if the player is past the middle but not at the edge of the world
-	if(playerPosition.x > maxOnScreenX/2 && maxOnScreenX+currentOffset.x < width){
+	if(playerPosition.x > maxOnScreenX/2+1 && maxOnScreenX+currentOffset.x < width){
 		currentOffset.x++;
-		playerPosition.x = maxOnScreenX/2;
+		playerPosition.x = maxOnScreenX/2+1;
 	}
 
 	//if the player is going going left but not at the edge of the world
-	if(playerPosition.x < maxOnScreenX/2 && currentOffset.x != 0){
+	if(playerPosition.x < maxOnScreenX/2-1 && currentOffset.x != 0){
 		currentOffset.x--;
-		playerPosition.x = maxOnScreenX/2;
+		playerPosition.x = maxOnScreenX/2-1;
 	}
 
 
-	if(playerPosition.y > maxOnScreenY/2 && maxOnScreenY+currentOffset.y < height){
+	if(playerPosition.y > maxOnScreenY/2+1 && maxOnScreenY+currentOffset.y < height){
 		currentOffset.y++;
-		playerPosition.y = maxOnScreenY/2;
+		playerPosition.y = maxOnScreenY/2+1;
 	}
 
 
-	if(playerPosition.y < maxOnScreenY/2 && currentOffset.y != 0){
+	if(playerPosition.y < maxOnScreenY/2-1 && currentOffset.y != 0){
 		currentOffset.y--;
-		playerPosition.y = maxOnScreenY/2;
+		playerPosition.y = maxOnScreenY/2-1;
 	}
 }
 void World::loadTextures(){
@@ -125,4 +125,9 @@ void World::loadTextures(){
 	textures.push_back(tree1);
 	AXTexture* tree2 = new AXTexture("images/tree2.png");
 	textures.push_back(tree2);
+	AXTexture* tree3 = new AXTexture("images/tree3.png");
+	textures.push_back(tree3);
+
+	//load the player
+	this->playerTexture = new AXTexture("images/man1.png");
 }

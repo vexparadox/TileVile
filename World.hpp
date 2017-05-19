@@ -15,6 +15,9 @@ class World{
 	std::vector<std::vector<Tile*>> tiles;
 	//textures
 	std::vector<AXTexture*> textures;
+	//the player texture
+	AXTexture* playerTexture;
+	
 	AXVector2D playerPosition;
 	AXVector2D currentOffset; // the current offset
 
