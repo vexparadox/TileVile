@@ -90,28 +90,31 @@ void World::tick(){
 	}
 	//this will move the world!
 	
+	//how much movement the player has in the middle of the screen
+	int xAllowance = 2;
+	int yAllowance = 2;
 	//if the player is past the middle but not at the edge of the world
-	if(playerPosition.x > maxOnScreenX/2+1 && maxOnScreenX+currentOffset.x < width){
+	if(playerPosition.x > maxOnScreenX/2+xAllowance && maxOnScreenX+currentOffset.x < width){
 		currentOffset.x++;
-		playerPosition.x = maxOnScreenX/2+1;
+		playerPosition.x = maxOnScreenX/2+xAllowance;
 	}
 
 	//if the player is going going left but not at the edge of the world
-	if(playerPosition.x < maxOnScreenX/2-1 && currentOffset.x != 0){
+	if(playerPosition.x < maxOnScreenX/2-xAllowance && currentOffset.x != 0){
 		currentOffset.x--;
-		playerPosition.x = maxOnScreenX/2-1;
+		playerPosition.x = maxOnScreenX/2-xAllowance;
 	}
 
 
-	if(playerPosition.y > maxOnScreenY/2+1 && maxOnScreenY+currentOffset.y < height){
+	if(playerPosition.y > maxOnScreenY/2+yAllowance && maxOnScreenY+currentOffset.y < height){
 		currentOffset.y++;
-		playerPosition.y = maxOnScreenY/2+1;
+		playerPosition.y = maxOnScreenY/2+yAllowance;
 	}
 
 
-	if(playerPosition.y < maxOnScreenY/2-1 && currentOffset.y != 0){
+	if(playerPosition.y < maxOnScreenY/2-yAllowance && currentOffset.y != 0){
 		currentOffset.y--;
-		playerPosition.y = maxOnScreenY/2-1;
+		playerPosition.y = maxOnScreenY/2-yAllowance;
 	}
 }
 void World::loadTextures(){
