@@ -1,8 +1,12 @@
 #include "World.hpp"
 
+World::~World(){
+	for(auto& texture : textures){
+		delete texture;
+	}
+}
+
 World::World(int width, int height, int tilesize) : width(width), height(height), tilesize(tilesize){
-
-
 	left = false;
 	right = false;
 	up = false;
@@ -13,9 +17,11 @@ World::World(int width, int height, int tilesize) : width(width), height(height)
 	if(height < maxOnScreenY || width < maxOnScreenX){
 		AXLog::log("World", "You can't make a map that's smaller than the screen.", AX_LOG_ERROR);
 	}
+
+	loadTextures();
 	//generate the tiles
 	std::default_random_engine generator;
-	std::uniform_int_distribution<int> distribution(1,4);
+	std::uniform_int_distribution<int> distribution(0,textures.size()-1);
 	for(int i = 0; i < width; i++){
 		std::vector<Tile*> vec;
 		tiles.push_back(vec);
@@ -31,13 +37,14 @@ void World::draw(){
 	for(int i = currentOffset.x; i < maxOnScreenX+currentOffset.x; i++){
 		int col = 0;
 		for(int j = currentOffset.y; j < maxOnScreenY+currentOffset.y; j++){
-			//call a fill colour switch
+			// either draw a red box or the texture
 			if(row == playerPosition.x && col == playerPosition.y){
-				switchTileColour(0);
+				AXGraphics::fill(255, 0, 0);
+				AXGraphics::drawRect((row*tilesize), (col*tilesize), tilesize, tilesize);
 			}else{
-				switchTileColour(tiles[i][j]->id);				
+				AXGraphics::fill(255, 255, 255, 255);
+				AXGraphics::drawTexture(textures[tiles[i][j]->id], (row*tilesize), (col*tilesize), tilesize, tilesize);
 			}
-			AXGraphics::drawRect((row*tilesize), (col*tilesize), tilesize, tilesize);
 			col++; // advance the col draw position
 		}
 		row++; // advance the row draw position
@@ -45,7 +52,8 @@ void World::draw(){
 }
 
 void World::tick(){
-	//move the player, it will be corrected later
+	// move the player, it will be corrected later
+	// this uses step movement
 	if(AXInput::getValue("LEFT") && !left){
 		left = true;
 		if(playerPosition.x != 0){
@@ -108,24 +116,13 @@ void World::tick(){
 		playerPosition.y = maxOnScreenY/2;
 	}
 }
-
-void World::switchTileColour(int id){
-	switch(id){
-		case 0:
-			AXGraphics::fill(255, 0, 0);
-		break;
-		case 1:
-			AXGraphics::fill(0, 255, 0);
-		break;
-		case 2:
-			AXGraphics::fill(0, 255, 255);
-		break;
-		case 3:
-			AXGraphics::fill(20, 155, 255);
-		break;
-		case 4:
-			AXGraphics::fill(0, 50, 60);
-		break;
-	}
-
+void World::loadTextures(){
+	AXTexture* grass1 = new AXTexture("images/grass1.png");
+	textures.push_back(grass1);
+	AXTexture* grass2 = new AXTexture("images/grass2.png");
+	textures.push_back(grass2);
+	AXTexture* tree1 = new AXTexture("images/tree1.png");
+	textures.push_back(tree1);
+	AXTexture* tree2 = new AXTexture("images/tree2.png");
+	textures.push_back(tree2);
 }

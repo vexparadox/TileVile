@@ -2,7 +2,9 @@
 World* world;
 int main(int argc, char const *argv[]){
 	AXWindow::init(1280, 720, "Game", AX_DEFAULT | AX_NOAUDIO, setup, update, draw);
-	return AXWindow::run();
+	int ret = AXWindow::run();
+	delete world;
+	return ret;
 }
 
 void setup(){

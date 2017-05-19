@@ -13,12 +13,15 @@ class World{
 	bool right, left, up, down; // for inputs
 	//holds all the tiles in a 2D arrayu
 	std::vector<std::vector<Tile*>> tiles;
-
-	//this will switch what colour/texture to draw on the tile id
-	void switchTileColour(int id);
+	//textures
+	std::vector<AXTexture*> textures;
 	AXVector2D playerPosition;
 	AXVector2D currentOffset; // the current offset
+
+	//will fill the textures array
+	void loadTextures();
 public:
+	~World();
 	World(int width, int height, int tilesize);
 	void tick();
 	void draw();
