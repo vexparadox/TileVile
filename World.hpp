@@ -10,7 +10,7 @@ class World{
 	int tilesize;
 	//how many tiles can fit on screen in each direction
 	int maxOnScreenX, maxOnScreenY;
-
+	bool right, left, up, down; // for inputs
 	//holds all the tiles in a 2D arrayu
 	std::vector<std::vector<Tile*>> tiles;
 

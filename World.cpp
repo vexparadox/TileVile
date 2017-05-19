@@ -2,6 +2,11 @@
 
 World::World(int width, int height, int tilesize) : width(width), height(height), tilesize(tilesize){
 
+
+	left = false;
+	right = false;
+	up = false;
+	down = false;
 	//set how many can be on screen at once
 	maxOnScreenX = AXWindow::getWidth()/tilesize;
 	maxOnScreenY = AXWindow::getHeight()/tilesize;
@@ -41,27 +46,41 @@ void World::draw(){
 
 void World::tick(){
 	//move the player, it will be corrected later
-	if(AXInput::getValue("LEFT")){
+	if(AXInput::getValue("LEFT") && !left){
+		left = true;
 		if(playerPosition.x != 0){
 			playerPosition.x--;
 		}
+	}else if(!AXInput::getValue("LEFT") && left){
+		left = false;
 	}
 
-	if(AXInput::getValue("RIGHT")){
+	if(AXInput::getValue("RIGHT") && !right){
+		right = true;
 		if(playerPosition.x+1 < maxOnScreenX){
 			playerPosition.x++;
 		}
+	}else if(!AXInput::getValue("RIGHT") && right){
+		right = false;
 	}
-	if(AXInput::getValue("UP")){
+
+
+	if(AXInput::getValue("UP") && !up){
+		up = true;
 		if(playerPosition.y != 0){
 			playerPosition.y--;
 		}
+	}else if(!AXInput::getValue("UP") && up){
+		up = false;
 	}
 
-	if(AXInput::getValue("DOWN")){
+	if(AXInput::getValue("DOWN") && !down){
+		down = true;
 		if(playerPosition.y+1 < maxOnScreenY){
 			playerPosition.y++;
 		}
+	}else if(!AXInput::getValue("DOWN") && down){
+		down = false;
 	}
 	//this will move the world!
 	
