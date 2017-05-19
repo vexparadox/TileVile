@@ -1,5 +1,6 @@
 #include "main.hpp"
 World* world;
+int gameState;
 int main(int argc, char const *argv[]){
 	AXWindow::init(1200, 720, "Game", AX_DEFAULT | AX_NOAUDIO, setup, update, draw);
 	int ret = AXWindow::run();
@@ -8,16 +9,27 @@ int main(int argc, char const *argv[]){
 }
 
 void setup(){
+	gameState = 1;
 	// new world(width, height, tilesize);
-	world = new World(200, 200, 120);
+	world = new World(200, 200, 60);
 }
 
 void draw(){
-	//draws the world
-	world->draw();
+	switch(gameState){
+		case 0:
+		break;
+		case 1:
+			world->draw();
+		break;
+	}
 }
 
 void update(){
-	//will allow the player to move the world around
-	world->tick();
+	switch(gameState){
+		case 0:
+		break;
+		case 1:
+			world->tick();
+		break;
+	}
 }

@@ -23,7 +23,7 @@ World::World(int width, int height, int tilesize) : width(width), height(height)
 	loadTextures();
 	//generate the tiles
 	std::default_random_engine generator;
-	std::uniform_int_distribution<int> distribution(0,textures.size()-1);
+	std::binomial_distribution<int> distribution(textures.size()-1, 0.5);
 	for(int i = 0; i < width; i++){
 		std::vector<Tile*> vec;
 		tiles.push_back(vec);
@@ -41,14 +41,12 @@ void World::draw(){
 		for(int j = currentOffset.y; j < maxOnScreenY+currentOffset.y; j++){
 			//draw the background
 			AXGraphics::drawTexture(textures[tiles[i][j]->id], (row*tilesize), (col*tilesize), tilesize, tilesize);
-			//if it's the player, do the player
-			if(row == playerPosition.x && col == playerPosition.y){
-				AXGraphics::drawTexture(playerTexture, (row*tilesize), (col*tilesize), tilesize, tilesize);
-			}
 			col++; // advance the col draw position
 		}
 		row++; // advance the row draw position
 	}
+	//draw the player
+	AXGraphics::drawTexture(playerTexture, (playerPosition.x*tilesize), (playerPosition.y*tilesize), tilesize, tilesize);
 }
 
 void World::tick(){
