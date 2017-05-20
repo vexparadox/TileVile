@@ -14,7 +14,7 @@ World::World(int tilesize) : tilesize(tilesize){
 
 	//create the GUI
 	gui = new GUI();
-	gui->updatePosition(currentOffset);
+	gui->updatePosition(currentOffset+playerPosition);
 
 	//set how many can be on screen at once
 	maxOnScreenX = AXWindow::getWidth()/tilesize;
@@ -59,6 +59,7 @@ void World::tick(){
 		left = true;
 		if(playerPosition.x != 0 && playerEnergy > 0){
 			playerPosition.x--;
+			gui->updatePosition(currentOffset+playerPosition);
 			playerEnergy--;
 		}
 	}else if(!AXInput::getValue("LEFT") && left){
@@ -69,6 +70,7 @@ void World::tick(){
 		right = true;
 		if(playerPosition.x+1 < maxOnScreenX && playerEnergy > 0){
 			playerPosition.x++;
+			gui->updatePosition(currentOffset+playerPosition);
 			playerEnergy--;
 		}
 	}else if(!AXInput::getValue("RIGHT") && right){
@@ -80,6 +82,7 @@ void World::tick(){
 		up = true;
 		if(playerPosition.y != 0 && playerEnergy > 0){
 			playerPosition.y--;
+			gui->updatePosition(currentOffset+playerPosition);
 			playerEnergy--;
 		}
 	}else if(!AXInput::getValue("UP") && up){
@@ -90,6 +93,7 @@ void World::tick(){
 		down = true;
 		if(playerPosition.y+1 < maxOnScreenY && playerEnergy > 0){
 			playerPosition.y++;
+			gui->updatePosition(currentOffset+playerPosition);
 			playerEnergy--;
 		}
 	}else if(!AXInput::getValue("DOWN") && down){
@@ -103,28 +107,24 @@ void World::tick(){
 	//if the player is past the middle but not at the edge of the world
 	if(playerPosition.x > maxOnScreenX/2+xAllowance && maxOnScreenX+currentOffset.x < width){
 		currentOffset.x++;
-		gui->updatePosition(currentOffset);
 		playerPosition.x = maxOnScreenX/2+xAllowance;
 	}
 
 	//if the player is going going left but not at the edge of the world
 	if(playerPosition.x < maxOnScreenX/2-xAllowance && currentOffset.x != 0){
 		currentOffset.x--;
-		gui->updatePosition(currentOffset);
 		playerPosition.x = maxOnScreenX/2-xAllowance;
 	}
 
 
 	if(playerPosition.y > maxOnScreenY/2+yAllowance && maxOnScreenY+currentOffset.y < height){
 		currentOffset.y++;
-		gui->updatePosition(currentOffset);
 		playerPosition.y = maxOnScreenY/2+yAllowance;
 	}
 
 
 	if(playerPosition.y < maxOnScreenY/2-yAllowance && currentOffset.y != 0){
 		currentOffset.y--;
-		gui->updatePosition(currentOffset);
 		playerPosition.y = maxOnScreenY/2-yAllowance;
 	}
 	//update the gui

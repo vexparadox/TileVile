@@ -20,5 +20,5 @@ void GUI::updatePosition(const AXVector2D& offset){
 		delete positionText;
 	}
 	AXColour colour(0, 0, 0);
-	positionText = font->quickBakeTexture("Position:("+std::to_string(offset.x)+", "+std::to_string(offset.y)+")", colour);
+	positionText = font->quickBakeTexture("Position:("+std::to_string((int)offset.x)+", "+std::to_string((int)offset.y)+")", colour);
 }
