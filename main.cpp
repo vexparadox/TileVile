@@ -13,7 +13,7 @@ int main(int argc, char const *argv[]){
 void setup(){
 	gameState = 0;
 	// new world(width, height, tilesize);
-	world = new World(200, 200, 60);
+	world = new World(60);
 	menu = new Menu();
 }
 

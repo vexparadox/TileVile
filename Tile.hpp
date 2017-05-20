@@ -3,5 +3,7 @@
 class Tile{
 public:
 	int id;
-	Tile(int id);
+	AXTexture* texture;
+	Tile(int id, const std::string& filename);
+	Tile(const Tile* tile);
 };

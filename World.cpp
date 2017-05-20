@@ -1,36 +1,46 @@
 #include "World.hpp"
 
 World::~World(){
-	for(auto& texture : textures){
-		delete texture;
-	}
 	delete playerTexture;
+	delete gui;
 }
 
-World::World(int width, int height, int tilesize) : width(width), height(height), tilesize(tilesize){
+World::World(int tilesize) : tilesize(tilesize){
 	//input booleans, allows for stepping
 	left = false;
 	right = false;
 	up = false;
 	down = false;
+
+	//create the GUI
+	gui = new GUI();
+
 	//set how many can be on screen at once
 	maxOnScreenX = AXWindow::getWidth()/tilesize;
-	maxOnScreenY = AXWindow::getHeight()/tilesize;
+	maxOnScreenY = (AXWindow::getHeight()/tilesize)-2;
+
+	
+	//loads world textures, not tiles
+	loadTextures();
+	//load tiles in
+	loadTiles();
+
+	//load in the map and genertae
+	loadMap();
+
 	if(height < maxOnScreenY || width < maxOnScreenX){
 		AXLog::log("World", "You can't make a map that's smaller than the screen.", AX_LOG_ERROR);
 	}
-
-	loadTextures();
-	//generate the tiles
-	std::default_random_engine generator;
-	std::binomial_distribution<int> distribution(textures.size()-1, 0.5);
-	for(int i = 0; i < width; i++){
-		std::vector<Tile*> vec;
-		tiles.push_back(vec);
-		for(int j = 0; j < height; j++){
-			tiles[i].push_back(new Tile(distribution(generator)));
-		}
-	}
+	// //generate the map, it makes copies of tiles
+	// std::default_random_engine generator;
+	// std::binomial_distribution<int> distribution(tiles.size()-1, 0.5);
+	// for(int i = 0; i < width; i++){
+	// 	std::vector<Tile*> vec;
+	// 	map.push_back(vec);
+	// 	for(int j = 0; j < height; j++){
+	// 		map[i].push_back(new Tile(tiles[distribution(generator)]));
+	// 	}
+	// }
 }
 
 void World::draw(){
@@ -40,13 +50,15 @@ void World::draw(){
 		int col = 0;
 		for(int j = currentOffset.y; j < maxOnScreenY+currentOffset.y; j++){
 			//draw the background
-			AXGraphics::drawTexture(textures[tiles[i][j]->id], (row*tilesize), (col*tilesize), tilesize, tilesize);
+			AXGraphics::drawTexture(map[i][j]->texture, (row*tilesize), (col*tilesize), tilesize, tilesize);
 			col++; // advance the col draw position
 		}
 		row++; // advance the row draw position
 	}
 	//draw the player
 	AXGraphics::drawTexture(playerTexture, (playerPosition.x*tilesize), (playerPosition.y*tilesize), tilesize, tilesize);
+	//draw the gui
+	gui->draw();
 }
 
 void World::tick(){
@@ -54,8 +66,9 @@ void World::tick(){
 	// this uses step movement
 	if(AXInput::getValue("LEFT") && !left){
 		left = true;
-		if(playerPosition.x != 0){
+		if(playerPosition.x != 0 && playerEnergy > 0){
 			playerPosition.x--;
+			playerEnergy--;
 		}
 	}else if(!AXInput::getValue("LEFT") && left){
 		left = false;
@@ -63,8 +76,9 @@ void World::tick(){
 
 	if(AXInput::getValue("RIGHT") && !right){
 		right = true;
-		if(playerPosition.x+1 < maxOnScreenX){
+		if(playerPosition.x+1 < maxOnScreenX && playerEnergy > 0){
 			playerPosition.x++;
+			playerEnergy--;
 		}
 	}else if(!AXInput::getValue("RIGHT") && right){
 		right = false;
@@ -73,8 +87,9 @@ void World::tick(){
 
 	if(AXInput::getValue("UP") && !up){
 		up = true;
-		if(playerPosition.y != 0){
+		if(playerPosition.y != 0 && playerEnergy > 0){
 			playerPosition.y--;
+			playerEnergy--;
 		}
 	}else if(!AXInput::getValue("UP") && up){
 		up = false;
@@ -82,8 +97,9 @@ void World::tick(){
 
 	if(AXInput::getValue("DOWN") && !down){
 		down = true;
-		if(playerPosition.y+1 < maxOnScreenY){
+		if(playerPosition.y+1 < maxOnScreenY && playerEnergy > 0){
 			playerPosition.y++;
+			playerEnergy--;
 		}
 	}else if(!AXInput::getValue("DOWN") && down){
 		down = false;
@@ -116,19 +132,38 @@ void World::tick(){
 		currentOffset.y--;
 		playerPosition.y = maxOnScreenY/2-yAllowance;
 	}
+	//update the gui
+	gui->tick();
 }
 void World::loadTextures(){
-	AXTexture* grass1 = new AXTexture("images/grass1.png");
-	textures.push_back(grass1);
-	AXTexture* grass2 = new AXTexture("images/grass2.png");
-	textures.push_back(grass2);
-	AXTexture* tree1 = new AXTexture("images/tree1.png");
-	textures.push_back(tree1);
-	AXTexture* tree2 = new AXTexture("images/tree2.png");
-	textures.push_back(tree2);
-	AXTexture* tree3 = new AXTexture("images/tree3.png");
-	textures.push_back(tree3);
-
 	//load the player
 	this->playerTexture = new AXTexture("images/man1.png");
+}
+
+void World::loadMap(){
+	AXCSVLoader loader("MAP/map1.csv");
+	std::vector<std::vector<int> >& data = loader.loadFile();
+	this->width = data.size(); // must be the same width constantly
+	this->height = data[0].size(); // must be the same height constantly
+
+
+	for(int i = 0; i < width; i++){
+		std::vector<Tile*> vec;
+		map.push_back(vec);
+		for(int j = 0; j < height; j++){
+			map[i].push_back(new Tile(tiles[data[i][j]]));
+		}
+	}
+}
+
+void World::loadTiles(){
+	AXXML xml("XML/tiles.xml");
+	AXXMLnode tilenode = xml.child("tiles");
+	//loop through the "tiles"
+	for (AXXMLnode_iterator it = tilenode.begin(); it != tilenode.end(); ++it){
+		//for each tile, get the ID and filename attributes
+		int id = it->attribute("id").as_int();
+		std::string filename = it->attribute("filename").as_string();
+	    tiles.push_back(new Tile(id, filename));
+	}
 }

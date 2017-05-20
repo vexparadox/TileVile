@@ -1,0 +1,7 @@
+<tiles>
+	<tile id="0" filename="grass1.png" />
+	<tile id="1" filename="grass2.png" />
+	<tile id="2" filename="tree1.png" />
+	<tile id="3" filename="tree2.png" />
+	<tile id="4" filename="tree3.png" />
+</tiles>
