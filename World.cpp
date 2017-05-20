@@ -13,16 +13,13 @@ World::World(int tilesize) : tilesize(tilesize){
 	down = false;
 
 	//create the GUI
-	gui = new GUI();
+	gui = new GUI(this);
 	gui->updatePosition(currentOffset+playerPosition);
 
 	//set how many can be on screen at once
 	maxOnScreenX = AXWindow::getWidth()/tilesize;
 	maxOnScreenY = (AXWindow::getHeight()/tilesize)-2;
 
-	
-	//loads world textures, not tiles
-	loadTextures();
 	//load tiles in
 	loadTiles();
 
@@ -46,8 +43,6 @@ void World::draw(){
 		}
 		row++; // advance the row draw position
 	}
-	//draw the player
-	AXGraphics::drawTexture(playerTexture, (playerPosition.x*tilesize), (playerPosition.y*tilesize), tilesize, tilesize);
 	//draw the gui
 	gui->draw();
 }
@@ -57,10 +52,8 @@ void World::tick(){
 	// this uses step movement
 	if(AXInput::getValue("LEFT") && !left){
 		left = true;
-		if(playerPosition.x != 0 && playerEnergy > 0){
-			playerPosition.x--;
-			gui->updatePosition(currentOffset+playerPosition);
-			playerEnergy--;
+		if(currentOffset.x != 0){
+			currentOffset.x--;
 		}
 	}else if(!AXInput::getValue("LEFT") && left){
 		left = false;
@@ -68,22 +61,17 @@ void World::tick(){
 
 	if(AXInput::getValue("RIGHT") && !right){
 		right = true;
-		if(playerPosition.x+1 < maxOnScreenX && playerEnergy > 0){
-			playerPosition.x++;
-			gui->updatePosition(currentOffset+playerPosition);
-			playerEnergy--;
+		if(maxOnScreenX+currentOffset.x < width){
+			currentOffset.x++;
 		}
 	}else if(!AXInput::getValue("RIGHT") && right){
 		right = false;
 	}
 
-
 	if(AXInput::getValue("UP") && !up){
 		up = true;
-		if(playerPosition.y != 0 && playerEnergy > 0){
-			playerPosition.y--;
-			gui->updatePosition(currentOffset+playerPosition);
-			playerEnergy--;
+		if(currentOffset.y != 0){
+			currentOffset.y--;
 		}
 	}else if(!AXInput::getValue("UP") && up){
 		up = false;
@@ -91,43 +79,12 @@ void World::tick(){
 
 	if(AXInput::getValue("DOWN") && !down){
 		down = true;
-		if(playerPosition.y+1 < maxOnScreenY && playerEnergy > 0){
-			playerPosition.y++;
-			gui->updatePosition(currentOffset+playerPosition);
-			playerEnergy--;
+		if(maxOnScreenY+currentOffset.y < height){
+			currentOffset.y++;
 		}
 	}else if(!AXInput::getValue("DOWN") && down){
 		down = false;
 	}
-	//this will move the world!
-	
-	//how much movement the player has in the middle of the screen
-	int xAllowance = 2;
-	int yAllowance = 2;
-	//if the player is past the middle but not at the edge of the world
-	if(playerPosition.x > maxOnScreenX/2+xAllowance && maxOnScreenX+currentOffset.x < width){
-		currentOffset.x++;
-		playerPosition.x = maxOnScreenX/2+xAllowance;
-	}
-
-	//if the player is going going left but not at the edge of the world
-	if(playerPosition.x < maxOnScreenX/2-xAllowance && currentOffset.x != 0){
-		currentOffset.x--;
-		playerPosition.x = maxOnScreenX/2-xAllowance;
-	}
-
-
-	if(playerPosition.y > maxOnScreenY/2+yAllowance && maxOnScreenY+currentOffset.y < height){
-		currentOffset.y++;
-		playerPosition.y = maxOnScreenY/2+yAllowance;
-	}
-
-
-	if(playerPosition.y < maxOnScreenY/2-yAllowance && currentOffset.y != 0){
-		currentOffset.y--;
-		playerPosition.y = maxOnScreenY/2-yAllowance;
-	}
-	//update the gui
 	gui->tick();
 }
 void World::loadTextures(){

@@ -21,11 +21,8 @@ class World{
 
 	//this is the tiles that are available, the map is copies of theses
 	std::vector<Tile*> tiles;
-	//the player texture
-	AXTexture* playerTexture;
-	
-	AXVector2D playerPosition;
-	AXVector2D currentOffset; // the current offset
+	// the current offset
+	AXVector2D currentOffset; 
 	GUI* gui; // the GUI to be drawn
 	//will fill the textures array
 	void loadTextures();

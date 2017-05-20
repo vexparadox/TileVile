@@ -1,6 +1,6 @@
 #include "GUI.hpp"
-
-GUI::GUI(){
+#include "World.hpp"
+GUI::GUI(World* world) : world(world){
 	font = new AXFont("font/Ayuthaya.ttf", 20);
 	positionText = nullptr;
 }
