@@ -14,6 +14,7 @@ World::World(int tilesize) : tilesize(tilesize){
 
 	//create the GUI
 	gui = new GUI();
+	gui->updatePosition(currentOffset);
 
 	//set how many can be on screen at once
 	maxOnScreenX = AXWindow::getWidth()/tilesize;
@@ -31,16 +32,6 @@ World::World(int tilesize) : tilesize(tilesize){
 	if(height < maxOnScreenY || width < maxOnScreenX){
 		AXLog::log("World", "You can't make a map that's smaller than the screen.", AX_LOG_ERROR);
 	}
-	// //generate the map, it makes copies of tiles
-	// std::default_random_engine generator;
-	// std::binomial_distribution<int> distribution(tiles.size()-1, 0.5);
-	// for(int i = 0; i < width; i++){
-	// 	std::vector<Tile*> vec;
-	// 	map.push_back(vec);
-	// 	for(int j = 0; j < height; j++){
-	// 		map[i].push_back(new Tile(tiles[distribution(generator)]));
-	// 	}
-	// }
 }
 
 void World::draw(){
@@ -112,24 +103,28 @@ void World::tick(){
 	//if the player is past the middle but not at the edge of the world
 	if(playerPosition.x > maxOnScreenX/2+xAllowance && maxOnScreenX+currentOffset.x < width){
 		currentOffset.x++;
+		gui->updatePosition(currentOffset);
 		playerPosition.x = maxOnScreenX/2+xAllowance;
 	}
 
 	//if the player is going going left but not at the edge of the world
 	if(playerPosition.x < maxOnScreenX/2-xAllowance && currentOffset.x != 0){
 		currentOffset.x--;
+		gui->updatePosition(currentOffset);
 		playerPosition.x = maxOnScreenX/2-xAllowance;
 	}
 
 
 	if(playerPosition.y > maxOnScreenY/2+yAllowance && maxOnScreenY+currentOffset.y < height){
 		currentOffset.y++;
+		gui->updatePosition(currentOffset);
 		playerPosition.y = maxOnScreenY/2+yAllowance;
 	}
 
 
 	if(playerPosition.y < maxOnScreenY/2-yAllowance && currentOffset.y != 0){
 		currentOffset.y--;
+		gui->updatePosition(currentOffset);
 		playerPosition.y = maxOnScreenY/2-yAllowance;
 	}
 	//update the gui
@@ -145,7 +140,6 @@ void World::loadMap(){
 	std::vector<std::vector<int> >& data = loader.loadFile();
 	this->width = data.size(); // must be the same width constantly
 	this->height = data[0].size(); // must be the same height constantly
-
 
 	for(int i = 0; i < width; i++){
 		std::vector<Tile*> vec;
