@@ -46,7 +46,7 @@ void GUI::tick(Tile* tile){
 				//set the selected object to the one we clicked on
 				world->selectedObject = objectID;
 				//rebake the instruction text
-				instructionText = fontBig->bakeTexture("Click on a a tile to place OBJECT["+std::to_string(objectID)+"]!", blackColour);
+				instructionText = fontBig->bakeTexture("Click on a tile to place "+world->objects[objectID]->name+"!", blackColour);
 			}
 		}
 		lastObjectID = objectID;
@@ -59,12 +59,12 @@ void GUI::draw(){
 	//if there's an object to place
 	if(world->selectedObject >= 0){
 		//the instruction text tells em
-		AXGraphics::drawTexture(instructionText, 20, AXWindow::getHeight()-instructionText->getHeight()-50); 
+		AXGraphics::drawTexture(instructionText, 20, AXWindow::getHeight()-instructionText->getHeight()-80); 
 	}
 	//if the last tile isn't placeable and there's an object waiting to be placed
 	if(lastTile && world->selectedObject >= 0){
 		if(lastTile->object || world->objects[world->selectedObject]->requiredType != lastTile->type){
-			AXGraphics::drawTexture(cantPlaceText, 20, AXWindow::getHeight()-instructionText->getHeight()-10); 
+			AXGraphics::drawTexture(cantPlaceText, 20, AXWindow::getHeight()-instructionText->getHeight()-5); 
 		}
 	}
 	//if there's no object selected let them pick one

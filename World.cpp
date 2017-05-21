@@ -202,8 +202,9 @@ void World::loadObjects(){
 		int requiredType = it->attribute("requires").as_int();
 		int money = it->attribute("money").as_int();
 		std::string filename = it->attribute("filename").as_string();
+		std::string name = it->attribute("name").as_string();
 		std::string description = it->attribute("description").as_string();
-	    objects.push_back(new Object(id, food, money, requiredType, cost, filename, description));
+	    objects.push_back(new Object(id, food, money, requiredType, cost, filename, name, description));
 	}
 }
 
