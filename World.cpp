@@ -121,18 +121,21 @@ void World::tick(){
 		mousePosition.y = maxOnScreenY-1;
 	}
 
+	if(AXInput::getValue("ESC") && homeSet){
+		selectedObject = -1;
+	}
 
 	//place the object selected IF
 	// the mouse is pressed
 	// and the mouse is on the tiles
 	if(selectedObject >= 0 && AXInput::getValue("MB1") && AXInput::mouseY < maxOnScreenY*tilesize){
 		//check if we can place and afford
-		if(getMousedTile()->placeable && !getMousedTile()->object && objects[selectedObject]->cost <= currentMoney){	
+		if(getMousedTile()->type == objects[selectedObject]->requiredType && !getMousedTile()->object && objects[selectedObject]->cost <= currentMoney){	
 			//update the tile with the selected object
 			//TODO: This is messy, it replaces the under tile with a grass one
 			// Really you should move to all tiles being placeable, and they spawn with objects
-			delete map[mousePosition.x+currentOffset.x][mousePosition.y+currentOffset.y];
-			map[mousePosition.x+currentOffset.x][mousePosition.y+currentOffset.y] = new Tile(tiles[0]);
+			// delete map[mousePosition.x+currentOffset.x][mousePosition.y+currentOffset.y];
+			// map[mousePosition.x+currentOffset.x][mousePosition.y+currentOffset.y] = new Tile(tiles[0]);
 			getMousedTile()->object = new Object(objects[selectedObject]);
 			//get the incomes from the objects
 			moneyIncome += objects[selectedObject]->money;
@@ -181,10 +184,10 @@ void World::loadTiles(){
 	for (AXXMLnode_iterator it = tilenode.begin(); it != tilenode.end(); ++it){
 		//for each tile, get the ID and filename attributes
 		int id = it->attribute("id").as_int();
-		bool placeable = it->attribute("placeable").as_bool();
+		int type = it->attribute("type").as_int();
 		std::string filename = it->attribute("filename").as_string();
 		std::string description = it->attribute("description").as_string();
-	    tiles.push_back(new Tile(id, filename, description, placeable));
+	    tiles.push_back(new Tile(id, filename, description, type));
 	}
 }
 void World::loadObjects(){
@@ -196,10 +199,11 @@ void World::loadObjects(){
 		int id = it->attribute("id").as_int();
 		int food = it->attribute("food").as_int();
 		int cost = it->attribute("cost").as_int();
+		int requiredType = it->attribute("requires").as_int();
 		int money = it->attribute("money").as_int();
 		std::string filename = it->attribute("filename").as_string();
 		std::string description = it->attribute("description").as_string();
-	    objects.push_back(new Object(id, food, money, cost, filename, description));
+	    objects.push_back(new Object(id, food, money, requiredType, cost, filename, description));
 	}
 }
 

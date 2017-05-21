@@ -63,7 +63,7 @@ void GUI::draw(){
 	}
 	//if the last tile isn't placeable and there's an object waiting to be placed
 	if(lastTile && world->selectedObject >= 0){
-		if(lastTile->object){
+		if(lastTile->object || world->objects[world->selectedObject]->requiredType != lastTile->type){
 			AXGraphics::drawTexture(cantPlaceText, 20, AXWindow::getHeight()-instructionText->getHeight()-10); 
 		}
 	}

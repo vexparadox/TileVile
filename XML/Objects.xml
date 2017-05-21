@@ -1,5 +1,7 @@
 <objects>
-	<object id="0" filename="townhall.png" cost="0" food="1" money="1" description="The center of your town."/>
-	<object id="1" filename="house.png" cost="50" food="-1" money="2" description="A small village house."/>
-	<object id="2" filename="farm.png" cost="200" food="2" money="-1" description="A farmhouse, produces food."/>
+	<!-- requires - the tile type-->
+	<object id="0" filename="townhall.png" requires="0" cost="0" food="1" money="1" description="The center of your town."/>
+	<object id="1" filename="house.png" requires="0" cost="50" food="-1" money="2" description="A small house, it holds a family."/>
+	<object id="2" filename="farm.png" requires="0" cost="100" food="2" money="-1" description="A farmhouse, produces food."/>
+	<object id="3" filename="lumber.png" requires="1" cost="150" food="2" money="-1" description="A lumber yard, produces wood."/>
 </objects>
