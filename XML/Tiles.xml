@@ -1,7 +1,7 @@
 <tiles>
-	<tile id="0" filename="grass1.png" />
-	<tile id="1" filename="grass2.png" />
-	<tile id="2" filename="tree1.png" />
-	<tile id="3" filename="tree2.png" />
-	<tile id="4" filename="tree3.png" />
+	<tile id="0" filename="grass1.png" placeable="true" description="A small patch of grass." />
+	<tile id="1" filename="grass2.png" placeable="true" description="A small patch of grass."/>
+	<tile id="2" filename="tree1.png" placeable="true" description="A lonely tree."/>
+	<tile id="3" filename="tree2.png" placeable="false" description="A collection of trees."/>
+	<tile id="4" filename="tree3.png" placeable="false" description="A small forest."/>
 </tiles>

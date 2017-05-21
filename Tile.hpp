@@ -1,9 +1,13 @@
 #pragma once
 #include <Axilya/AXMain.h>
+#include "Object.hpp"
 class Tile{
 public:
-	int id;
-	AXTexture* texture;
-	Tile(int id, const std::string& filename);
-	Tile(const Tile* tile);
+	int id; // the id of the tile
+	AXTexture* texture; // the texture for this tile
+	Object* object; // the object that's on this tile
+	bool placeable; // if this object can be placed on
+	std::string description; // the description of this tile
+	Tile(int id, const std::string& filename, const std::string& description, bool placeable);
+	Tile(const Tile* tile); // used to copy tiles
 };

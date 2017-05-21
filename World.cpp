@@ -1,7 +1,14 @@
 #include "World.hpp"
 
 World::~World(){
-	delete playerTexture;
+	//delete the textures off the original tiles and objects
+	for(auto& t : tiles){
+		delete t->texture;
+	}
+	for(auto& o : objects){
+		delete o->texture;
+	}
+	//remove the GUI
 	delete gui;
 }
 
@@ -12,9 +19,16 @@ World::World(int tilesize) : tilesize(tilesize){
 	up = false;
 	down = false;
 
+	//if the home as been picked
+	homeSet = false;
+	selectedObject = 0; // the town center
+	//starting cash
+	currentMoney = 400;
+	moneyIncome = 0;
+	currentFood = 20;
+	foodIncome = 0;
 	//create the GUI
 	gui = new GUI(this);
-	gui->updatePosition(currentOffset+playerPosition);
 
 	//set how many can be on screen at once
 	maxOnScreenX = AXWindow::getWidth()/tilesize;
@@ -22,6 +36,8 @@ World::World(int tilesize) : tilesize(tilesize){
 
 	//load tiles in
 	loadTiles();
+	//load in objects
+	loadObjects();
 
 	//load in the map and genertae
 	loadMap();
@@ -29,6 +45,7 @@ World::World(int tilesize) : tilesize(tilesize){
 	if(height < maxOnScreenY || width < maxOnScreenX){
 		AXLog::log("World", "You can't make a map that's smaller than the screen.", AX_LOG_ERROR);
 	}
+	timer.start();
 }
 
 void World::draw(){
@@ -39,10 +56,17 @@ void World::draw(){
 		for(int j = currentOffset.y; j < maxOnScreenY+currentOffset.y; j++){
 			//draw the background
 			AXGraphics::drawTexture(map[i][j]->texture, (row*tilesize), (col*tilesize), tilesize, tilesize);
+			if(map[i][j]->object){
+				AXGraphics::drawTexture(map[i][j]->object->texture, (row*tilesize), (col*tilesize), tilesize, tilesize);
+			}
 			col++; // advance the col draw position
 		}
 		row++; // advance the row draw position
 	}
+	if(selectedObject >= 0){
+		AXGraphics::drawTexture(objects[selectedObject]->texture, (mousePosition.x*tilesize), (mousePosition.y*tilesize), tilesize, tilesize);
+	}
+
 	//draw the gui
 	gui->draw();
 }
@@ -50,46 +74,87 @@ void World::draw(){
 void World::tick(){
 	// move the player, it will be corrected later
 	// this uses step movement
-	if(AXInput::getValue("LEFT") && !left){
+	if(AXInput::getValue("A") && !left){
 		left = true;
 		if(currentOffset.x != 0){
 			currentOffset.x--;
 		}
-	}else if(!AXInput::getValue("LEFT") && left){
+	}else if(!AXInput::getValue("A") && left){
 		left = false;
 	}
 
-	if(AXInput::getValue("RIGHT") && !right){
+	if(AXInput::getValue("D") && !right){
 		right = true;
 		if(maxOnScreenX+currentOffset.x < width){
 			currentOffset.x++;
 		}
-	}else if(!AXInput::getValue("RIGHT") && right){
+	}else if(!AXInput::getValue("D") && right){
 		right = false;
 	}
 
-	if(AXInput::getValue("UP") && !up){
+	if(AXInput::getValue("W") && !up){
 		up = true;
 		if(currentOffset.y != 0){
 			currentOffset.y--;
 		}
-	}else if(!AXInput::getValue("UP") && up){
+	}else if(!AXInput::getValue("W") && up){
 		up = false;
 	}
 
-	if(AXInput::getValue("DOWN") && !down){
+	if(AXInput::getValue("S") && !down){
 		down = true;
 		if(maxOnScreenY+currentOffset.y < height){
 			currentOffset.y++;
 		}
-	}else if(!AXInput::getValue("DOWN") && down){
+	}else if(!AXInput::getValue("S") && down){
 		down = false;
 	}
-	gui->tick();
-}
-void World::loadTextures(){
-	//load the player
-	this->playerTexture = new AXTexture("images/man1.png");
+
+	//get the mouse position (tile which the mouse is over)
+	mousePosition.x = AXInput::mouseX/tilesize;
+	mousePosition.y = AXInput::mouseY/tilesize;
+	//make sure it's still on screen
+	if(mousePosition.x >= maxOnScreenX){
+		mousePosition.x = maxOnScreenX-1;
+	}
+	if(mousePosition.y >= maxOnScreenY){
+		mousePosition.y = maxOnScreenY-1;
+	}
+
+
+	//place the object selected IF
+	// the mouse is pressed
+	// and the mouse is on the tiles
+	if(selectedObject >= 0 && AXInput::getValue("MB1") && AXInput::mouseY < maxOnScreenY*tilesize){
+		//check if we can place
+		if(getMousedTile()->placeable && !getMousedTile()->object){	
+			//update the tile with the selected object
+			//TODO: This is messy, it replaces the under tile with a grass one
+			// Really you should move to all tiles being placeable, and they spawn with objects
+			delete map[mousePosition.x+currentOffset.x][mousePosition.y+currentOffset.y];
+			map[mousePosition.x+currentOffset.x][mousePosition.y+currentOffset.y] = new Tile(tiles[0]);
+			getMousedTile()->object = new Object(objects[selectedObject]);
+			//get the incomes from the objects
+			moneyIncome += objects[selectedObject]->money;
+			foodIncome += objects[selectedObject]->food;
+			//update the incomes
+			gui->updateResources();
+			//make sure we ain't holding one
+			selectedObject = -1;
+			//if placing and there's no home set, we can assume this is the home being set
+			if(!homeSet){
+				homeSet = true;
+			}
+		}
+	}
+
+	//gui takes a tile pointer, this is what the user is moused over
+	gui->tick(getMousedTile());
+	if(timer.elapsedTime() > 4000){
+		timer.reset();
+		timer.start();
+		inGameTick();
+	}
 }
 
 void World::loadMap(){
@@ -114,7 +179,33 @@ void World::loadTiles(){
 	for (AXXMLnode_iterator it = tilenode.begin(); it != tilenode.end(); ++it){
 		//for each tile, get the ID and filename attributes
 		int id = it->attribute("id").as_int();
+		bool placeable = it->attribute("placeable").as_bool();
 		std::string filename = it->attribute("filename").as_string();
-	    tiles.push_back(new Tile(id, filename));
+		std::string description = it->attribute("description").as_string();
+	    tiles.push_back(new Tile(id, filename, description, placeable));
 	}
+}
+void World::loadObjects(){
+	AXXML xml("XML/objects.xml");
+	AXXMLnode objectnode = xml.child("objects");
+	//loop through the "tiles"
+	for (AXXMLnode_iterator it = objectnode.begin(); it != objectnode.end(); ++it){
+		//for each tile, get the ID and filename attributes
+		int id = it->attribute("id").as_int();
+		int food = it->attribute("food").as_int();
+		int money = it->attribute("money").as_int();
+		std::string filename = it->attribute("filename").as_string();
+		std::string description = it->attribute("description").as_string();
+	    objects.push_back(new Object(id, food, money, filename, description));
+	}
+}
+
+Tile* World::getMousedTile(){
+	return map[mousePosition.x+currentOffset.x][mousePosition.y+currentOffset.y];
+}
+
+void World::inGameTick(){
+	currentMoney += moneyIncome;
+	currentFood += foodIncome;
+	gui->updateResources();
 }

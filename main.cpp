@@ -4,7 +4,7 @@ Menu* menu;
 int gameState;
 
 int main(int argc, char const *argv[]){
-	AXWindow::init(1200, 720, "Game", AX_DEFAULT | AX_NOAUDIO, setup, update, draw);
+	AXWindow::init(1200, 840, "Game", AX_DEFAULT | AX_NOAUDIO, setup, update, draw);
 	int ret = AXWindow::run();
 	delete world;
 	return ret;
