@@ -126,8 +126,8 @@ void World::tick(){
 	// the mouse is pressed
 	// and the mouse is on the tiles
 	if(selectedObject >= 0 && AXInput::getValue("MB1") && AXInput::mouseY < maxOnScreenY*tilesize){
-		//check if we can place
-		if(getMousedTile()->placeable && !getMousedTile()->object){	
+		//check if we can place and afford
+		if(getMousedTile()->placeable && !getMousedTile()->object && objects[selectedObject]->cost <= currentMoney){	
 			//update the tile with the selected object
 			//TODO: This is messy, it replaces the under tile with a grass one
 			// Really you should move to all tiles being placeable, and they spawn with objects
@@ -137,6 +137,8 @@ void World::tick(){
 			//get the incomes from the objects
 			moneyIncome += objects[selectedObject]->money;
 			foodIncome += objects[selectedObject]->food;
+			//take away the cost
+			currentMoney -= objects[selectedObject]->cost;
 			//update the incomes
 			gui->updateResources();
 			//make sure we ain't holding one
@@ -193,10 +195,11 @@ void World::loadObjects(){
 		//for each tile, get the ID and filename attributes
 		int id = it->attribute("id").as_int();
 		int food = it->attribute("food").as_int();
+		int cost = it->attribute("cost").as_int();
 		int money = it->attribute("money").as_int();
 		std::string filename = it->attribute("filename").as_string();
 		std::string description = it->attribute("description").as_string();
-	    objects.push_back(new Object(id, food, money, filename, description));
+	    objects.push_back(new Object(id, food, money, cost, filename, description));
 	}
 }
 

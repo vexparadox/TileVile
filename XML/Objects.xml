@@ -1,5 +1,5 @@
 <objects>
-	<object id="0" filename="townhall.png" food="1" money="1" description="The center of your town."/>
-	<object id="1" filename="house.png" food="-1" money="2" description="A small village house."/>
-	<object id="2" filename="farm.png" food="2" money="-1" description="A farmhouse, produces food."/>
+	<object id="0" filename="townhall.png" cost="0" food="1" money="1" description="The center of your town."/>
+	<object id="1" filename="house.png" cost="50" food="-1" money="2" description="A small village house."/>
+	<object id="2" filename="farm.png" cost="200" food="2" money="-1" description="A farmhouse, produces food."/>
 </objects>

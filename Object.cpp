@@ -1,5 +1,5 @@
 #include "Object.hpp"
-Object::Object(int id, int food, int money, const std::string& filename, const std::string& description) : id(id), food(food), money(money), description(description){
+Object::Object(int id, int food, int money, int cost, const std::string& filename, const std::string& description) : id(id), food(food), money(money), cost(cost), description(description){
 	texture = new AXTexture("images/"+filename);
 }
 Object::Object(const Object* other){
