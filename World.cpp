@@ -155,7 +155,7 @@ void World::tick(){
 
 	//gui takes a tile pointer, this is what the user is moused over
 	gui->tick(getMousedTile());
-	if(timer.elapsedTime() > 4000){
+	if(timer.elapsedTime() > 2000){
 		timer.reset();
 		timer.start();
 		inGameTick();
