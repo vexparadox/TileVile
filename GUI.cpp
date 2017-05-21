@@ -40,7 +40,7 @@ void GUI::tick(Tile* tile){
 		int objectID = whichObjectMousedOver();
 		if(objectID >= 0){
 			if(objectID != lastObjectID){		
-				descriptionText = fontSmall->bakeTexture(world->objects[objectID]->description, blackColour);	
+				descriptionText = fontSmall->bakeTexture(world->objects[objectID]->description+" : $"+std::to_string(world->objects[objectID]->cost), blackColour);	
 			}
 			if(AXInput::getValue("MB1")){
 				//set the selected object to the one we clicked on
@@ -71,7 +71,7 @@ void GUI::draw(){
 	if(world->selectedObject < 0){
 		drawObjectSelect();
 	}
-	//show the tile description text if you're no on the GUI
+	//show the description text
 	if(descriptionText){
 		AXGraphics::drawTexture(descriptionText, AXWindow::getWidth()-descriptionText->getWidth()-20, AXWindow::getHeight()-descriptionText->getHeight()-10); 
 	}
