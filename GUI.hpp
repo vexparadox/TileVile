@@ -3,8 +3,11 @@
 #include "Tile.hpp"
 class World;
 class GUI {
+	std::vector<std::string> types; // ground type strings
 	AXTexture* backgroundIMG; // background image for the GUI
 	AXTexture* instructionText; // used to give instructions
+	AXTexture* detailText1; // used to give instructions
+	AXTexture* detailText2; // used to give instructions
 	AXTexture* descriptionText; // used to describe what the user is selecting
 	AXTexture* cantPlaceText; // says that it can't place
 	AXTexture* moneyText; // the current cash

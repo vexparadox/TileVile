@@ -4,7 +4,8 @@ GUI::GUI(World* world) : world(world){
 	fontBig = new AXFont("font/Ayuthaya.ttf", 20);
 	fontSmall = new AXFont("font/Ayuthaya.ttf", 12);
 	blackColour = AXColour(0, 0, 0);
-
+	types.push_back("Flat Land");
+	types.push_back("Wooded Area");
 	instructionText = fontBig->bakeTexture("Click on a tile to place your town hall!", blackColour);
 	cantPlaceText = fontSmall->bakeTexture("You can't place that here.", blackColour);
 	//this text is filled when the tile moused over is changed
@@ -47,6 +48,8 @@ void GUI::tick(Tile* tile){
 				world->selectedObject = objectID;
 				//rebake the instruction text
 				instructionText = fontBig->bakeTexture("Click on a tile to place "+world->objects[objectID]->name+"!", blackColour);
+				detailText1 = fontSmall->bakeTexture("This building requires land of the type: "+types[world->objects[objectID]->requiredType], blackColour);
+				detailText2 = fontSmall->bakeTexture("Cost: $"+std::to_string(world->objects[objectID]->cost)+" | Food: "+std::to_string(world->objects[objectID]->food)+" | Money: "+std::to_string(world->objects[objectID]->money), blackColour);
 			}
 		}
 		lastObjectID = objectID;
@@ -60,6 +63,10 @@ void GUI::draw(){
 	if(world->selectedObject >= 0){
 		//the instruction text tells em
 		AXGraphics::drawTexture(instructionText, 20, AXWindow::getHeight()-instructionText->getHeight()-80); 
+		if(detailText1 && detailText2){
+			AXGraphics::drawTexture(detailText1, 20, AXWindow::getHeight()-detailText1->getHeight()-50); 
+			AXGraphics::drawTexture(detailText2, 20, AXWindow::getHeight()-detailText2->getHeight()-30); 
+		}
 	}
 	//if the last tile isn't placeable and there's an object waiting to be placed
 	if(lastTile && world->selectedObject >= 0){
