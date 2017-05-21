@@ -1,8 +1,8 @@
 #include "GUI.hpp"
 #include "World.hpp"
 GUI::GUI(World* world) : world(world){
-	fontBig = new AXFont("font/Ayuthaya.ttf", 20);
-	fontSmall = new AXFont("font/Ayuthaya.ttf", 12);
+	fontBig = new AXFont("font/Ayuthaya.ttf", 22);
+	fontSmall = new AXFont("font/Ayuthaya.ttf", 14);
 	blackColour = AXColour(0, 0, 0);
 	types.push_back("Flat Land");
 	types.push_back("Wooded Area");
@@ -14,7 +14,8 @@ GUI::GUI(World* world) : world(world){
 
 	//used to remember the last tile moused over, it stops the text rebaking every frame
 	lastTile = nullptr;
-
+	detailText1 = nullptr;
+	detailText2 = nullptr;
 	//load the food logo
 	foodLogo = new AXTexture("images/meat.png");
 	backgroundIMG = new AXTexture("images/guibackground.png");
@@ -48,7 +49,7 @@ void GUI::tick(Tile* tile){
 				world->selectedObject = objectID;
 				//rebake the instruction text
 				instructionText = fontBig->bakeTexture("Click on a tile to place "+world->objects[objectID]->name+"!", blackColour);
-				detailText1 = fontSmall->bakeTexture("This building requires land of the type: "+types[world->objects[objectID]->requiredType], blackColour);
+				detailText1 = fontSmall->bakeTexture("This building requires: "+types[world->objects[objectID]->requiredType], blackColour);
 				detailText2 = fontSmall->bakeTexture("Cost: $"+std::to_string(world->objects[objectID]->cost)+" | Food: "+std::to_string(world->objects[objectID]->food)+" | Money: "+std::to_string(world->objects[objectID]->money), blackColour);
 			}
 		}
@@ -65,7 +66,7 @@ void GUI::draw(){
 		AXGraphics::drawTexture(instructionText, 20, AXWindow::getHeight()-instructionText->getHeight()-80); 
 		if(detailText1 && detailText2){
 			AXGraphics::drawTexture(detailText1, 20, AXWindow::getHeight()-detailText1->getHeight()-50); 
-			AXGraphics::drawTexture(detailText2, 20, AXWindow::getHeight()-detailText2->getHeight()-30); 
+			AXGraphics::drawTexture(detailText2, 20, AXWindow::getHeight()-detailText2->getHeight()-32); 
 		}
 	}
 	//if the last tile isn't placeable and there's an object waiting to be placed
