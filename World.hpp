@@ -22,6 +22,8 @@ class World{
 	int foodIncome;
 	int currentWood;
 	int woodIncome;
+	int currentStone;
+	int stoneIncome;
 
 	//holds all the tiles in a 2D arrayu
 	std::vector<std::vector<Tile*>> map;

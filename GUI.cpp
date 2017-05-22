@@ -30,6 +30,7 @@ GUI::GUI(World* world) : world(world){
 	//load the resource icons
 	foodIcon = new AXTexture("images/icons/meat.png");
 	woodIcon = new AXTexture("images/icons/wood.png");
+	stoneIcon = new AXTexture("images/icons/stone.png");
 	backgroundIMG = new AXTexture("images/guibackground.png");
 	updateResources();
 }
@@ -63,13 +64,30 @@ void GUI::tick(Tile* tile){
 			if(objectID != lastObjectID){		
 				descriptionText = fontSmall->bakeTexture(world->objects[objectID]->description+" : $"+std::to_string(world->objects[objectID]->cost), blackColour);	
 			}
+			//if they click on an object
 			if(AXInput::getValue("MB1")){
 				//set the selected object to the one we clicked on
-				world->selectedObject = objectID;
+				world->selectedObject = objectID; 
+				Object* selected = world->objects[objectID]; // get a temp object
 				//rebake the instruction text
-				instructionText = fontBig->bakeTexture("Click on a tile to place "+world->objects[objectID]->name+"!", blackColour);
-				detailText1 = fontSmall->bakeTexture("This building requires: "+types[world->objects[objectID]->requiredType], blackColour);
-				detailText2 = fontSmall->bakeTexture("Cost: $"+std::to_string(world->objects[objectID]->cost)+" | Food: "+std::to_string(world->objects[objectID]->food)+" | Money: "+std::to_string(world->objects[objectID]->money)+" | Wood: "+std::to_string(world->objects[objectID]->wood), blackColour);
+				instructionText = fontBig->bakeTexture("Click on a tile to place "+selected->name+"!", blackColour);
+				//bake the detail1 string, it will say the type it requires
+				detailText1 = fontSmall->bakeTexture("This building requires: "+types[selected->requiredType], blackColour);
+				//create a temporary string to hold the details
+				std::string detailText2String = "Cost: $"+std::to_string(selected->cost);
+				if(selected->food != 0){
+					detailText2String.append(" | Food: "+std::to_string(selected->food));
+				}
+				if(selected->money != 0){
+					detailText2String.append(" | Money: "+std::to_string(selected->money));
+				}
+				if(selected->wood != 0){
+					detailText2String.append(" | Wood: "+std::to_string(selected->wood));
+				}
+				if(selected->stone != 0){
+					detailText2String.append(" | Stone: "+std::to_string(selected->stone));
+				}
+				detailText2 = fontSmall->bakeTexture(detailText2String, blackColour);
 				AXAudio::playAudioChunk(pickupSound);
 			}
 		}
@@ -112,9 +130,14 @@ void GUI::draw(){
 	//the food text
 	AXGraphics::drawTexture(foodText, AXWindow::getWidth()-foodText->getWidth()-20, AXWindow::getHeight()-foodText->getHeight()-80); 
 	//the wood icon
-	AXGraphics::drawTexture(woodIcon, AXWindow::getWidth()-woodText->getWidth()-60, AXWindow::getHeight()-woodText->getHeight()-40, 48, 48); 
+	AXGraphics::drawTexture(woodIcon, AXWindow::getWidth()-woodText->getWidth()-60, AXWindow::getHeight()-woodText->getHeight()-45, 48, 48); 
 	//the wood text
-	AXGraphics::drawTexture(woodText, AXWindow::getWidth()-woodText->getWidth()-20, AXWindow::getHeight()-woodText->getHeight()-30); 
+	AXGraphics::drawTexture(woodText, AXWindow::getWidth()-woodText->getWidth()-20, AXWindow::getHeight()-woodText->getHeight()-35); 
+	//the stone icon
+	AXGraphics::drawTexture(stoneIcon, AXWindow::getWidth()-stoneText->getWidth()-woodText->getWidth()-100, AXWindow::getHeight()-woodText->getHeight()-45, 48, 48); 
+	//the stone text
+	AXGraphics::drawTexture(stoneText, AXWindow::getWidth()-stoneText->getWidth()-woodText->getWidth()-60, AXWindow::getHeight()-woodText->getHeight()-35); 
+
 
 }
 
@@ -190,4 +213,31 @@ void GUI::updateResources(){
 		woodText = fontBig->bakeTexture(std::to_string(world->currentWood)+"(+"+std::to_string(world->woodIncome)+")", blackColour);
 	}
 
+	if(world->stoneIncome < 0){
+		stoneText = fontBig->bakeTexture(std::to_string(world->currentStone)+"("+std::to_string(world->stoneIncome)+")", blackColour);
+	}else{
+		stoneText = fontBig->bakeTexture(std::to_string(world->currentStone)+"(+"+std::to_string(world->stoneIncome)+")", blackColour);
+	}
+
+}
+
+GUI::~GUI(){
+	//delete all the shit
+	delete backgroundIMG; // background image for the GUI
+	delete instructionText; // used to give instructions
+	delete detailText1; // used to give instructions
+	delete detailText2; // used to give instructions
+	delete descriptionText; // used to describe what the user is selecting
+	delete cantPlaceText; // says that it can't place
+	delete moneyText; // the current cash
+	delete foodText; // the current food
+	delete foodIcon; // the food icon
+	delete woodText; // the current wood
+	delete woodIcon; // the wood icon
+	delete stoneText; //the current stone
+	delete stoneIcon; // the stone icon
+	delete fontBig;
+	delete fontSmall;
+	delete pickupSound;
+	delete cancelPickupSound;
 }

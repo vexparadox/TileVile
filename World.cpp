@@ -16,14 +16,15 @@ World::World(int tilesize) : tilesize(tilesize){
 	//if the home as been picked
 	homeSet = false;
 	selectedObject = 0; // the town center
-	//starting cash
+	//starting resources
 	currentMoney = 400;
 	moneyIncome = 0;
 	currentFood = 20;
 	foodIncome = 0;
 	currentWood = 20;
 	woodIncome = 0;
-
+	currentStone = 20;
+	stoneIncome = 0;
 
 	//set the offset
 	currentOffset.x = 14;
@@ -123,6 +124,7 @@ void World::tick(){
 			moneyIncome += objects[selectedObject]->money;
 			foodIncome += objects[selectedObject]->food;
 			woodIncome += objects[selectedObject]->wood;
+			stoneIncome += objects[selectedObject]->stone;
 			//take away the cost
 			currentMoney -= objects[selectedObject]->cost;
 			AXAudio::playAudioChunk(objects[selectedObject]->placeSound);
@@ -184,6 +186,7 @@ void World::loadObjects(){
 		int food = it->attribute("food").as_int();
 		int cost = it->attribute("cost").as_int();
 		int wood = it->attribute("wood").as_int();
+		int stone = it->attribute("stone").as_int();
 		int requiredType = it->attribute("requires").as_int();
 		int money = it->attribute("money").as_int();
 
@@ -195,7 +198,7 @@ void World::loadObjects(){
 
 		std::string name = it->attribute("name").as_string();
 		std::string description = it->attribute("description").as_string();
-	    objects.push_back(new Object(id, food, money, wood, requiredType, cost, filename, placeSound, name, description));
+	    objects.push_back(new Object(id, food, money, wood, stone, requiredType, cost, filename, placeSound, name, description));
 	}
 }
 

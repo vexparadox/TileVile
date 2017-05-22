@@ -15,6 +15,8 @@ class GUI {
 	AXTexture* foodIcon; // the food icon
 	AXTexture* woodText; // the current wood
 	AXTexture* woodIcon; // the wood icon
+	AXTexture* stoneText; //the current stone
+	AXTexture* stoneIcon; // the stone icon
 	AXFont* fontBig;
 	AXFont* fontSmall;
 	World* world;
@@ -33,6 +35,7 @@ class GUI {
 	//returns the ID of which object is moused over in the GUI
 	int whichObjectMousedOver();
 public:
+	~GUI();
 	GUI(World* world);
 	void draw();
 	void tick(Tile* tile);

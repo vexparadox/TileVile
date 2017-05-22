@@ -1,5 +1,5 @@
 #include "Object.hpp"
-Object::Object(int id, int food, int money, int wood, int requiredType, int cost, const std::string& filename, AXAudioChunk* placeSound, const std::string& name, const std::string& description) : id(id), food(food), money(money), wood(wood), requiredType(requiredType), cost(cost), name(name), description(description), placeSound(placeSound){
+Object::Object(int id, int food, int money, int wood, int stone, int requiredType, int cost, const std::string& filename, AXAudioChunk* placeSound, const std::string& name, const std::string& description) : id(id), food(food), money(money), wood(wood), stone(stone), requiredType(requiredType), cost(cost), name(name), description(description), placeSound(placeSound){
 	texture = new AXTexture("images/objects/"+filename);
 }
 Object::Object(const Object* other){
@@ -11,5 +11,6 @@ Object::Object(const Object* other){
 	this->money = other->money;
 	this->food = other->food;
 	this->wood = other->wood;
+	this->stone = other->stone;
 	this->requiredType = other->requiredType;
 }

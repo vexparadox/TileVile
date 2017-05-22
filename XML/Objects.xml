@@ -1,12 +1,12 @@
 <objects>
 	<!-- requires - the tile type-->
-	<object id="0" name="Town Hall" filename="townhall.png" placeSound="townhall.wav" requires="0" cost="0" food="1" money="1" wood="0" description="The center of your town, strong and stable."/>
+	<object id="0" name="Town Hall" filename="townhall.png" placeSound="townhall.wav" requires="0" cost="0" food="1" money="1" wood="0" stone="0" description="The center of your town, strong and stable."/>
 
-	<object id="1" name="Small Home" filename="house.png" placeSound="house.wav" requires="0" cost="50" food="-1" money="2" wood="-1" description="A small house, it holds a family."/>
+	<object id="1" name="Small Home" filename="house.png" placeSound="house.wav" requires="0" cost="50" food="-1" money="2" wood="-1" stone="-1" description="A small house, it holds a family."/>
 
-	<object id="2" name="Farmhouse" filename="farm.png" placeSound="farm.wav" requires="0" cost="100" food="3" money="-1" wood="-2" description="A farmhouse, produces food."/>
+	<object id="2" name="Farmhouse" filename="farm.png" placeSound="farm.wav" requires="0" cost="100" food="3" money="-1" wood="-2" stone="0" description="A farmhouse, produces food."/>
 
-	<object id="3" name="Lumber Yard" filename="lumber.png" placeSound="lumbermill.wav" requires="1" cost="150" food="-1" money="-1" wood="5" description="A lumber yard, produces wood."/>
+	<object id="3" name="Lumber Yard" filename="lumber.png" placeSound="lumbermill.wav" requires="1" cost="150" food="-1" money="-1" wood="5" stone="0" description="A lumber yard, produces wood."/>
 
-	<object id="4" name="Quarry" filename="mine.png" placeSound="house.wav" requires="2" cost="150" food="-3" money="-4" wood="-2" description="Takes stone from the ground for building."/>
+	<object id="4" name="Quarry" filename="mine.png" placeSound="quarry.wav" requires="2" cost="150" food="-3" money="-4" wood="-2" stone="4" description="Takes stone from the ground for building."/>
 </objects>
