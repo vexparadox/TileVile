@@ -106,7 +106,7 @@ void GUI::draw(){
 
 	//show the resources
 	//The money text
-	AXGraphics::drawTexture(moneyText, AXWindow::getWidth()-moneyText->getWidth()-135, AXWindow::getHeight()-moneyText->getHeight()-80); 
+	AXGraphics::drawTexture(moneyText, AXWindow::getWidth()-moneyText->getWidth()-foodText->getWidth()-70, AXWindow::getHeight()-moneyText->getHeight()-80); 
 	//the food logo
 	AXGraphics::drawTexture(foodIcon, AXWindow::getWidth()-foodText->getWidth()-45, AXWindow::getHeight()-foodText->getHeight()-75, 24, 24); 
 	//the food text
