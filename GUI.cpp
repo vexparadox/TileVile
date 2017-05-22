@@ -12,6 +12,7 @@ GUI::GUI(World* world) : world(world){
 	//the types, this shouldn't really be hard coded
 	types.push_back("Flat Land");
 	types.push_back("Wooded Area");
+	types.push_back("Stone Outcrop");
 	//the initial instructions
 	instructionText = fontBig->bakeTexture("Click on a tile to place your town hall!", blackColour);
 	//this text is the same

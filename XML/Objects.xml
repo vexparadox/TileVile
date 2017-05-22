@@ -8,5 +8,5 @@
 
 	<object id="3" name="Lumber Yard" filename="lumber.png" placeSound="lumbermill.wav" requires="1" cost="150" food="-1" money="-1" wood="5" description="A lumber yard, produces wood."/>
 
-	<object id="4" name="Archery Yard" filename="archer.png" placeSound="house.wav" requires="0" cost="300" food="-3" money="-4" wood="-2" description="Where those who use bows train, doesn't do shit."/>
+	<object id="4" name="Quarry" filename="mine.png" placeSound="house.wav" requires="2" cost="150" food="-3" money="-4" wood="-2" description="Takes stone from the ground for building."/>
 </objects>
