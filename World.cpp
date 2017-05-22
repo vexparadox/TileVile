@@ -29,8 +29,6 @@ World::World(int tilesize) : tilesize(tilesize){
 	//set the offset
 	currentOffset.x = 14;
 	currentOffset.y = 14;
-	//create the GUI
-	gui = new GUI(this);
 
 	//set how many can be on screen at once
 	maxOnScreenX = AXWindow::getWidth()/tilesize;
@@ -47,6 +45,8 @@ World::World(int tilesize) : tilesize(tilesize){
 	if(height < maxOnScreenY || width < maxOnScreenX){
 		AXLog::log("World", "You can't make a map that's smaller than the screen.", AX_LOG_ERROR);
 	}
+	//create the GUI
+	gui = new GUI(this); // has to be last, it uses object and tile arrays
 	timer.start();
 }
 

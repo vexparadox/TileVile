@@ -14,13 +14,15 @@ GUI::GUI(World* world) : world(world){
 	types.push_back("Wooded Area");
 	types.push_back("Stone Outcrop");
 	//the initial instructions
-	instructionText = fontBig->bakeTexture("Click on a tile to place your town hall!", blackColour);
 	//this text is the same
 	cantPlaceText = fontSmall->bakeTexture("You can't place that here.", blackColour);
 
 	//this text is filled when the tile moused over is changed
 	//if either shows the description of the tile or its object
 	descriptionText = nullptr;
+
+	//these texts describe 
+	instructionText = nullptr;
 	detailText1 = nullptr; // describes type requirements
 	detailText2 = nullptr; // describes cost
 	detailText3 = nullptr; // describes production
@@ -38,8 +40,10 @@ GUI::GUI(World* world) : world(world){
 	foodIcon = new AXTexture("images/icons/meat.png");
 	woodIcon = new AXTexture("images/icons/wood.png");
 	stoneIcon = new AXTexture("images/icons/stone.png");
+	//the background to the gui
 	backgroundIMG = new AXTexture("images/guibackground.png");
 	updateResources();
+	bakeObjectInfoStrings();
 }
 
 void GUI::tick(Tile* tile){
@@ -71,41 +75,15 @@ void GUI::tick(Tile* tile){
 		if(objectID >= 0){
 			if(objectID != lastObjectID){	
 				delete descriptionText;
-				descriptionText = fontSmall->bakeTexture(world->objects[objectID]->description+" : $"+std::to_string(world->objects[objectID]->cost), blackColour);	
+				//show the description of the object
+				descriptionText = fontSmall->bakeTexture(world->objects[objectID]->description, blackColour);	
 			}
 			//if they click on an object
 			if(AXInput::getValue("MB1")){
-				//clean up
-				delete instructionText;
-				delete detailText1;
-				delete detailText2;
-				delete detailText3;
 				//set the selected object to the one we clicked on
 				world->selectedObject = objectID; 
-				Object* selected = world->objects[objectID]; // get a temp object
-				//rebake the instruction text
-				instructionText = fontBig->bakeTexture("Place a "+selected->name+"!", blackColour);
-				//bake the detail1 string, it will say the type it requires
-				detailText1 = fontSmall->bakeTexture("Tile Type: "+types[selected->requiredType], blackColour);
-				//create a temporary string to hold the details
-				std::string detailText2String = "Cost | $"+std::to_string(selected->cost);
-				detailText2 = fontSmall->bakeTexture(detailText2String, blackColour);
-				//a string for the production
-				std::string detailText3String = "Produces";
-				if(selected->money != 0){
-					detailText3String.append(" | $"+std::to_string(selected->money));
-				}
-				if(selected->food != 0){
-					detailText3String.append(" | Food: "+std::to_string(selected->food));
-				}
-				if(selected->wood != 0){
-					detailText3String.append(" | Wood: "+std::to_string(selected->wood));
-				}
-				if(selected->stone != 0){
-					detailText3String.append(" | Stone: "+std::to_string(selected->stone));
-				}
-				detailText3 = fontSmall->bakeTexture(detailText3String, blackColour);
-				AXAudio::playAudioChunk(pickupSound);
+				bakeObjectInfoStrings(); // bake the info strings
+				AXAudio::playAudioChunk(pickupSound); // play the pickup sound
 			}
 		}
 		lastObjectID = objectID;
@@ -240,13 +218,48 @@ void GUI::updateResources(){
 
 }
 
+
+void GUI::bakeObjectInfoStrings(){
+	if(world->selectedObject < 0){
+		AXLog::log("Bake Object Info", "You're trying to bake info strings when there's no object selected.", AX_LOG_ERROR);
+		return;
+	}
+	delete instructionText;
+	delete detailText1;
+	delete detailText2;
+	delete detailText3;
+	Object* selected = world->objects[world->selectedObject]; // get a temp object
+	//rebake the instruction text
+	instructionText = fontBig->bakeTexture("Click to place a "+selected->name+"!", blackColour);
+	//bake the detail1 string, it will say the type it requires
+	detailText1 = fontSmall->bakeTexture("Tile Type: "+types[selected->requiredType], blackColour);
+	//create a temporary string to hold the details
+	std::string detailText2String = "Cost | $"+std::to_string(selected->cost);
+	detailText2 = fontSmall->bakeTexture(detailText2String, blackColour);
+	//a string for the production
+	std::string detailText3String = "Produces";
+	if(selected->money != 0){
+		detailText3String.append(" | $"+std::to_string(selected->money));
+	}
+	if(selected->food != 0){
+		detailText3String.append(" | Food: "+std::to_string(selected->food));
+	}
+	if(selected->wood != 0){
+		detailText3String.append(" | Wood: "+std::to_string(selected->wood));
+	}
+	if(selected->stone != 0){
+		detailText3String.append(" | Stone: "+std::to_string(selected->stone));
+	}
+	detailText3 = fontSmall->bakeTexture(detailText3String, blackColour);
+}
+
 GUI::~GUI(){
 	//delete all the shit
 	delete backgroundIMG; // background image for the GUI
 	delete instructionText; // used to give instructions
 	delete detailText1; // used to give instructions
 	delete detailText2; // used to give instructions
-	delete descriptionText; // used to describe what the user is selecting
+	delete descriptionText; // used to describe what the user is hovering over
 	delete cantPlaceText; // says that it can't place
 	delete moneyText; // the current cash
 	delete foodText; // the current food
