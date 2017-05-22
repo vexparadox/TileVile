@@ -210,5 +210,6 @@ void World::inGameTick(){
 	currentMoney += moneyIncome;
 	currentFood += foodIncome;
 	currentWood += woodIncome;
+	currentStone += stoneIncome;
 	gui->updateResources();
 }
