@@ -27,6 +27,12 @@ GUI::GUI(World* world) : world(world){
 
 	//used to remember the last tile moused over, it stops the text rebaking every frame
 	lastTile = nullptr;
+
+	moneyText = nullptr;
+	foodText = nullptr;
+	woodText = nullptr; 
+	stoneText = nullptr;
+
 	
 	//load the resource icons
 	foodIcon = new AXTexture("images/icons/meat.png");
@@ -50,6 +56,7 @@ void GUI::tick(Tile* tile){
 	if(tile != lastTile && !onGUI){
 		lastTile = tile;
 		//if the tile has an object on it, show that description instead
+		delete descriptionText;
 		if(tile->object){
 			descriptionText = fontSmall->bakeTexture(tile->object->description, blackColour);	
 		}else{
@@ -62,11 +69,17 @@ void GUI::tick(Tile* tile){
 		//if they are moused over something and the mouse is pressed!
 		int objectID = whichObjectMousedOver();
 		if(objectID >= 0){
-			if(objectID != lastObjectID){		
+			if(objectID != lastObjectID){	
+				delete descriptionText;
 				descriptionText = fontSmall->bakeTexture(world->objects[objectID]->description+" : $"+std::to_string(world->objects[objectID]->cost), blackColour);	
 			}
 			//if they click on an object
 			if(AXInput::getValue("MB1")){
+				//clean up
+				delete instructionText;
+				delete detailText1;
+				delete detailText2;
+				delete detailText3;
 				//set the selected object to the one we clicked on
 				world->selectedObject = objectID; 
 				Object* selected = world->objects[objectID]; // get a temp object
@@ -200,24 +213,25 @@ bool GUI::isMouseOverGUI(){
 	return false;
 }
 void GUI::updateResources(){
+	delete moneyText;
 	if(world->moneyIncome < 0){
 		moneyText = fontBig->bakeTexture("$"+std::to_string(world->currentMoney)+"("+std::to_string(world->moneyIncome)+")", blackColour);
 	}else{
 		moneyText = fontBig->bakeTexture("$"+std::to_string(world->currentMoney)+"(+"+std::to_string(world->moneyIncome)+")", blackColour);
 	}
-
+	delete foodText;
 	if(world->foodIncome < 0){
 		foodText = fontBig->bakeTexture(std::to_string(world->currentFood)+"("+std::to_string(world->foodIncome)+")", blackColour);
 	}else{
 		foodText = fontBig->bakeTexture(std::to_string(world->currentFood)+"(+"+std::to_string(world->foodIncome)+")", blackColour);
 	}
-
+	delete woodText;
 	if(world->woodIncome < 0){
 		woodText = fontBig->bakeTexture(std::to_string(world->currentWood)+"("+std::to_string(world->woodIncome)+")", blackColour);
 	}else{
 		woodText = fontBig->bakeTexture(std::to_string(world->currentWood)+"(+"+std::to_string(world->woodIncome)+")", blackColour);
 	}
-
+	delete stoneText;
 	if(world->stoneIncome < 0){
 		stoneText = fontBig->bakeTexture(std::to_string(world->currentStone)+"("+std::to_string(world->stoneIncome)+")", blackColour);
 	}else{
