@@ -13,10 +13,7 @@ class World{
 	//how big each tile is
 	int tilesize;
 	//how many tiles can fit on screen in each direction
-	int maxOnScreenX, maxOnScreenY;
-	// for inputs, allows step movement
-	bool right, left, up, down; 
-	
+	int maxOnScreenX, maxOnScreenY;	
 
 	//player resources
 	int currentMoney;

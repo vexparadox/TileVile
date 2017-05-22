@@ -13,12 +13,6 @@ World::~World(){
 }
 
 World::World(int tilesize) : tilesize(tilesize){
-	//input booleans, allows for stepping
-	left = false;
-	right = false;
-	up = false;
-	down = false;
-
 	//if the home as been picked
 	homeSet = false;
 	selectedObject = 0; // the town center
@@ -61,12 +55,6 @@ void World::draw(){
 	for(int i = currentOffset.x; i < maxOnScreenX+currentOffset.x; i++){
 		int col = 0;
 		for(int j = currentOffset.y; j < maxOnScreenY+currentOffset.y; j++){
-			//if moused over, give a tint
-			if(i == mousePosition.x && j == mousePosition.y){
-				// SDL_SetTextureAlphaMod(map[i][j]->texture, 50);
-			}else{
-				// SDL_SetTextureAlphaMod(map[i][j]->texture->, 255);
-			}
 			//draw the background
 			AXGraphics::drawTexture(map[i][j]->texture, (row*tilesize), (col*tilesize), tilesize, tilesize);
 			if(map[i][j]->object){
@@ -88,42 +76,29 @@ void World::draw(){
 void World::tick(){
 	// move the player, it will be corrected later
 	// this uses step movement
-	if(AXInput::getValue("A") && !left){
-		left = true;
+	if(AXInput::getValue("A")){
 		if(currentOffset.x != 0){
 			currentOffset.x--;
 		}
-	}else if(!AXInput::getValue("A") && left){
-		left = false;
 	}
 
-	if(AXInput::getValue("D") && !right){
-		right = true;
+	if(AXInput::getValue("D")){
 		if(maxOnScreenX+currentOffset.x < width){
 			currentOffset.x++;
 		}
-	}else if(!AXInput::getValue("D") && right){
-		right = false;
 	}
 
-	if(AXInput::getValue("W") && !up){
-		up = true;
+	if(AXInput::getValue("W")){
 		if(currentOffset.y != 0){
 			currentOffset.y--;
 		}
-	}else if(!AXInput::getValue("W") && up){
-		up = false;
 	}
 
-	if(AXInput::getValue("S") && !down){
-		down = true;
+	if(AXInput::getValue("S")){
 		if(maxOnScreenY+currentOffset.y < height){
 			currentOffset.y++;
 		}
-	}else if(!AXInput::getValue("S") && down){
-		down = false;
 	}
-
 	//get the mouse position (tile which the mouse is over)
 	mousePosition.x = AXInput::mouseX/tilesize;
 	mousePosition.y = AXInput::mouseY/tilesize;
