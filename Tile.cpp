@@ -2,7 +2,7 @@
 
 Tile::Tile(int id, const std::string& filename, const std::string& description, int type) : id(id), description(description), type(type){
 	object = nullptr;
-	this->texture = new AXTexture("images/"+filename);
+	this->texture = new AXTexture("images/tiles/"+filename);
 }
 
 Tile::Tile(const Tile* tile){

@@ -61,6 +61,12 @@ void World::draw(){
 	for(int i = currentOffset.x; i < maxOnScreenX+currentOffset.x; i++){
 		int col = 0;
 		for(int j = currentOffset.y; j < maxOnScreenY+currentOffset.y; j++){
+			//if moused over, give a tint
+			if(i == mousePosition.x && j == mousePosition.y){
+				// SDL_SetTextureAlphaMod(map[i][j]->texture, 50);
+			}else{
+				// SDL_SetTextureAlphaMod(map[i][j]->texture->, 255);
+			}
 			//draw the background
 			AXGraphics::drawTexture(map[i][j]->texture, (row*tilesize), (col*tilesize), tilesize, tilesize);
 			if(map[i][j]->object){
@@ -70,6 +76,7 @@ void World::draw(){
 		}
 		row++; // advance the row draw position
 	}
+	AXGraphics::fill(255, 255, 255, 255);
 	if(selectedObject >= 0){
 		AXGraphics::drawTexture(objects[selectedObject]->texture, (mousePosition.x*tilesize), (mousePosition.y*tilesize), tilesize, tilesize);
 	}
@@ -136,10 +143,6 @@ void World::tick(){
 		//check if we can place and afford
 		if(getMousedTile()->type == objects[selectedObject]->requiredType && !getMousedTile()->object && objects[selectedObject]->cost <= currentMoney){	
 			//update the tile with the selected object
-			//TODO: This is messy, it replaces the under tile with a grass one
-			// Really you should move to all tiles being placeable, and they spawn with objects
-			// delete map[mousePosition.x+currentOffset.x][mousePosition.y+currentOffset.y];
-			// map[mousePosition.x+currentOffset.x][mousePosition.y+currentOffset.y] = new Tile(tiles[0]);
 			getMousedTile()->object = new Object(objects[selectedObject]);
 			//get the incomes from the objects
 			moneyIncome += objects[selectedObject]->money;
@@ -147,6 +150,7 @@ void World::tick(){
 			woodIncome += objects[selectedObject]->wood;
 			//take away the cost
 			currentMoney -= objects[selectedObject]->cost;
+			AXAudio::playAudioChunk(objects[selectedObject]->placeSound);
 			//update the incomes
 			gui->updateResources();
 			//make sure we ain't holding one
@@ -200,7 +204,7 @@ void World::loadObjects(){
 	AXXMLnode objectnode = xml.child("objects");
 	//loop through the "tiles"
 	for (AXXMLnode_iterator it = objectnode.begin(); it != objectnode.end(); ++it){
-		//for each tile, get the ID and filename attributes
+		//for each tile, get the id, costs, wood and food production, or not
 		int id = it->attribute("id").as_int();
 		int food = it->attribute("food").as_int();
 		int cost = it->attribute("cost").as_int();
