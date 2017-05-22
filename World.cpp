@@ -29,6 +29,11 @@ World::World(int tilesize) : tilesize(tilesize){
 	foodIncome = 0;
 	currentWood = 20;
 	woodIncome = 0;
+
+
+	//set the offset
+	currentOffset.x = 14;
+	currentOffset.y = 14;
 	//create the GUI
 	gui = new GUI(this);
 
@@ -219,5 +224,6 @@ Tile* World::getMousedTile(){
 void World::inGameTick(){
 	currentMoney += moneyIncome;
 	currentFood += foodIncome;
+	currentWood += woodIncome;
 	gui->updateResources();
 }
