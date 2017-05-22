@@ -17,13 +17,13 @@ World::World(int tilesize) : tilesize(tilesize){
 	homeSet = false;
 	selectedObject = 0; // the town center
 	//starting resources
-	currentMoney = 400;
+	currentMoney = 700;
 	moneyIncome = 0;
-	currentFood = 20;
+	currentFood = 30;
 	foodIncome = 0;
-	currentWood = 20;
+	currentWood = 30;
 	woodIncome = 0;
-	currentStone = 20;
+	currentStone = 30;
 	stoneIncome = 0;
 
 	//set the offset

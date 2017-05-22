@@ -1,9 +1,9 @@
 <tiles>
 	<!-- Type denotes what objects it can be placed on -->
-	<tile id="0" filename="grass1.png" type="0" description="A small patch of grass." />
-	<tile id="1" filename="grass2.png" type="0" description="A small patch of grass."/>
+	<tile id="0" filename="grass1.png" type="0" description="A small flat patch of grass." />
+	<tile id="1" filename="grass2.png" type="0" description="A small flat patch of grass."/>
 	<tile id="2" filename="rock1.png" type="2" description="An outcrop of stone."/>
-	<tile id="3" filename="tree1.png" type="0" description="A lonely tree."/>
+	<tile id="3" filename="tree1.png" type="0" description="Some flat ground with a lonely tree."/>
 	<tile id="4" filename="tree2.png" type="1" description="A collection of trees."/>
 	<tile id="5" filename="tree3.png" type="1" description="A small forest."/>
 </tiles>

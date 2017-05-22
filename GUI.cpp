@@ -21,8 +21,9 @@ GUI::GUI(World* world) : world(world){
 	//this text is filled when the tile moused over is changed
 	//if either shows the description of the tile or its object
 	descriptionText = nullptr;
-	detailText1 = nullptr;
-	detailText2 = nullptr;
+	detailText1 = nullptr; // describes type requirements
+	detailText2 = nullptr; // describes cost
+	detailText3 = nullptr; // describes production
 
 	//used to remember the last tile moused over, it stops the text rebaking every frame
 	lastTile = nullptr;
@@ -70,24 +71,27 @@ void GUI::tick(Tile* tile){
 				world->selectedObject = objectID; 
 				Object* selected = world->objects[objectID]; // get a temp object
 				//rebake the instruction text
-				instructionText = fontBig->bakeTexture("Click on a tile to place "+selected->name+"!", blackColour);
+				instructionText = fontBig->bakeTexture("Place a "+selected->name+"!", blackColour);
 				//bake the detail1 string, it will say the type it requires
-				detailText1 = fontSmall->bakeTexture("This building requires: "+types[selected->requiredType], blackColour);
+				detailText1 = fontSmall->bakeTexture("Tile Type: "+types[selected->requiredType], blackColour);
 				//create a temporary string to hold the details
 				std::string detailText2String = "Cost: $"+std::to_string(selected->cost);
+				detailText2 = fontSmall->bakeTexture(detailText2String, blackColour);
+				//a string for the production
+				std::string detailText3String = "Produces:";
 				if(selected->food != 0){
-					detailText2String.append(" | Food: "+std::to_string(selected->food));
+					detailText3String.append(" Food: "+std::to_string(selected->food));
 				}
 				if(selected->money != 0){
-					detailText2String.append(" | Money: "+std::to_string(selected->money));
+					detailText3String.append(" Money: "+std::to_string(selected->money));
 				}
 				if(selected->wood != 0){
-					detailText2String.append(" | Wood: "+std::to_string(selected->wood));
+					detailText3String.append(" Wood: "+std::to_string(selected->wood));
 				}
 				if(selected->stone != 0){
-					detailText2String.append(" | Stone: "+std::to_string(selected->stone));
+					detailText3String.append(" Stone: "+std::to_string(selected->stone));
 				}
-				detailText2 = fontSmall->bakeTexture(detailText2String, blackColour);
+				detailText3 = fontSmall->bakeTexture(detailText3String, blackColour);
 				AXAudio::playAudioChunk(pickupSound);
 			}
 		}
@@ -104,13 +108,14 @@ void GUI::draw(){
 		AXGraphics::drawTexture(instructionText, 20, AXWindow::getHeight()-instructionText->getHeight()-80); 
 		if(detailText1 && detailText2){
 			AXGraphics::drawTexture(detailText1, 20, AXWindow::getHeight()-detailText1->getHeight()-50); 
-			AXGraphics::drawTexture(detailText2, 20, AXWindow::getHeight()-detailText2->getHeight()-32); 
+			AXGraphics::drawTexture(detailText2, 20, AXWindow::getHeight()-detailText2->getHeight()-28); 
+			AXGraphics::drawTexture(detailText3, 20, AXWindow::getHeight()-detailText3->getHeight()-6); 
 		}
 	}
 	//if the last tile isn't placeable and there's an object waiting to be placed
 	if(lastTile && world->selectedObject >= 0){
 		if(lastTile->object || world->objects[world->selectedObject]->requiredType != lastTile->type){
-			AXGraphics::drawTexture(cantPlaceText, 20, AXWindow::getHeight()-instructionText->getHeight()-5); 
+			AXGraphics::drawTexture(cantPlaceText, AXWindow::getWidth()/2-cantPlaceText->getWidth()/2, AXWindow::getHeight()-cantPlaceText->getHeight()-90); 
 		}
 	}
 	//if there's no object selected let them pick one
