@@ -75,21 +75,21 @@ void GUI::tick(Tile* tile){
 				//bake the detail1 string, it will say the type it requires
 				detailText1 = fontSmall->bakeTexture("Tile Type: "+types[selected->requiredType], blackColour);
 				//create a temporary string to hold the details
-				std::string detailText2String = "Cost: $"+std::to_string(selected->cost);
+				std::string detailText2String = "Cost | $"+std::to_string(selected->cost);
 				detailText2 = fontSmall->bakeTexture(detailText2String, blackColour);
 				//a string for the production
-				std::string detailText3String = "Produces:";
+				std::string detailText3String = "Produces";
 				if(selected->food != 0){
-					detailText3String.append(" Food: "+std::to_string(selected->food));
+					detailText3String.append(" | Food: "+std::to_string(selected->food));
 				}
 				if(selected->money != 0){
-					detailText3String.append(" Money: "+std::to_string(selected->money));
+					detailText3String.append(" | Money: "+std::to_string(selected->money));
 				}
 				if(selected->wood != 0){
-					detailText3String.append(" Wood: "+std::to_string(selected->wood));
+					detailText3String.append(" | Wood: "+std::to_string(selected->wood));
 				}
 				if(selected->stone != 0){
-					detailText3String.append(" Stone: "+std::to_string(selected->stone));
+					detailText3String.append(" | Stone: "+std::to_string(selected->stone));
 				}
 				detailText3 = fontSmall->bakeTexture(detailText3String, blackColour);
 				AXAudio::playAudioChunk(pickupSound);
