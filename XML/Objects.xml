@@ -1,8 +1,12 @@
 <objects>
 	<!-- requires - the tile type-->
-	<object id="0" name="Town Hall" filename="townhall.png" requires="0" cost="0" food="1" money="1" description="The center of your town."/>
-	<object id="1" name="Small Home" filename="house.png" requires="0" cost="50" food="-1" money="2" description="A small house, it holds a family."/>
-	<object id="2" name="Farmhouse" filename="farm.png" requires="0" cost="100" food="2" money="-1" description="A farmhouse, produces food."/>
-	<object id="3" name="Lumber Yard" filename="lumber.png" requires="1" cost="150" food="2" money="-1" description="A lumber yard, produces wood."/>
-	<object id="4" name="Archery Yard" filename="archer.png" requires="0" cost="300" food="-3" money="-4" description="Where those who use bows train."/>
+	<object id="0" name="Town Hall" filename="townhall.png" requires="0" cost="0" food="1" money="1" wood="0" description="The center of your town."/>
+
+	<object id="1" name="Small Home" filename="house.png" requires="0" cost="50" food="-1" money="2" wood="-1" description="A small house, it holds a family."/>
+
+	<object id="2" name="Farmhouse" filename="farm.png" requires="0" cost="100" food="3" money="-1" wood="-2" description="A farmhouse, produces food."/>
+
+	<object id="3" name="Lumber Yard" filename="lumber.png" requires="1" cost="150" food="-1" money="-1" wood="5" description="A lumber yard, produces wood."/>
+
+	<object id="4" name="Archery Yard" filename="archer.png" requires="0" cost="300" food="-3" money="-4" wood="-2" description="Where those who use bows train."/>
 </objects>

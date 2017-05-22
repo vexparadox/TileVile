@@ -23,6 +23,8 @@ class World{
 	int moneyIncome;
 	int currentFood;
 	int foodIncome;
+	int currentWood;
+	int woodIncome;
 
 
 	//holds all the tiles in a 2D arrayu

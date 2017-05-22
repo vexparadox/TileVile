@@ -27,6 +27,8 @@ World::World(int tilesize) : tilesize(tilesize){
 	moneyIncome = 0;
 	currentFood = 20;
 	foodIncome = 0;
+	currentWood = 20;
+	woodIncome = 0;
 	//create the GUI
 	gui = new GUI(this);
 
@@ -140,6 +142,7 @@ void World::tick(){
 			//get the incomes from the objects
 			moneyIncome += objects[selectedObject]->money;
 			foodIncome += objects[selectedObject]->food;
+			woodIncome += objects[selectedObject]->wood;
 			//take away the cost
 			currentMoney -= objects[selectedObject]->cost;
 			//update the incomes
@@ -199,12 +202,13 @@ void World::loadObjects(){
 		int id = it->attribute("id").as_int();
 		int food = it->attribute("food").as_int();
 		int cost = it->attribute("cost").as_int();
+		int wood = it->attribute("wood").as_int();
 		int requiredType = it->attribute("requires").as_int();
 		int money = it->attribute("money").as_int();
 		std::string filename = it->attribute("filename").as_string();
 		std::string name = it->attribute("name").as_string();
 		std::string description = it->attribute("description").as_string();
-	    objects.push_back(new Object(id, food, money, requiredType, cost, filename, name, description));
+	    objects.push_back(new Object(id, food, money, wood, requiredType, cost, filename, name, description));
 	}
 }
 

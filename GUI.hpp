@@ -12,7 +12,9 @@ class GUI {
 	AXTexture* cantPlaceText; // says that it can't place
 	AXTexture* moneyText; // the current cash
 	AXTexture* foodText; // the current food
-	AXTexture* foodLogo; // the food logo
+	AXTexture* foodIcon; // the food icon
+	AXTexture* woodText; // the current wood
+	AXTexture* woodIcon; // the wood icon
 	AXFont* fontBig;
 	AXFont* fontSmall;
 	World* world;

@@ -16,8 +16,9 @@ GUI::GUI(World* world) : world(world){
 	lastTile = nullptr;
 	detailText1 = nullptr;
 	detailText2 = nullptr;
-	//load the food logo
-	foodLogo = new AXTexture("images/meat.png");
+	//load the resource icons
+	foodIcon = new AXTexture("images/icons/meat.png");
+	woodIcon = new AXTexture("images/icons/wood.png");
 	backgroundIMG = new AXTexture("images/guibackground.png");
 	updateResources();
 }
@@ -50,7 +51,7 @@ void GUI::tick(Tile* tile){
 				//rebake the instruction text
 				instructionText = fontBig->bakeTexture("Click on a tile to place "+world->objects[objectID]->name+"!", blackColour);
 				detailText1 = fontSmall->bakeTexture("This building requires: "+types[world->objects[objectID]->requiredType], blackColour);
-				detailText2 = fontSmall->bakeTexture("Cost: $"+std::to_string(world->objects[objectID]->cost)+" | Food: "+std::to_string(world->objects[objectID]->food)+" | Money: "+std::to_string(world->objects[objectID]->money), blackColour);
+				detailText2 = fontSmall->bakeTexture("Cost: $"+std::to_string(world->objects[objectID]->cost)+" | Food: "+std::to_string(world->objects[objectID]->food)+" | Money: "+std::to_string(world->objects[objectID]->money)+" | Wood: "+std::to_string(world->objects[objectID]->wood), blackColour);
 			}
 		}
 		lastObjectID = objectID;
@@ -85,9 +86,17 @@ void GUI::draw(){
 	}
 
 	//show the resources
-	AXGraphics::drawTexture(moneyText, AXWindow::getWidth()-moneyText->getWidth()-20, AXWindow::getHeight()-moneyText->getHeight()-30); 
-	AXGraphics::drawTexture(foodLogo, AXWindow::getWidth()-foodText->getWidth()-45, AXWindow::getHeight()-foodText->getHeight()-35-moneyText->getHeight(), 24, 24); 
-	AXGraphics::drawTexture(foodText, AXWindow::getWidth()-foodText->getWidth()-20, AXWindow::getHeight()-foodText->getHeight()-40-moneyText->getHeight()-1); 
+	//The money text
+	AXGraphics::drawTexture(moneyText, AXWindow::getWidth()-moneyText->getWidth()-135, AXWindow::getHeight()-moneyText->getHeight()-80); 
+	//the food logo
+	AXGraphics::drawTexture(foodIcon, AXWindow::getWidth()-foodText->getWidth()-45, AXWindow::getHeight()-foodText->getHeight()-75, 24, 24); 
+	//the food text
+	AXGraphics::drawTexture(foodText, AXWindow::getWidth()-foodText->getWidth()-20, AXWindow::getHeight()-foodText->getHeight()-80); 
+	//the wood icon
+	AXGraphics::drawTexture(woodIcon, AXWindow::getWidth()-woodText->getWidth()-60, AXWindow::getHeight()-woodText->getHeight()-40, 48, 48); 
+	//the wood text
+	AXGraphics::drawTexture(woodText, AXWindow::getWidth()-woodText->getWidth()-20, AXWindow::getHeight()-woodText->getHeight()-30); 
+
 }
 
 int GUI::whichObjectMousedOver(){
@@ -146,4 +155,5 @@ bool GUI::isMouseOverGUI(){
 void GUI::updateResources(){
 	moneyText = fontBig->bakeTexture("$"+std::to_string(world->currentMoney)+"(+"+std::to_string(world->moneyIncome)+")", blackColour);
 	foodText = fontBig->bakeTexture(std::to_string(world->currentFood)+"(+"+std::to_string(world->foodIncome)+")", blackColour);
+	woodText = fontBig->bakeTexture(std::to_string(world->currentWood)+"(+"+std::to_string(world->woodIncome)+")", blackColour);
 }
