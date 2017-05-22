@@ -79,11 +79,11 @@ void GUI::tick(Tile* tile){
 				detailText2 = fontSmall->bakeTexture(detailText2String, blackColour);
 				//a string for the production
 				std::string detailText3String = "Produces";
+				if(selected->money != 0){
+					detailText3String.append(" | $"+std::to_string(selected->money));
+				}
 				if(selected->food != 0){
 					detailText3String.append(" | Food: "+std::to_string(selected->food));
-				}
-				if(selected->money != 0){
-					detailText3String.append(" | Money: "+std::to_string(selected->money));
 				}
 				if(selected->wood != 0){
 					detailText3String.append(" | Wood: "+std::to_string(selected->wood));
@@ -107,9 +107,9 @@ void GUI::draw(){
 		//the instruction text tells em
 		AXGraphics::drawTexture(instructionText, 20, AXWindow::getHeight()-instructionText->getHeight()-80); 
 		if(detailText1 && detailText2){
-			AXGraphics::drawTexture(detailText1, 20, AXWindow::getHeight()-detailText1->getHeight()-50); 
-			AXGraphics::drawTexture(detailText2, 20, AXWindow::getHeight()-detailText2->getHeight()-28); 
-			AXGraphics::drawTexture(detailText3, 20, AXWindow::getHeight()-detailText3->getHeight()-6); 
+			AXGraphics::drawTexture(detailText1, 20, AXWindow::getHeight()-detailText1->getHeight()-55); 
+			AXGraphics::drawTexture(detailText2, 20, AXWindow::getHeight()-detailText2->getHeight()-32); 
+			AXGraphics::drawTexture(detailText3, 20, AXWindow::getHeight()-detailText3->getHeight()-12); 
 		}
 	}
 	//if the last tile isn't placeable and there's an object waiting to be placed
