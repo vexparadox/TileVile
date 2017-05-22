@@ -128,9 +128,6 @@ void World::tick(){
 		mousePosition.y = maxOnScreenY-1;
 	}
 
-	if(AXInput::getValue("ESC") && homeSet){
-		selectedObject = -1;
-	}
 
 	//place the object selected IF
 	// the mouse is pressed
@@ -210,10 +207,16 @@ void World::loadObjects(){
 		int wood = it->attribute("wood").as_int();
 		int requiredType = it->attribute("requires").as_int();
 		int money = it->attribute("money").as_int();
+
 		std::string filename = it->attribute("filename").as_string();
+
+		std::string placeSoundFilename = "audio/placesounds/";
+		placeSoundFilename.append(it->attribute("placeSound").as_string());
+		AXAudioChunk* placeSound = new AXAudioChunk(placeSoundFilename);
+
 		std::string name = it->attribute("name").as_string();
 		std::string description = it->attribute("description").as_string();
-	    objects.push_back(new Object(id, food, money, wood, requiredType, cost, filename, name, description));
+	    objects.push_back(new Object(id, food, money, wood, requiredType, cost, filename, placeSound, name, description));
 	}
 }
 

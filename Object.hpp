@@ -5,8 +5,9 @@ class Object{
 public:
 	int id, money, food, wood, cost, requiredType;
 	AXTexture* texture;
+	AXAudioChunk* placeSound; // played when placed
 	std::string description, name;
-	Object(int id, int food, int money, int wood, int requiredType, int cost, const std::string& filename, const std::string& name, const std::string& description);
+	Object(int id, int food, int money, int wood, int requiredType, int cost, const std::string& filename, AXAudioChunk* placeSound, const std::string& name, const std::string& description);
 	Object(const Object* other);
 };
 #endif

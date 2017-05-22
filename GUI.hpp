@@ -19,6 +19,10 @@ class GUI {
 	AXFont* fontSmall;
 	World* world;
 	Tile* lastTile;
+
+	//Audio
+	AXAudioChunk* pickupSound; // played when the user selects and object
+	AXAudioChunk* cancelPickupSound; // played when the user cancels
 	AXColour blackColour;
 	int lastObjectID;
 	bool onGUI; // if the mouse is over the GUI or not

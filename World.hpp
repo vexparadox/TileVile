@@ -26,7 +26,6 @@ class World{
 	int currentWood;
 	int woodIncome;
 
-
 	//holds all the tiles in a 2D arrayu
 	std::vector<std::vector<Tile*>> map;
 	//this is the tiles that are available, the map is copies of theses

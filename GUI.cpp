@@ -1,21 +1,31 @@
 #include "GUI.hpp"
 #include "World.hpp"
 GUI::GUI(World* world) : world(world){
+	//load in the two fonts
 	fontBig = new AXFont("font/Ayuthaya.ttf", 22);
 	fontSmall = new AXFont("font/Ayuthaya.ttf", 14);
+	//load pickup sound
+	pickupSound = new AXAudioChunk("audio/pickupsound.wav");
+	cancelPickupSound = new AXAudioChunk("audio/cancelpickupsound.wav");
+	//black colour for text rendering
 	blackColour = AXColour(0, 0, 0);
+	//the types, this shouldn't really be hard coded
 	types.push_back("Flat Land");
 	types.push_back("Wooded Area");
+	//the initial instructions
 	instructionText = fontBig->bakeTexture("Click on a tile to place your town hall!", blackColour);
+	//this text is the same
 	cantPlaceText = fontSmall->bakeTexture("You can't place that here.", blackColour);
+
 	//this text is filled when the tile moused over is changed
 	//if either shows the description of the tile or its object
 	descriptionText = nullptr;
+	detailText1 = nullptr;
+	detailText2 = nullptr;
 
 	//used to remember the last tile moused over, it stops the text rebaking every frame
 	lastTile = nullptr;
-	detailText1 = nullptr;
-	detailText2 = nullptr;
+	
 	//load the resource icons
 	foodIcon = new AXTexture("images/icons/meat.png");
 	woodIcon = new AXTexture("images/icons/wood.png");
@@ -25,6 +35,13 @@ GUI::GUI(World* world) : world(world){
 
 void GUI::tick(Tile* tile){
 	onGUI = isMouseOverGUI();
+
+	//let the user cancel their pickup
+	if(AXInput::getValue("ESC") && world->homeSet && world->selectedObject >= 0){
+		world->selectedObject = -1;
+		AXAudio::playAudioChunk(cancelPickupSound);
+	}
+
 	// if the tile has changed
 	// rebake the strings
 	if(tile != lastTile && !onGUI){
@@ -52,6 +69,7 @@ void GUI::tick(Tile* tile){
 				instructionText = fontBig->bakeTexture("Click on a tile to place "+world->objects[objectID]->name+"!", blackColour);
 				detailText1 = fontSmall->bakeTexture("This building requires: "+types[world->objects[objectID]->requiredType], blackColour);
 				detailText2 = fontSmall->bakeTexture("Cost: $"+std::to_string(world->objects[objectID]->cost)+" | Food: "+std::to_string(world->objects[objectID]->food)+" | Money: "+std::to_string(world->objects[objectID]->money)+" | Wood: "+std::to_string(world->objects[objectID]->wood), blackColour);
+				AXAudio::playAudioChunk(pickupSound);
 			}
 		}
 		lastObjectID = objectID;
