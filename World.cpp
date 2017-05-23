@@ -279,10 +279,10 @@ int World::getTownSize(){
 		allowedHomeDistance = 5;
 		return 0;
 	}else if(currentPop > 60 && currentPop <= 250){
-		allowedHomeDistance = 10;
+		allowedHomeDistance = 8;
 		return 1;
 	}else if(currentPop > 250 && currentPop <= 600){
-		allowedHomeDistance = 25;
+		allowedHomeDistance = 20;
 		return 2;
 	}else if(currentPop > 600){
 		allowedHomeDistance = 100;

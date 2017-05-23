@@ -1,6 +1,6 @@
 <objects>
 	<!-- requires - the tile type-->
-	<object id="0" name="Town Hall" filename="townhall.png" placeSound="townhall.wav" requires="0" pop="10" cost="0" food="1" money="1" wood="0" stone="0" description="The center of your town, strong and stable."/>
+	<object id="0" name="Town Hall" filename="townhall.png" placeSound="townhall.wav" requires="0" pop="10" cost="0" food="0" money="-1" wood="0" stone="0" description="The center of your town, strong and stable."/>
 
 	<object id="1" name="Small Home" filename="house.png" placeSound="house.wav" requires="0" pop="5" cost="50" food="-1" money="5" wood="-1" stone="0" description="A small house, it holds a family."/>
 

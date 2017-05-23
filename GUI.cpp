@@ -331,7 +331,7 @@ void GUI::bakeObjectInfoStrings(int objectID, bool placing){
 	std::string detailText2String = "Cost | $"+std::to_string(selected->cost);
 	detailText2 = fontSmall->bakeTexture(detailText2String, blackColour);
 	//a string for the production
-	std::string detailText3String = "Produces";
+	std::string detailText3String = "Per Tick";
 	if(selected->money != 0){
 		detailText3String.append(" | $"+std::to_string(selected->money));
 	}
