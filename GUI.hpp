@@ -19,6 +19,7 @@ class GUI {
 	AXTexture* woodIcon; // the wood icon
 	AXTexture* stoneText; //the current stone
 	AXTexture* stoneIcon; // the stone icon
+	AXTexture* deleteIcon; // the delete icon
 	AXFont* fontBig;
 	AXFont* fontSmall;
 	World* world;

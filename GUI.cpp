@@ -37,12 +37,13 @@ GUI::GUI(World* world) : world(world){
 	foodText = nullptr;
 	woodText = nullptr; 
 	stoneText = nullptr;
-
 	
 	//load the resource icons
 	foodIcon = new AXTexture("images/icons/meat.png");
 	woodIcon = new AXTexture("images/icons/wood.png");
 	stoneIcon = new AXTexture("images/icons/stone.png");
+	//used when deleting
+	deleteIcon = new AXTexture("images/icons/delete.png");
 	//the background to the gui
 	backgroundIMG = new AXTexture("images/guibackground.png");
 	updateResources();
@@ -86,9 +87,10 @@ void GUI::tick(Tile* tile){
 		}
 	}
 
-	//delete the currently selected
-	if(AXInput::getValue("T") && lastTileSelected){
-		world->deleteObject();
+	if(lastTileSelected){
+		if(AXInput::getValue("MB1") && AXMath::isInsideQuad(AXInput::mouseX, AXInput::mouseY, AXWindow::getWidth()/2-32, AXWindow::getHeight()-80, AXWindow::getWidth()/2+32, AXWindow::getHeight()-16)){
+			world->deleteObject();
+		}
 	}
 
 	//if the user has nothing selected
@@ -111,7 +113,6 @@ void GUI::tick(Tile* tile){
 		}
 		lastObjectID = objectID;
 	}
-	
 }
 
 void GUI::draw(){
@@ -136,6 +137,16 @@ void GUI::draw(){
 			AXGraphics::drawTexture(cantPlaceText, AXWindow::getWidth()/2-cantPlaceText->getWidth()/2, AXWindow::getHeight()-cantPlaceText->getHeight()-90); 
 		}
 	}
+
+
+	//show the delete symbol if you can delete
+	if(world->selectedTile){
+		//you can't delete the townhall
+		if(world->selectedTile->object->id != 0){
+			AXGraphics::drawTexture(deleteIcon, AXWindow::getWidth()/2-32, AXWindow::getHeight()-80, 64, 64); 
+		}
+	}
+
 	//if there's no object or tile selected show the object selection
 	if(world->selectedObject < 0 && !world->selectedTile){
 		drawObjectSelect();
@@ -264,7 +275,12 @@ void GUI::bakeObjectInfoStrings(int objectID, bool placing){
 	if(placing){
 		detailText1 = fontSmall->bakeTexture("Tile Type: "+types[selected->requiredType], blackColour);
 	}else{
-		detailText1 = fontSmall->bakeTexture("Press 'T' to delete this object, you'll get $"+std::to_string((int)selected->cost/2), blackColour);
+		//YOU CANT DELETE THE TOWN HALL
+		if(objectID == 0){
+			detailText1 = fontSmall->bakeTexture("You can't delete the Town Hall.", blackColour);
+		}else{
+			detailText1 = fontSmall->bakeTexture("If you destroy this, you'll get $"+std::to_string((int)selected->cost/2), blackColour);
+		}
 	}
 	//create a temporary string to hold the details
 	std::string detailText2String = "Cost | $"+std::to_string(selected->cost);
