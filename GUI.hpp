@@ -33,7 +33,7 @@ class GUI {
 	//Audio
 	AXAudioChunk* pickupSound; // played when the user selects and object
 	AXAudioChunk* cancelPickupSound; // played when the user cancels
-	AXColour blackColour;
+	AXColour blackColour, redColour;
 	int lastObjectID;
 	//draws the grid of objects users can pick from
 	void drawObjectSelect();

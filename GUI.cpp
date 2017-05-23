@@ -11,6 +11,8 @@ GUI::GUI(World* world) : world(world){
 	destructionSound = new AXAudioChunk("audio/cancelpickupsound.wav");
 	//black colour for text rendering
 	blackColour = AXColour(0, 0, 0);
+	//red colour
+	redColour = AXColour(255, 0, 0);
 	//the types, this shouldn't really be hard coded
 	types.push_back("Flat Land");
 	types.push_back("Wooded Area");
@@ -266,30 +268,35 @@ bool GUI::isMouseOverGUI(){
 void GUI::updateResources(){
 	delete moneyText;
 	if(world->moneyIncome < 0){
-		moneyText = fontBig->bakeTexture("$"+std::to_string(world->currentMoney)+"("+std::to_string(world->moneyIncome)+")", blackColour);
+		moneyText = fontBig->bakeTexture("$"+std::to_string(world->currentMoney)+"("+std::to_string(world->moneyIncome)+")", redColour);
 	}else{
 		moneyText = fontBig->bakeTexture("$"+std::to_string(world->currentMoney)+"(+"+std::to_string(world->moneyIncome)+")", blackColour);
 	}
 	delete foodText;
 	if(world->foodIncome < 0){
-		foodText = fontBig->bakeTexture(std::to_string(world->currentFood)+"("+std::to_string(world->foodIncome)+")", blackColour);
+		foodText = fontBig->bakeTexture(std::to_string(world->currentFood)+"("+std::to_string(world->foodIncome)+")", redColour);
 	}else{
 		foodText = fontBig->bakeTexture(std::to_string(world->currentFood)+"(+"+std::to_string(world->foodIncome)+")", blackColour);
 	}
 	delete woodText;
 	if(world->woodIncome < 0){
-		woodText = fontBig->bakeTexture(std::to_string(world->currentWood)+"("+std::to_string(world->woodIncome)+")", blackColour);
+		woodText = fontBig->bakeTexture(std::to_string(world->currentWood)+"("+std::to_string(world->woodIncome)+")", redColour);
 	}else{
 		woodText = fontBig->bakeTexture(std::to_string(world->currentWood)+"(+"+std::to_string(world->woodIncome)+")", blackColour);
 	}
 	delete stoneText;
 	if(world->stoneIncome < 0){
-		stoneText = fontBig->bakeTexture(std::to_string(world->currentStone)+"("+std::to_string(world->stoneIncome)+")", blackColour);
+		stoneText = fontBig->bakeTexture(std::to_string(world->currentStone)+"("+std::to_string(world->stoneIncome)+")", redColour);
 	}else{
 		stoneText = fontBig->bakeTexture(std::to_string(world->currentStone)+"(+"+std::to_string(world->stoneIncome)+")", blackColour);
 	}
 	delete popText;
-	popText = fontBig->bakeTexture(std::to_string(world->currentPop), blackColour);
+	//if there's not enough food, show that people die
+	if(world->currentFood < 0){
+		popText = fontBig->bakeTexture(std::to_string(world->currentPop)+"(-2)", redColour);
+	}else{
+		popText = fontBig->bakeTexture(std::to_string(world->currentPop), blackColour);
+	}
 }
 
 

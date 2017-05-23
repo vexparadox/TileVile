@@ -6,6 +6,7 @@
 #include "GUI.hpp"
 #include <random>
 #include <vector>
+extern int gameState;
 class World{
 	friend class GUI;
 	//the width and height of the map vector
@@ -65,7 +66,7 @@ class World{
 	void inGameTick();
 
 	void placeObject();
-	//returns the townsize
+	//returns the townsize and sets the allowed home distance
 	int getTownSize();
 	//deletes the currently selected object off a tile
 	void deleteObject();

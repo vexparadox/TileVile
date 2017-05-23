@@ -28,7 +28,7 @@ World::World(int tilesize) : tilesize(tilesize){
 	currentPop = 0;
 	townSize = 0;
 	//set the allowed home distance
-	allowedHomeDistance = 5;
+	allowedHomeDistance = 6;
 
 	//set the offset
 	currentOffset.x = 14;
@@ -272,13 +272,20 @@ void World::deleteObject(){
 }
 
 int World::getTownSize(){
-	if(currentPop > 0 && currentPop <= 60){
+	if(currentPop < 0){
+		gameState = 0;
+		return 0;
+	}else if(currentPop > 0 && currentPop <= 60){
+		allowedHomeDistance = 6;
 		return 0;
 	}else if(currentPop > 60 && currentPop <= 400){
+		allowedHomeDistance = 15;
 		return 1;
 	}else if(currentPop > 400 && currentPop <= 800){
+		allowedHomeDistance = 25;
 		return 2;
 	}else if(currentPop > 800){
+		allowedHomeDistance = 100;
 		return 3;
 	}
 	return 3;
@@ -293,5 +300,9 @@ void World::inGameTick(){
 	currentFood += foodIncome;
 	currentWood += woodIncome;
 	currentStone += stoneIncome;
+	//people die with no food
+	if(currentFood < 0){
+		currentPop -= 2;
+	}
 	gui->updateResources();
 }
