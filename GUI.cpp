@@ -22,11 +22,6 @@ GUI::GUI(World* world) : world(world){
 	townsizes.push_back("A humble village");
 	townsizes.push_back("A worthy town");
 	townsizes.push_back("A growing city");
-	//the initial instructions
-	//this text is the same
-	cantPlaceText = fontSmall->bakeTexture("You can't place that here.", blackColour);
-	tooFarText = fontSmall->bakeTexture("You're too far away from your Town Hall.", blackColour);
-
 
 	//the townsize text
 	townNameText = nullptr;
@@ -87,6 +82,8 @@ void GUI::tick(Tile* tile){
 			//get the input on the numbers
 			if(AXInput::getValue(std::to_string(i))){
 				world->selectedObject = i;
+				bakeObjectInfoStrings(i, true); // bake the info strings
+				AXAudio::playAudioChunk(pickupSound); // play the pickup sound
 				break;
 			}
 		}
@@ -161,17 +158,6 @@ void GUI::draw(){
 		}
 	}
 
-	//if we're over a tile and there's something selected
-	if(lastTileHovered && world->selectedObject >= 0){
-		//if there's an object already on the tile or the tile is the wrong type or it's too far away (and the home is set)
-		//display the can't place text
-		if((AXMath::absolute(world->homeDistance.x) > world->allowedHomeDistance || AXMath::absolute(world->homeDistance.y) > world->allowedHomeDistance) && world->homeSet){
-			AXGraphics::drawTexture(tooFarText, AXWindow::getWidth()/2-tooFarText->getWidth()/2, AXWindow::getHeight()-tooFarText->getHeight()-90); 
-		}else if(lastTileHovered->object || world->objects[world->selectedObject]->requiredType != lastTileHovered->type){
-			AXGraphics::drawTexture(cantPlaceText, AXWindow::getWidth()/2-cantPlaceText->getWidth()/2, AXWindow::getHeight()-cantPlaceText->getHeight()-90); 
-		}
-	}
-
 	//show the delete symbol if you can delete and an object is selected
 	if(world->selectedTile){
 		//you can't delete the townhall
@@ -183,9 +169,12 @@ void GUI::draw(){
 	//if there's no object or tile selected show the object selection
 	if(world->selectedObject < 0 && !world->selectedTile){
 		drawObjectSelect();
-		AXGraphics::drawTexture(townNameText, (AXWindow::getWidth()/2)-(townNameText->getWidth()/2), AXWindow::getHeight()-townNameText->getHeight()-45); 	
 	}
 
+	//show the town name text
+	if(townNameText){
+		AXGraphics::drawTexture(townNameText, (AXWindow::getWidth()/2)-(townNameText->getWidth()/2), AXWindow::getHeight()-townNameText->getHeight()-45); 	
+	}
 	//show the description text
 	if(descriptionText){
 		AXGraphics::drawTexture(descriptionText, AXWindow::getWidth()-descriptionText->getWidth()-20, AXWindow::getHeight()-descriptionText->getHeight()-10); 
@@ -357,19 +346,23 @@ void GUI::bakeTownText(){
 
 GUI::~GUI(){
 	//delete all the shit
-	delete backgroundIMG; // background image for the GUI
-	delete instructionText; // used to give instructions
-	delete detailText1; // used to give instructions
-	delete detailText2; // used to give instructions
-	delete descriptionText; // used to describe what the user is hovering over
-	delete cantPlaceText; // says that it can't place
-	delete moneyText; // the current cash
-	delete foodText; // the current food
-	delete foodIcon; // the food icon
-	delete woodText; // the current wood
-	delete woodIcon; // the wood icon
-	delete stoneText; //the current stone
-	delete stoneIcon; // the stone icon
+	delete backgroundIMG;
+	delete instructionText;
+	delete detailText1;
+	delete detailText2;
+	delete detailText3;
+	delete descriptionText;
+	delete townNameText;
+	delete moneyText;
+	delete foodText;
+	delete foodIcon;
+	delete woodText;
+	delete woodIcon;
+	delete stoneText;
+	delete stoneIcon;
+	delete deleteIcon;
+	delete popText;
+	delete popIcon;
 	delete fontBig;
 	delete fontSmall;
 	delete pickupSound;

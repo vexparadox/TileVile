@@ -17,13 +17,13 @@ World::World(int tilesize) : tilesize(tilesize){
 	homeSet = false;
 	selectedObject = 0; // the town center
 	//starting resources
-	currentMoney = 700;
+	currentMoney = 500;
 	moneyIncome = 0;
-	currentFood = 30;
+	currentFood = 15;
 	foodIncome = 0;
-	currentWood = 30;
+	currentWood = 20;
 	woodIncome = 0;
-	currentStone = 30;
+	currentStone = 20;
 	stoneIncome = 0;
 	currentPop = 0;
 	townSize = 0;
@@ -91,9 +91,18 @@ void World::draw(){
 				}
 			}
 
-
+			//mouse over!
 			if(i == mousePosition.x+currentOffset.x && j == mousePosition.y+currentOffset.y && !gui->onGUI){
-				AXGraphics::fill(0, 255, 0, 100);
+				if(selectedObject >= 0){
+					//if it's placeable, make it red!
+					if(objects[selectedObject]->requiredType != map[i][j]->type || map[i][j]->object){
+						AXGraphics::fill(255, 0, 0, 200);
+					}else{
+						AXGraphics::fill(0, 255, 0, 150);
+					}
+				}else{
+					AXGraphics::fill(0, 255, 0, 100);
+				}
 				AXGraphics::drawRect((row*tilesize), (col*tilesize), tilesize, tilesize);
 			}
 
@@ -113,25 +122,25 @@ void World::draw(){
 void World::tick(){
 	// move the player, it will be corrected later
 	// this uses step movement
-	if(AXInput::getValue("A")){
+	if(AXInput::getValue("A") || AXInput::getValue("LEFT")){
 		if(currentOffset.x != 0){
 			currentOffset.x--;
 		}
 	}
 
-	if(AXInput::getValue("D")){
+	if(AXInput::getValue("D") || AXInput::getValue("RIGHT")){
 		if(maxOnScreenX+currentOffset.x < width){
 			currentOffset.x++;
 		}
 	}
 
-	if(AXInput::getValue("W")){
+	if(AXInput::getValue("W") || AXInput::getValue("UP")){
 		if(currentOffset.y != 0){
 			currentOffset.y--;
 		}
 	}
 
-	if(AXInput::getValue("S")){
+	if(AXInput::getValue("S") || AXInput::getValue("DOWN")){
 		if(maxOnScreenY+currentOffset.y < height){
 			currentOffset.y++;
 		}

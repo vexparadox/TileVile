@@ -12,8 +12,6 @@ class GUI {
 	AXTexture* detailText3; // used to give instructions
 	AXTexture* descriptionText; // used to describe what the user is selecting
 	AXTexture* townNameText; // used to describe the size of the town
-	AXTexture* cantPlaceText; // says that it can't place
-	AXTexture* tooFarText; // says that it can't place because it's too far away
 	AXTexture* moneyText; // the current cash
 	AXTexture* foodText; // the current food
 	AXTexture* foodIcon; // the food icon
