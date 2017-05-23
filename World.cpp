@@ -67,6 +67,15 @@ void World::draw(){
 				AXGraphics::drawTexture(map[i][j]->object->texture, (row*tilesize), (col*tilesize), tilesize, tilesize);
 			}
 
+
+			//if currently selected, highlight it
+			if(selectedTile){
+				if(selectedTile == map[i][j]){
+					AXGraphics::fill(0, 255, 0, 50);
+					AXGraphics::drawRect((row*tilesize), (col*tilesize), tilesize, tilesize);
+				}
+			}
+
 			//if the home has been set, and you're placing
 			//cover the area you can't place
 			if(homeSet && selectedObject > 0){
@@ -171,6 +180,8 @@ void World::tick(){
 			//if you have nothing selected
 			if(getMousedTile()->object){
 				selectedTile = getMousedTile();
+			}else{
+				selectedTile = nullptr;
 			}
 		}
 	}
