@@ -26,7 +26,7 @@ World::World(int tilesize) : tilesize(tilesize){
 	currentStone = 30;
 	stoneIncome = 0;
 	//set the allowed home distance
-	allowedHomeDistance = 8;
+	allowedHomeDistance = 5;
 
 	//set the offset
 	currentOffset.x = 14;
@@ -69,11 +69,17 @@ void World::draw(){
 
 			//if the home has been set, and you're placing
 			//cover the area you can't place
-			if(homeSet && selectedObject >= 0){
+			if(homeSet && selectedObject > 0){
 				if(AXMath::absolute(i-homePosition.x) > allowedHomeDistance || AXMath::absolute(j-homePosition.y) > allowedHomeDistance){
 					AXGraphics::fill(255, 0, 0, 150);
 					AXGraphics::drawRect((row*tilesize), (col*tilesize), tilesize, tilesize);
 				}			
+			}else if(selectedObject == 0){
+				//else if the home hasn't been set, show the workable area for the townhall
+				if(AXMath::absolute(i-(mousePosition.x+currentOffset.x)) <= allowedHomeDistance && AXMath::absolute(j-(mousePosition.y+currentOffset.y)) <= allowedHomeDistance){
+					AXGraphics::fill(0, 255, 0, 100);
+					AXGraphics::drawRect((row*tilesize), (col*tilesize), tilesize, tilesize);
+				}
 			}
 
 
