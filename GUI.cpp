@@ -103,7 +103,7 @@ void GUI::draw(){
 			AXGraphics::drawTexture(detailText3, 20, AXWindow::getHeight()-detailText3->getHeight()-12); 
 		}
 	}
-	//if the last tile isn't placeable and there's an object waiting to be placed
+	//if we're over a tile and there's something selected
 	if(lastTile && world->selectedObject >= 0){
 		//if there's an object already on the tile or the tile is the wrong type or it's too far away (and the home is set)
 		//display the can't place text

@@ -135,26 +135,13 @@ void World::tick(){
 		if(getMousedTile()->type == objects[selectedObject]->requiredType 
 			&& !getMousedTile()->object 
 			&& objects[selectedObject]->cost <= currentMoney){
-
+			//if the home has been set check the distance
 			if(homeSet){
 				if(AXMath::absolute(homeDistance.x) <= allowedHomeDistance && AXMath::absolute(homeDistance.y) <= allowedHomeDistance){
-					//update the tile with the selected object
-					getMousedTile()->object = new Object(objects[selectedObject]);
-					//get the incomes from the objects
-					moneyIncome += objects[selectedObject]->money;
-					foodIncome += objects[selectedObject]->food;
-					woodIncome += objects[selectedObject]->wood;
-					stoneIncome += objects[selectedObject]->stone;
-					//take away the cost
-					currentMoney -= objects[selectedObject]->cost;
-					AXAudio::playAudioChunk(objects[selectedObject]->placeSound);
-					//update the incomes
-					gui->updateResources();
-					//make sure we ain't holding one
-					selectedObject = -1;
-					//if placing and there's no home set, we can assume this is the home being set
+					placeObject();
 				}
 			}else{
+				placeObject();
 				homePosition = AXVector2D(mousePosition.x+currentOffset.x, mousePosition.y+currentOffset.y);
 				homeSet = true;
 			}
@@ -222,6 +209,23 @@ void World::loadObjects(){
 		std::string description = it->attribute("description").as_string();
 	    objects.push_back(new Object(id, food, money, wood, stone, requiredType, cost, filename, placeSound, name, description));
 	}
+}
+
+void World::placeObject(){
+	//update the tile with the selected object
+	getMousedTile()->object = new Object(objects[selectedObject]);
+	//get the incomes from the objects
+	moneyIncome += objects[selectedObject]->money;
+	foodIncome += objects[selectedObject]->food;
+	woodIncome += objects[selectedObject]->wood;
+	stoneIncome += objects[selectedObject]->stone;
+	//take away the cost
+	currentMoney -= objects[selectedObject]->cost;
+	AXAudio::playAudioChunk(objects[selectedObject]->placeSound);
+	//update the incomes
+	gui->updateResources();
+	//turn it so we're not holding it anymore
+	selectedObject = -1;
 }
 
 Tile* World::getMousedTile(){

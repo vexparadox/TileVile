@@ -56,6 +56,8 @@ class World{
 	//returns the tile pointer to the tile the mouse is over
 	Tile* getMousedTile();
 	void inGameTick();
+
+	void placeObject();
 public:
 	~World();
 	World(int tilesize);
