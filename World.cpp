@@ -28,7 +28,7 @@ World::World(int tilesize) : tilesize(tilesize){
 	currentPop = 0;
 	townSize = 0;
 	//set the allowed home distance
-	allowedHomeDistance = 6;
+	allowedHomeDistance = 5;
 
 	//set the offset
 	currentOffset.x = 14;
@@ -276,15 +276,15 @@ int World::getTownSize(){
 		gameState = 0;
 		return 0;
 	}else if(currentPop > 0 && currentPop <= 60){
-		allowedHomeDistance = 6;
+		allowedHomeDistance = 5;
 		return 0;
-	}else if(currentPop > 60 && currentPop <= 400){
-		allowedHomeDistance = 15;
+	}else if(currentPop > 60 && currentPop <= 250){
+		allowedHomeDistance = 10;
 		return 1;
-	}else if(currentPop > 400 && currentPop <= 800){
+	}else if(currentPop > 250 && currentPop <= 600){
 		allowedHomeDistance = 25;
 		return 2;
-	}else if(currentPop > 800){
+	}else if(currentPop > 600){
 		allowedHomeDistance = 100;
 		return 3;
 	}

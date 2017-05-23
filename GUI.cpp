@@ -322,7 +322,7 @@ void GUI::bakeObjectInfoStrings(int objectID, bool placing){
 	}else{
 		//YOU CANT DELETE THE TOWN HALL
 		if(objectID == 0){
-			detailText1 = fontSmall->bakeTexture("You can't delete the Town Hall.", blackColour);
+			detailText1 = fontSmall->bakeTexture("This building gives you "+std::to_string(world->allowedHomeDistance)+" tiles to build on.", blackColour);
 		}else{
 			detailText1 = fontSmall->bakeTexture("If you destroy this, you'll get $"+std::to_string((int)selected->cost/2), blackColour);
 		}
