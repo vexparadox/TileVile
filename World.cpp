@@ -26,6 +26,7 @@ World::World(int tilesize) : tilesize(tilesize){
 	currentStone = 30;
 	stoneIncome = 0;
 	currentPop = 0;
+	townSize = 0; 
 	//set the allowed home distance
 	allowedHomeDistance = 5;
 
