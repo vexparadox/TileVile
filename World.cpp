@@ -35,6 +35,9 @@ World::World(int tilesize) : tilesize(tilesize){
 	//set how many can be on screen at once
 	maxOnScreenX = AXWindow::getWidth()/tilesize;
 	maxOnScreenY = (AXWindow::getHeight()/tilesize)-2;
+	selectedTile = nullptr;
+
+	mouseClicked = false;
 
 	//load tiles in
 	loadTiles();
@@ -124,28 +127,38 @@ void World::tick(){
 		homeDistance.y = homePosition.y - (mousePosition.y+currentOffset.y);
 	}
 
-	//place the object selected IF
-	// the mouse is pressed
-	// and the mouse is on the tiles
-	if(selectedObject >= 0 && AXInput::getValue("MB1") && AXInput::mouseY < maxOnScreenY*tilesize){
-		//check if the type is correct
-		//if there's already an object
-		//if we can afford
-		//and we're close enough to the home
-		if(getMousedTile()->type == objects[selectedObject]->requiredType 
-			&& !getMousedTile()->object 
-			&& objects[selectedObject]->cost <= currentMoney){
-			//if the home has been set check the distance
-			if(homeSet){
-				if(AXMath::absolute(homeDistance.x) <= allowedHomeDistance && AXMath::absolute(homeDistance.y) <= allowedHomeDistance){
+
+	// if the mouse is pressed on the map
+	if(AXInput::getValue("MB1") && AXInput::mouseY < maxOnScreenY*tilesize && !mouseClicked){
+		mouseClicked = true;
+		if(selectedObject >= 0){
+			//check if the type is correct
+			//if there's already an object
+			//if we can afford
+			//and we're close enough to the home
+			if(getMousedTile()->type == objects[selectedObject]->requiredType 
+				&& !getMousedTile()->object 
+				&& objects[selectedObject]->cost <= currentMoney){
+				//if the home has been set check the distance
+				if(homeSet){
+					if(AXMath::absolute(homeDistance.x) <= allowedHomeDistance && AXMath::absolute(homeDistance.y) <= allowedHomeDistance){
+						placeObject();
+					}
+				}else{
 					placeObject();
+					homePosition = AXVector2D(mousePosition.x+currentOffset.x, mousePosition.y+currentOffset.y);
+					homeSet = true;
 				}
-			}else{
-				placeObject();
-				homePosition = AXVector2D(mousePosition.x+currentOffset.x, mousePosition.y+currentOffset.y);
-				homeSet = true;
+			}
+		}else{
+			//if you have nothing selected
+			if(getMousedTile()->object){
+				selectedTile = getMousedTile();
 			}
 		}
+	}
+	if(!AXInput::getValue("MB1") && mouseClicked){
+		mouseClicked = false;
 	}
 
 	//gui takes a tile pointer, this is what the user is moused over

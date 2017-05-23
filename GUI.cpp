@@ -29,7 +29,9 @@ GUI::GUI(World* world) : world(world){
 	detailText3 = nullptr; // describes production
 
 	//used to remember the last tile moused over, it stops the text rebaking every frame
-	lastTile = nullptr;
+	lastTileHovered = nullptr;
+	//used to remember the last tile selected
+	lastTileSelected = nullptr;
 
 	moneyText = nullptr;
 	foodText = nullptr;
@@ -44,7 +46,7 @@ GUI::GUI(World* world) : world(world){
 	//the background to the gui
 	backgroundIMG = new AXTexture("images/guibackground.png");
 	updateResources();
-	bakeObjectInfoStrings();
+	bakeObjectInfoStrings(world->selectedObject, true);
 }
 
 void GUI::tick(Tile* tile){
@@ -56,16 +58,31 @@ void GUI::tick(Tile* tile){
 		AXAudio::playAudioChunk(cancelPickupSound);
 	}
 
-	// if the tile has changed
+	if(AXInput::getValue("ESC") && world->selectedTile){
+		world->selectedTile = nullptr;
+		AXAudio::playAudioChunk(cancelPickupSound);
+	}
+
+	// if the tilebeing hovered over has changed
 	// rebake the strings
-	if(tile != lastTile && !onGUI){
-		lastTile = tile;
+	if(tile != lastTileHovered && !onGUI){
+		lastTileHovered = tile;
 		//if the tile has an object on it, show that description instead
 		delete descriptionText;
 		if(tile->object){
 			descriptionText = fontSmall->bakeTexture(tile->object->description, blackColour);	
 		}else{
 			descriptionText = fontSmall->bakeTexture(tile->description, blackColour);	
+		}
+	}
+
+	//if the tile selected has changed
+	//only can be selected
+	if(world->selectedTile != lastTileSelected){
+		lastTileSelected = world->selectedTile;
+		//if it's changing to a tile, not a null
+		if(lastTileSelected){
+			bakeObjectInfoStrings(lastTileSelected->object->id, false);
 		}
 	}
 
@@ -83,7 +100,7 @@ void GUI::tick(Tile* tile){
 			if(AXInput::getValue("MB1")){
 				//set the selected object to the one we clicked on
 				world->selectedObject = objectID; 
-				bakeObjectInfoStrings(); // bake the info strings
+				bakeObjectInfoStrings(objectID, true); // bake the info strings
 				AXAudio::playAudioChunk(pickupSound); // play the pickup sound
 			}
 		}
@@ -95,7 +112,7 @@ void GUI::tick(Tile* tile){
 void GUI::draw(){
 	AXGraphics::drawTexture(backgroundIMG, 0, AXWindow::getHeight()-(2*world->tilesize), AXWindow::getWidth(), 2*world->tilesize);
 	//if there's an object to place
-	if(world->selectedObject >= 0){
+	if(world->selectedObject >= 0 || world->selectedTile){
 		//the instruction text tells em
 		AXGraphics::drawTexture(instructionText, 20, AXWindow::getHeight()-instructionText->getHeight()-80); 
 		if(detailText1 && detailText2){
@@ -105,17 +122,17 @@ void GUI::draw(){
 		}
 	}
 	//if we're over a tile and there's something selected
-	if(lastTile && world->selectedObject >= 0){
+	if(lastTileHovered && world->selectedObject >= 0){
 		//if there's an object already on the tile or the tile is the wrong type or it's too far away (and the home is set)
 		//display the can't place text
 		if((AXMath::absolute(world->homeDistance.x) > world->allowedHomeDistance || AXMath::absolute(world->homeDistance.y) > world->allowedHomeDistance) && world->homeSet){
 			AXGraphics::drawTexture(tooFarText, AXWindow::getWidth()/2-tooFarText->getWidth()/2, AXWindow::getHeight()-tooFarText->getHeight()-90); 
-		}else if(lastTile->object || world->objects[world->selectedObject]->requiredType != lastTile->type){
+		}else if(lastTileHovered->object || world->objects[world->selectedObject]->requiredType != lastTileHovered->type){
 			AXGraphics::drawTexture(cantPlaceText, AXWindow::getWidth()/2-cantPlaceText->getWidth()/2, AXWindow::getHeight()-cantPlaceText->getHeight()-90); 
 		}
 	}
-	//if there's no object selected let them pick one
-	if(world->selectedObject < 0){
+	//if there's no object or tile selected show the object selection
+	if(world->selectedObject < 0 && !world->selectedTile){
 		drawObjectSelect();
 	}
 	//show the description text
@@ -222,8 +239,8 @@ void GUI::updateResources(){
 }
 
 
-void GUI::bakeObjectInfoStrings(){
-	if(world->selectedObject < 0){
+void GUI::bakeObjectInfoStrings(int objectID, bool placing){
+	if(objectID < 0){
 		AXLog::log("Bake Object Info", "You're trying to bake info strings when there's no object selected.", AX_LOG_ERROR);
 		return;
 	}
@@ -231,9 +248,13 @@ void GUI::bakeObjectInfoStrings(){
 	delete detailText1;
 	delete detailText2;
 	delete detailText3;
-	Object* selected = world->objects[world->selectedObject]; // get a temp object
-	//rebake the instruction text
-	instructionText = fontBig->bakeTexture("Click to place a "+selected->name+"!", blackColour);
+	Object* selected = world->objects[objectID]; // get a temp object
+	//if you're placing, give an instruction, otherwise give a statement
+	if(placing){
+		instructionText = fontBig->bakeTexture("Click to place a "+selected->name+"!", blackColour);
+	}else{
+		instructionText = fontBig->bakeTexture("A "+selected->name+"!", blackColour);
+	}
 	//bake the detail1 string, it will say the type it requires
 	detailText1 = fontSmall->bakeTexture("Tile Type: "+types[selected->requiredType], blackColour);
 	//create a temporary string to hold the details

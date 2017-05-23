@@ -22,7 +22,8 @@ class GUI {
 	AXFont* fontBig;
 	AXFont* fontSmall;
 	World* world;
-	Tile* lastTile;
+	Tile* lastTileHovered;
+	Tile* lastTileSelected;
 
 	//Audio
 	AXAudioChunk* pickupSound; // played when the user selects and object
@@ -35,8 +36,8 @@ class GUI {
 	bool isMouseOverGUI();
 	//returns the ID of which object is moused over in the GUI
 	int whichObjectMousedOver();
-	//bakes the currently selected information
-	void bakeObjectInfoStrings();
+	//bakes the currently selected information, boolean for if placing or not
+	void bakeObjectInfoStrings(int objectID, bool placing);
 public:
 	bool onGUI; // if the mouse is over the GUI or not
 	~GUI();

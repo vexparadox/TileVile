@@ -25,10 +25,14 @@ class World{
 	int currentStone;
 	int stoneIncome;
 
+	//boolean if the mouse has been clicked, allows for simple clicking
+	bool mouseClicked;
+
 	AXVector2D homePosition; // where the townhall has been placed
 	AXVector2D homeDistance; // the current distance to the townhall
 	//which object, if any is selected
 	int selectedObject;
+	Tile* selectedTile; // the tile that's currently selected
 	//if the home as been set
 	bool homeSet;
 	int allowedHomeDistance; // the allowed home distance
