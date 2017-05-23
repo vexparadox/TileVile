@@ -16,6 +16,7 @@ GUI::GUI(World* world) : world(world){
 	//the initial instructions
 	//this text is the same
 	cantPlaceText = fontSmall->bakeTexture("You can't place that here.", blackColour);
+	tooFarText = fontSmall->bakeTexture("You're too far away from your Town Hall.", blackColour);
 
 	//this text is filled when the tile moused over is changed
 	//if either shows the description of the tile or its object
@@ -107,10 +108,10 @@ void GUI::draw(){
 	if(lastTile && world->selectedObject >= 0){
 		//if there's an object already on the tile or the tile is the wrong type or it's too far away (and the home is set)
 		//display the can't place text
-		if(lastTile->object 
-			|| world->objects[world->selectedObject]->requiredType != lastTile->type
-			|| ((AXMath::absolute(world->homeDistance.x) > world->allowedHomeDistance || AXMath::absolute(world->homeDistance.y) > world->allowedHomeDistance) && world->homeSet)){
-				AXGraphics::drawTexture(cantPlaceText, AXWindow::getWidth()/2-cantPlaceText->getWidth()/2, AXWindow::getHeight()-cantPlaceText->getHeight()-90); 
+		if((AXMath::absolute(world->homeDistance.x) > world->allowedHomeDistance || AXMath::absolute(world->homeDistance.y) > world->allowedHomeDistance) && world->homeSet){
+			AXGraphics::drawTexture(tooFarText, AXWindow::getWidth()/2-tooFarText->getWidth()/2, AXWindow::getHeight()-tooFarText->getHeight()-90); 
+		}else if(lastTile->object || world->objects[world->selectedObject]->requiredType != lastTile->type){
+			AXGraphics::drawTexture(cantPlaceText, AXWindow::getWidth()/2-cantPlaceText->getWidth()/2, AXWindow::getHeight()-cantPlaceText->getHeight()-90); 
 		}
 	}
 	//if there's no object selected let them pick one
@@ -137,8 +138,6 @@ void GUI::draw(){
 	AXGraphics::drawTexture(stoneIcon, AXWindow::getWidth()-stoneText->getWidth()-woodText->getWidth()-100, AXWindow::getHeight()-woodText->getHeight()-45, 48, 48); 
 	//the stone text
 	AXGraphics::drawTexture(stoneText, AXWindow::getWidth()-stoneText->getWidth()-woodText->getWidth()-60, AXWindow::getHeight()-woodText->getHeight()-35); 
-
-
 }
 
 int GUI::whichObjectMousedOver(){
