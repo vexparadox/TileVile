@@ -260,8 +260,12 @@ void GUI::bakeObjectInfoStrings(int objectID, bool placing){
 	}else{
 		instructionText = fontBig->bakeTexture("A "+selected->name+"!", blackColour);
 	}
-	//bake the detail1 string, it will say the type it requires
-	detailText1 = fontSmall->bakeTexture("Tile Type: "+types[selected->requiredType], blackColour);
+	//bake the detail1 string, it will say the type it requires or how to delete
+	if(placing){
+		detailText1 = fontSmall->bakeTexture("Tile Type: "+types[selected->requiredType], blackColour);
+	}else{
+		detailText1 = fontSmall->bakeTexture("Press 'T' to delete this object, you'll get $"+std::to_string((int)selected->cost/2), blackColour);
+	}
 	//create a temporary string to hold the details
 	std::string detailText2String = "Cost | $"+std::to_string(selected->cost);
 	detailText2 = fontSmall->bakeTexture(detailText2String, blackColour);

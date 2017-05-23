@@ -36,9 +36,9 @@ class GUI {
 	bool isMouseOverGUI();
 	//returns the ID of which object is moused over in the GUI
 	int whichObjectMousedOver();
+public:
 	//bakes the currently selected information, boolean for if placing or not
 	void bakeObjectInfoStrings(int objectID, bool placing);
-public:
 	bool onGUI; // if the mouse is over the GUI or not
 	~GUI();
 	GUI(World* world);

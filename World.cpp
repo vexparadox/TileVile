@@ -253,6 +253,13 @@ void World::deleteObject(){
 	AXAudio::playAudioChunk(objects[selectedID]->placeSound);
 	//update the incomes
 	gui->updateResources();
+
+	//if it's the townhall
+	if(selectedTile->object->id == 0){
+		homeSet = false;
+		selectedObject = 0;
+		gui->bakeObjectInfoStrings(0, true);
+	}
 	//turn it so we're not holding it anymore
 	delete selectedTile->object;
 	selectedTile->object = nullptr;
