@@ -26,7 +26,7 @@ World::World(int tilesize) : tilesize(tilesize){
 	currentStone = 30;
 	stoneIncome = 0;
 	currentPop = 0;
-	townSize = 0; 
+	townSize = 0;
 	//set the allowed home distance
 	allowedHomeDistance = 5;
 
@@ -68,8 +68,6 @@ void World::draw(){
 			if(map[i][j]->object){
 				AXGraphics::drawTexture(map[i][j]->object->texture, (row*tilesize), (col*tilesize), tilesize, tilesize);
 			}
-
-
 			//if currently selected, highlight it
 			if(selectedTile){
 				if(selectedTile == map[i][j]){

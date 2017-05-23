@@ -113,6 +113,7 @@ void GUI::tick(Tile* tile){
 		}
 	}
 
+	//if there's a tile selected, and they click the bit X delete button
 	if(lastTileSelected){
 		if(AXInput::getValue("MB1") && AXMath::isInsideQuad(AXInput::mouseX, AXInput::mouseY, AXWindow::getWidth()/2-32, AXWindow::getHeight()-80, AXWindow::getWidth()/2+32, AXWindow::getHeight()-16)){
 			world->deleteObject();
@@ -142,8 +143,12 @@ void GUI::tick(Tile* tile){
 }
 
 void GUI::draw(){
+	//draw the background image
 	AXGraphics::drawTexture(backgroundIMG, 0, AXWindow::getHeight()-(2*world->tilesize), AXWindow::getWidth(), 2*world->tilesize);
-	//if there's an object to place
+
+
+	//if you're placing an object or have a tile selected
+	//these strings are baked in bakeObjectInfoStrings
 	if(world->selectedObject >= 0 || world->selectedTile){
 		//the instruction text tells em
 		AXGraphics::drawTexture(instructionText, 20, AXWindow::getHeight()-instructionText->getHeight()-80); 
@@ -153,6 +158,7 @@ void GUI::draw(){
 			AXGraphics::drawTexture(detailText3, 20, AXWindow::getHeight()-detailText3->getHeight()-12); 
 		}
 	}
+
 	//if we're over a tile and there's something selected
 	if(lastTileHovered && world->selectedObject >= 0){
 		//if there's an object already on the tile or the tile is the wrong type or it's too far away (and the home is set)
@@ -164,7 +170,7 @@ void GUI::draw(){
 		}
 	}
 
-	//show the delete symbol if you can delete
+	//show the delete symbol if you can delete and an object is selected
 	if(world->selectedTile){
 		//you can't delete the townhall
 		if(world->selectedTile->object->id != 0){
@@ -175,14 +181,13 @@ void GUI::draw(){
 	//if there's no object or tile selected show the object selection
 	if(world->selectedObject < 0 && !world->selectedTile){
 		drawObjectSelect();
-		AXGraphics::drawTexture(townNameText, (AXWindow::getWidth()/2)-(townNameText->getWidth()/2), AXWindow::getHeight()-townNameText->getHeight()-45); 
-		
+		AXGraphics::drawTexture(townNameText, (AXWindow::getWidth()/2)-(townNameText->getWidth()/2), AXWindow::getHeight()-townNameText->getHeight()-45); 	
 	}
+
 	//show the description text
 	if(descriptionText){
 		AXGraphics::drawTexture(descriptionText, AXWindow::getWidth()-descriptionText->getWidth()-20, AXWindow::getHeight()-descriptionText->getHeight()-10); 
 	}
-
 	//show the resources
 	//The money text
 	AXGraphics::drawTexture(moneyText, AXWindow::getWidth()-moneyText->getWidth()-foodText->getWidth()-60, AXWindow::getHeight()-moneyText->getHeight()-80); 
