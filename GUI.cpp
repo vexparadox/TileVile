@@ -86,6 +86,11 @@ void GUI::tick(Tile* tile){
 		}
 	}
 
+	//delete the currently selected
+	if(AXInput::getValue("T") && lastTileSelected){
+		world->deleteObject();
+	}
+
 	//if the user has nothing selected
 	if(world->selectedObject < 0 && onGUI){
 		//if they are moused over something and the mouse is pressed!

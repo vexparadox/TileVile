@@ -241,6 +241,24 @@ void World::placeObject(){
 	selectedObject = -1;
 }
 
+void World::deleteObject(){
+	//get the incomes from the objects
+	int selectedID = selectedTile->object->id;
+	moneyIncome -= objects[selectedID]->money;
+	foodIncome -= objects[selectedID]->food;
+	woodIncome -= objects[selectedID]->wood;
+	stoneIncome -= objects[selectedID]->stone;
+	//take away the cost
+	currentMoney += (int)objects[selectedID]->cost/2;
+	AXAudio::playAudioChunk(objects[selectedID]->placeSound);
+	//update the incomes
+	gui->updateResources();
+	//turn it so we're not holding it anymore
+	delete selectedTile->object;
+	selectedTile->object = nullptr;
+	selectedTile = nullptr;
+}
+
 Tile* World::getMousedTile(){
 	return map[mousePosition.x+currentOffset.x][mousePosition.y+currentOffset.y];
 }

@@ -62,6 +62,9 @@ class World{
 	void inGameTick();
 
 	void placeObject();
+
+	//deletes the currently selected object off a tile
+	void deleteObject();
 public:
 	~World();
 	World(int tilesize);
