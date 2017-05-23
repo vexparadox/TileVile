@@ -28,7 +28,6 @@ class GUI {
 	AXAudioChunk* cancelPickupSound; // played when the user cancels
 	AXColour blackColour;
 	int lastObjectID;
-	bool onGUI; // if the mouse is over the GUI or not
 	//draws the grid of objects users can pick from
 	void drawObjectSelect();
 	//returns if the mouse is over the GUI or not, stored in onGUI
@@ -38,6 +37,7 @@ class GUI {
 	//bakes the currently selected information
 	void bakeObjectInfoStrings();
 public:
+	bool onGUI; // if the mouse is over the GUI or not
 	~GUI();
 	GUI(World* world);
 	void draw();

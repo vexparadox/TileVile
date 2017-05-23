@@ -61,6 +61,11 @@ void World::draw(){
 			if(map[i][j]->object){
 				AXGraphics::drawTexture(map[i][j]->object->texture, (row*tilesize), (col*tilesize), tilesize, tilesize);
 			}
+			if(i == mousePosition.x+currentOffset.x && j == mousePosition.y+currentOffset.y && !gui->onGUI){
+				AXGraphics::fill(0, 255, 0, 100);
+				AXGraphics::drawRect((row*tilesize), (col*tilesize), tilesize, tilesize);
+			}
+
 			col++; // advance the col draw position
 		}
 		row++; // advance the row draw position
