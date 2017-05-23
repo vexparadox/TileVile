@@ -26,6 +26,8 @@ class World{
 	int stoneIncome;
 	int currentPop;
 
+	int townSize; // the town size
+
 	//boolean if the mouse has been clicked, allows for simple clicking
 	bool mouseClicked;
 
@@ -63,7 +65,8 @@ class World{
 	void inGameTick();
 
 	void placeObject();
-
+	//returns the townsize
+	int getTownSize();
 	//deletes the currently selected object off a tile
 	void deleteObject();
 public:

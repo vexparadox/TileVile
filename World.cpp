@@ -243,8 +243,10 @@ void World::placeObject(){
 	//take away the cost
 	currentMoney -= objects[selectedObject]->cost;
 	AXAudio::playAudioChunk(objects[selectedObject]->placeSound);
+	this->townSize = getTownSize();
 	//update the incomes
 	gui->updateResources();
+	gui->bakeTownText();
 	//turn it so we're not holding it anymore
 	selectedObject = -1;
 }
@@ -260,12 +262,27 @@ void World::deleteObject(){
 	//take away the cost
 	currentMoney += (int)objects[selectedID]->cost/2;
 	AXAudio::playAudioChunk(gui->destructionSound);
+	this->townSize = getTownSize();
 	//update the incomes
 	gui->updateResources();
+	gui->bakeTownText();
 	//turn it so we're not holding it anymore
 	delete selectedTile->object;
 	selectedTile->object = nullptr;
 	selectedTile = nullptr;
+}
+
+int World::getTownSize(){
+	if(currentPop > 0 && currentPop <= 60){
+		return 0;
+	}else if(currentPop > 60 && currentPop <= 400){
+		return 1;
+	}else if(currentPop > 400 && currentPop <= 800){
+		return 2;
+	}else if(currentPop > 800){
+		return 3;
+	}
+	return 3;
 }
 
 Tile* World::getMousedTile(){

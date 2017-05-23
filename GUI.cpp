@@ -15,10 +15,19 @@ GUI::GUI(World* world) : world(world){
 	types.push_back("Flat Land");
 	types.push_back("Wooded Area");
 	types.push_back("Stone Outcrop");
+
+	townsizes.push_back("A small hamlet");
+	townsizes.push_back("A humble village");
+	townsizes.push_back("A worthy town");
+	townsizes.push_back("A growing city");
 	//the initial instructions
 	//this text is the same
 	cantPlaceText = fontSmall->bakeTexture("You can't place that here.", blackColour);
 	tooFarText = fontSmall->bakeTexture("You're too far away from your Town Hall.", blackColour);
+
+
+	//the townsize text
+	townNameText = nullptr;
 
 	//this text is filled when the tile moused over is changed
 	//if either shows the description of the tile or its object
@@ -51,6 +60,7 @@ GUI::GUI(World* world) : world(world){
 	//the background to the gui
 	backgroundIMG = new AXTexture("images/guibackground.png");
 	updateResources();
+	bakeTownText();
 	bakeObjectInfoStrings(world->selectedObject, true);
 }
 
@@ -63,6 +73,7 @@ void GUI::tick(Tile* tile){
 		AXAudio::playAudioChunk(cancelPickupSound);
 	}
 
+	//let the user cancel their selected tile
 	if(AXInput::getValue("ESC") && world->selectedTile){
 		world->selectedTile = nullptr;
 		AXAudio::playAudioChunk(cancelPickupSound);
@@ -71,6 +82,7 @@ void GUI::tick(Tile* tile){
 	//do the object selection with numbers
 	if(world->selectedObject < 0){
 		for(int i = 1; i < world->objects.size(); i++){
+			//get the input on the numbers
 			if(AXInput::getValue(std::to_string(i))){
 				world->selectedObject = i;
 				break;
@@ -163,6 +175,8 @@ void GUI::draw(){
 	//if there's no object or tile selected show the object selection
 	if(world->selectedObject < 0 && !world->selectedTile){
 		drawObjectSelect();
+		AXGraphics::drawTexture(townNameText, (AXWindow::getWidth()/2)-(townNameText->getWidth()/2), AXWindow::getHeight()-townNameText->getHeight()-45); 
+		
 	}
 	//show the description text
 	if(descriptionText){
@@ -322,6 +336,11 @@ void GUI::bakeObjectInfoStrings(int objectID, bool placing){
 		detailText3String.append(" | Stone: "+std::to_string(selected->stone));
 	}
 	detailText3 = fontSmall->bakeTexture(detailText3String, blackColour);
+}
+
+void GUI::bakeTownText(){
+	delete townNameText;
+	townNameText = fontBig->bakeTexture(townsizes[world->townSize], blackColour);
 }
 
 GUI::~GUI(){
