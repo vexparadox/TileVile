@@ -25,6 +25,7 @@ World::World(int tilesize) : tilesize(tilesize){
 	woodIncome = 0;
 	currentStone = 30;
 	stoneIncome = 0;
+	currentPop = 0;
 	//set the allowed home distance
 	allowedHomeDistance = 5;
 
@@ -218,12 +219,7 @@ void World::loadTiles(){
 	AXXMLnode tilenode = xml.child("tiles");
 	//loop through the "tiles"
 	for (AXXMLnode_iterator it = tilenode.begin(); it != tilenode.end(); ++it){
-		//for each tile, get the ID and filename attributes
-		int id = it->attribute("id").as_int();
-		int type = it->attribute("type").as_int();
-		std::string filename = it->attribute("filename").as_string();
-		std::string description = it->attribute("description").as_string();
-	    tiles.push_back(new Tile(id, filename, description, type));
+	    tiles.push_back(new Tile(it));
 	}
 }
 void World::loadObjects(){
@@ -231,24 +227,7 @@ void World::loadObjects(){
 	AXXMLnode objectnode = xml.child("objects");
 	//loop through the "tiles"
 	for (AXXMLnode_iterator it = objectnode.begin(); it != objectnode.end(); ++it){
-		//for each tile, get the id, costs, wood and food production, or not
-		int id = it->attribute("id").as_int();
-		int food = it->attribute("food").as_int();
-		int cost = it->attribute("cost").as_int();
-		int wood = it->attribute("wood").as_int();
-		int stone = it->attribute("stone").as_int();
-		int requiredType = it->attribute("requires").as_int();
-		int money = it->attribute("money").as_int();
-
-		std::string filename = it->attribute("filename").as_string();
-
-		std::string placeSoundFilename = "audio/placesounds/";
-		placeSoundFilename.append(it->attribute("placeSound").as_string());
-		AXAudioChunk* placeSound = new AXAudioChunk(placeSoundFilename);
-
-		std::string name = it->attribute("name").as_string();
-		std::string description = it->attribute("description").as_string();
-	    objects.push_back(new Object(id, food, money, wood, stone, requiredType, cost, filename, placeSound, name, description));
+		objects.push_back(new Object(it));
 	}
 }
 
@@ -260,6 +239,7 @@ void World::placeObject(){
 	foodIncome += objects[selectedObject]->food;
 	woodIncome += objects[selectedObject]->wood;
 	stoneIncome += objects[selectedObject]->stone;
+	currentPop += objects[selectedObject]->pop;
 	//take away the cost
 	currentMoney -= objects[selectedObject]->cost;
 	AXAudio::playAudioChunk(objects[selectedObject]->placeSound);
@@ -276,9 +256,10 @@ void World::deleteObject(){
 	foodIncome -= objects[selectedID]->food;
 	woodIncome -= objects[selectedID]->wood;
 	stoneIncome -= objects[selectedID]->stone;
+	currentPop -= objects[selectedID]->pop;
 	//take away the cost
 	currentMoney += (int)objects[selectedID]->cost/2;
-	AXAudio::playAudioChunk(objects[selectedID]->placeSound);
+	AXAudio::playAudioChunk(gui->destructionSound);
 	//update the incomes
 	gui->updateResources();
 	//turn it so we're not holding it anymore

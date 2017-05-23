@@ -7,6 +7,6 @@ public:
 	AXTexture* texture; // the texture for this tile
 	Object* object; // the object that's on this tile
 	std::string description; // the description of this tile
-	Tile(int id, const std::string& filename, const std::string& description, int type);
+	Tile(AXXMLnode_iterator& it); 
 	Tile(const Tile* tile); // used to copy tiles
 };

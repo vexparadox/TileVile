@@ -24,6 +24,7 @@ class World{
 	int woodIncome;
 	int currentStone;
 	int stoneIncome;
+	int currentPop;
 
 	//boolean if the mouse has been clicked, allows for simple clicking
 	bool mouseClicked;

@@ -20,6 +20,8 @@ class GUI {
 	AXTexture* stoneText; //the current stone
 	AXTexture* stoneIcon; // the stone icon
 	AXTexture* deleteIcon; // the delete icon
+	AXTexture* popText; // the delete icon
+	AXTexture* popIcon; // the delete icon
 	AXFont* fontBig;
 	AXFont* fontSmall;
 	World* world;
@@ -38,6 +40,7 @@ class GUI {
 	//returns the ID of which object is moused over in the GUI
 	int whichObjectMousedOver();
 public:
+	AXAudioChunk* destructionSound;
 	//bakes the currently selected information, boolean for if placing or not
 	void bakeObjectInfoStrings(int objectID, bool placing);
 	bool onGUI; // if the mouse is over the GUI or not

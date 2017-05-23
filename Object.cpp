@@ -1,7 +1,28 @@
 #include "Object.hpp"
-Object::Object(int id, int food, int money, int wood, int stone, int requiredType, int cost, const std::string& filename, AXAudioChunk* placeSound, const std::string& name, const std::string& description) : id(id), food(food), money(money), wood(wood), stone(stone), requiredType(requiredType), cost(cost), name(name), description(description), placeSound(placeSound){
-	texture = new AXTexture("images/objects/"+filename);
+
+Object::Object(AXXMLnode_iterator& it){
+	this->id = it->attribute("id").as_int();
+	this->food = it->attribute("food").as_int();
+	this->cost = it->attribute("cost").as_int();
+	this->wood = it->attribute("wood").as_int();
+	this->pop = it->attribute("pop").as_int();
+	this->stone = it->attribute("stone").as_int();
+	this->requiredType = it->attribute("requires").as_int();
+	this->money = it->attribute("money").as_int();
+
+	//get the name and description
+	this->name = it->attribute("name").as_string();
+	this->description = it->attribute("description").as_string();
+
+	std::string filename = it->attribute("filename").as_string();
+	this->texture = new AXTexture("images/objects/"+filename);
+
+	std::string placeSoundFilename = "audio/placesounds/";
+	placeSoundFilename.append(it->attribute("placeSound").as_string());
+	this->placeSound = new AXAudioChunk(placeSoundFilename);
 }
+
+
 Object::Object(const Object* other){
 	this->texture = other->texture;
 	this->id = other->id;

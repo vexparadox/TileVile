@@ -3,11 +3,11 @@
 #include <Axilya/AXMain.h>
 class Object{
 public:
-	int id, money, food, wood, stone, cost, requiredType;
+	int id, money, food, wood, stone, pop, cost, requiredType;
 	AXTexture* texture;
 	AXAudioChunk* placeSound; // played when placed
 	std::string description, name;
-	Object(int id, int food, int money, int wood, int stone, int requiredType, int cost, const std::string& filename, AXAudioChunk* placeSound, const std::string& name, const std::string& description);
+	Object(AXXMLnode_iterator& it);
 	Object(const Object* other);
 };
 #endif

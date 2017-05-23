@@ -1,8 +1,12 @@
 #include "Tile.hpp"
 
-Tile::Tile(int id, const std::string& filename, const std::string& description, int type) : id(id), description(description), type(type){
+Tile::Tile(AXXMLnode_iterator& it){
 	object = nullptr;
-	this->texture = new AXTexture("images/tiles/"+filename);
+	this->id = it->attribute("id").as_int();
+	this->type = it->attribute("type").as_int();
+	std::string filename = it->attribute("filename").as_string();
+	this->texture = new AXTexture("images/tiles/"+ filename);
+	this->description = it->attribute("description").as_string();
 }
 
 Tile::Tile(const Tile* tile){

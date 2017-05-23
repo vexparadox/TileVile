@@ -7,6 +7,8 @@ GUI::GUI(World* world) : world(world){
 	//load pickup sound
 	pickupSound = new AXAudioChunk("audio/pickupsound.wav");
 	cancelPickupSound = new AXAudioChunk("audio/cancelpickupsound.wav");
+	//destruction sond
+	destructionSound = new AXAudioChunk("audio/cancelpickupsound.wav");
 	//black colour for text rendering
 	blackColour = AXColour(0, 0, 0);
 	//the types, this shouldn't really be hard coded
@@ -37,11 +39,13 @@ GUI::GUI(World* world) : world(world){
 	foodText = nullptr;
 	woodText = nullptr; 
 	stoneText = nullptr;
+	popText = nullptr;
 	
 	//load the resource icons
 	foodIcon = new AXTexture("images/icons/meat.png");
 	woodIcon = new AXTexture("images/icons/wood.png");
 	stoneIcon = new AXTexture("images/icons/stone.png");
+	popIcon = new AXTexture("images/icons/population.png");
 	//used when deleting
 	deleteIcon = new AXTexture("images/icons/delete.png");
 	//the background to the gui
@@ -62,6 +66,16 @@ void GUI::tick(Tile* tile){
 	if(AXInput::getValue("ESC") && world->selectedTile){
 		world->selectedTile = nullptr;
 		AXAudio::playAudioChunk(cancelPickupSound);
+	}
+
+	//do the object selection with numbers
+	if(world->selectedObject < 0){
+		for(int i = 1; i < 10; i++){
+			if(AXInput::getValue(std::to_string(i))){
+				world->selectedObject = i;
+				break;
+			}
+		}
 	}
 
 	// if the tilebeing hovered over has changed
@@ -138,7 +152,6 @@ void GUI::draw(){
 		}
 	}
 
-
 	//show the delete symbol if you can delete
 	if(world->selectedTile){
 		//you can't delete the townhall
@@ -158,11 +171,12 @@ void GUI::draw(){
 
 	//show the resources
 	//The money text
-	AXGraphics::drawTexture(moneyText, AXWindow::getWidth()-moneyText->getWidth()-foodText->getWidth()-70, AXWindow::getHeight()-moneyText->getHeight()-80); 
+	AXGraphics::drawTexture(moneyText, AXWindow::getWidth()-moneyText->getWidth()-foodText->getWidth()-60, AXWindow::getHeight()-moneyText->getHeight()-80); 
 	//the food logo
 	AXGraphics::drawTexture(foodIcon, AXWindow::getWidth()-foodText->getWidth()-45, AXWindow::getHeight()-foodText->getHeight()-75, 24, 24); 
 	//the food text
 	AXGraphics::drawTexture(foodText, AXWindow::getWidth()-foodText->getWidth()-20, AXWindow::getHeight()-foodText->getHeight()-80); 
+
 	//the wood icon
 	AXGraphics::drawTexture(woodIcon, AXWindow::getWidth()-woodText->getWidth()-60, AXWindow::getHeight()-woodText->getHeight()-45, 48, 48); 
 	//the wood text
@@ -171,6 +185,10 @@ void GUI::draw(){
 	AXGraphics::drawTexture(stoneIcon, AXWindow::getWidth()-stoneText->getWidth()-woodText->getWidth()-100, AXWindow::getHeight()-woodText->getHeight()-45, 48, 48); 
 	//the stone text
 	AXGraphics::drawTexture(stoneText, AXWindow::getWidth()-stoneText->getWidth()-woodText->getWidth()-60, AXWindow::getHeight()-woodText->getHeight()-35); 
+	//the stone icon
+	AXGraphics::drawTexture(popIcon, AXWindow::getWidth()-popText->getWidth()-stoneText->getWidth()-woodText->getWidth()-140, AXWindow::getHeight()-woodText->getHeight()-45, 48, 48); 
+	//the stone text
+	AXGraphics::drawTexture(popText, AXWindow::getWidth()-popText->getWidth()-stoneText->getWidth()-woodText->getWidth()-100, AXWindow::getHeight()-woodText->getHeight()-35); 
 }
 
 int GUI::whichObjectMousedOver(){
@@ -251,7 +269,8 @@ void GUI::updateResources(){
 	}else{
 		stoneText = fontBig->bakeTexture(std::to_string(world->currentStone)+"(+"+std::to_string(world->stoneIncome)+")", blackColour);
 	}
-
+	delete popText;
+	popText = fontBig->bakeTexture(std::to_string(world->currentPop), blackColour);
 }
 
 
@@ -292,6 +311,9 @@ void GUI::bakeObjectInfoStrings(int objectID, bool placing){
 	}
 	if(selected->food != 0){
 		detailText3String.append(" | Food: "+std::to_string(selected->food));
+	}
+	if(selected->pop != 0){
+		detailText3String.append(" | Population: "+std::to_string(selected->pop));
 	}
 	if(selected->wood != 0){
 		detailText3String.append(" | Wood: "+std::to_string(selected->wood));
