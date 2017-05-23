@@ -105,8 +105,12 @@ void GUI::draw(){
 	}
 	//if the last tile isn't placeable and there's an object waiting to be placed
 	if(lastTile && world->selectedObject >= 0){
-		if(lastTile->object || world->objects[world->selectedObject]->requiredType != lastTile->type){
-			AXGraphics::drawTexture(cantPlaceText, AXWindow::getWidth()/2-cantPlaceText->getWidth()/2, AXWindow::getHeight()-cantPlaceText->getHeight()-90); 
+		//if there's an object already on the tile or the tile is the wrong type or it's too far away (and the home is set)
+		//display the can't place text
+		if(lastTile->object 
+			|| world->objects[world->selectedObject]->requiredType != lastTile->type
+			|| ((AXMath::absolute(world->homeDistance.x) > world->allowedHomeDistance || AXMath::absolute(world->homeDistance.y) > world->allowedHomeDistance) && world->homeSet)){
+				AXGraphics::drawTexture(cantPlaceText, AXWindow::getWidth()/2-cantPlaceText->getWidth()/2, AXWindow::getHeight()-cantPlaceText->getHeight()-90); 
 		}
 	}
 	//if there's no object selected let them pick one

@@ -25,6 +25,14 @@ class World{
 	int currentStone;
 	int stoneIncome;
 
+	AXVector2D homePosition; // where the townhall has been placed
+	AXVector2D homeDistance; // the current distance to the townhall
+	//which object, if any is selected
+	int selectedObject;
+	//if the home as been set
+	bool homeSet;
+	int allowedHomeDistance; // the allowed home distance
+
 	//holds all the tiles in a 2D arrayu
 	std::vector<std::vector<Tile*>> map;
 	//this is the tiles that are available, the map is copies of theses
@@ -49,10 +57,6 @@ class World{
 	Tile* getMousedTile();
 	void inGameTick();
 public:
-	//which object, if any is selected
-	int selectedObject;
-	//if the home as been set
-	bool homeSet;
 	~World();
 	World(int tilesize);
 	void tick();

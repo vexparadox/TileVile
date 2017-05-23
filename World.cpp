@@ -25,6 +25,8 @@ World::World(int tilesize) : tilesize(tilesize){
 	woodIncome = 0;
 	currentStone = 30;
 	stoneIncome = 0;
+	//set the allowed home distance
+	allowedHomeDistance = 8;
 
 	//set the offset
 	currentOffset.x = 14;
@@ -116,29 +118,44 @@ void World::tick(){
 		mousePosition.y = maxOnScreenY-1;
 	}
 
+	//get the current distance from the mouse to home
+	if(homeSet){
+		homeDistance.x = homePosition.x - (mousePosition.x+currentOffset.x);
+		homeDistance.y = homePosition.y - (mousePosition.y+currentOffset.y);
+	}
 
 	//place the object selected IF
 	// the mouse is pressed
 	// and the mouse is on the tiles
 	if(selectedObject >= 0 && AXInput::getValue("MB1") && AXInput::mouseY < maxOnScreenY*tilesize){
-		//check if we can place and afford
-		if(getMousedTile()->type == objects[selectedObject]->requiredType && !getMousedTile()->object && objects[selectedObject]->cost <= currentMoney){	
-			//update the tile with the selected object
-			getMousedTile()->object = new Object(objects[selectedObject]);
-			//get the incomes from the objects
-			moneyIncome += objects[selectedObject]->money;
-			foodIncome += objects[selectedObject]->food;
-			woodIncome += objects[selectedObject]->wood;
-			stoneIncome += objects[selectedObject]->stone;
-			//take away the cost
-			currentMoney -= objects[selectedObject]->cost;
-			AXAudio::playAudioChunk(objects[selectedObject]->placeSound);
-			//update the incomes
-			gui->updateResources();
-			//make sure we ain't holding one
-			selectedObject = -1;
-			//if placing and there's no home set, we can assume this is the home being set
-			if(!homeSet){
+		//check if the type is correct
+		//if there's already an object
+		//if we can afford
+		//and we're close enough to the home
+		if(getMousedTile()->type == objects[selectedObject]->requiredType 
+			&& !getMousedTile()->object 
+			&& objects[selectedObject]->cost <= currentMoney){
+
+			if(homeSet){
+				if(AXMath::absolute(homeDistance.x) <= allowedHomeDistance && AXMath::absolute(homeDistance.y) <= allowedHomeDistance){
+					//update the tile with the selected object
+					getMousedTile()->object = new Object(objects[selectedObject]);
+					//get the incomes from the objects
+					moneyIncome += objects[selectedObject]->money;
+					foodIncome += objects[selectedObject]->food;
+					woodIncome += objects[selectedObject]->wood;
+					stoneIncome += objects[selectedObject]->stone;
+					//take away the cost
+					currentMoney -= objects[selectedObject]->cost;
+					AXAudio::playAudioChunk(objects[selectedObject]->placeSound);
+					//update the incomes
+					gui->updateResources();
+					//make sure we ain't holding one
+					selectedObject = -1;
+					//if placing and there's no home set, we can assume this is the home being set
+				}
+			}else{
+				homePosition = AXVector2D(mousePosition.x+currentOffset.x, mousePosition.y+currentOffset.y);
 				homeSet = true;
 			}
 		}
