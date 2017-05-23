@@ -66,6 +66,17 @@ void World::draw(){
 			if(map[i][j]->object){
 				AXGraphics::drawTexture(map[i][j]->object->texture, (row*tilesize), (col*tilesize), tilesize, tilesize);
 			}
+
+			//if the home has been set, and you're placing
+			//cover the area you can't place
+			if(homeSet && selectedObject >= 0){
+				if(AXMath::absolute(i-homePosition.x) > allowedHomeDistance || AXMath::absolute(j-homePosition.y) > allowedHomeDistance){
+					AXGraphics::fill(255, 0, 0, 150);
+					AXGraphics::drawRect((row*tilesize), (col*tilesize), tilesize, tilesize);
+				}			
+			}
+
+
 			if(i == mousePosition.x+currentOffset.x && j == mousePosition.y+currentOffset.y && !gui->onGUI){
 				AXGraphics::fill(0, 255, 0, 100);
 				AXGraphics::drawRect((row*tilesize), (col*tilesize), tilesize, tilesize);
