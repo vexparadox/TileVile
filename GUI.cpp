@@ -70,7 +70,7 @@ void GUI::tick(Tile* tile){
 
 	//do the object selection with numbers
 	if(world->selectedObject < 0){
-		for(int i = 1; i < 10; i++){
+		for(int i = 1; i < world->objects.size(); i++){
 			if(AXInput::getValue(std::to_string(i))){
 				world->selectedObject = i;
 				break;
