@@ -105,11 +105,11 @@ void World::draw(){
 				}
 				AXGraphics::drawRect((row*tilesize), (col*tilesize), tilesize, tilesize);
 			}
-
 			col++; // advance the col draw position
 		}
 		row++; // advance the row draw position
 	}
+	
 	AXGraphics::fill(255, 255, 255, 255);
 	if(selectedObject >= 0){
 		AXGraphics::drawTexture(objects[selectedObject]->texture, (mousePosition.x*tilesize), (mousePosition.y*tilesize), tilesize, tilesize);
