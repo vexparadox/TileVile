@@ -116,7 +116,7 @@ void GUI::tick(Tile* tile){
 
 	//if there's a tile selected, and they click the bit X delete button
 	if(lastTileSelected){
-		if(AXInput::getValue("MB1") && AXMath::isInsideQuad(AXInput::mouseX, AXInput::mouseY, AXWindow::getWidth()/2-32, AXWindow::getHeight()-80, AXWindow::getWidth()/2+32, AXWindow::getHeight()-16)){
+		if(AXInput::getValue("MB1") && lastTileSelected->id != 0 && AXMath::isInsideQuad(AXInput::mouseX, AXInput::mouseY, AXWindow::getWidth()/2-32, AXWindow::getHeight()-80, AXWindow::getWidth()/2+32, AXWindow::getHeight()-16)){
 			world->deleteObject();
 		}
 	}
@@ -164,7 +164,7 @@ void GUI::draw(){
 	if(world->selectedTile){
 		//you can't delete the townhall
 		if(world->selectedTile->object->id != 0){
-			AXGraphics::drawTexture(deleteIcon, AXWindow::getWidth()/2-32, AXWindow::getHeight()-80, 64, 64); 
+			AXGraphics::drawTexture(deleteIcon, AXWindow::getWidth()/2-32, AXWindow::getHeight()-64, 64, 64); 
 		}
 	}
 
@@ -175,7 +175,7 @@ void GUI::draw(){
 
 	//show the town name text
 	if(townNameText){
-		AXGraphics::drawTexture(townNameText, (AXWindow::getWidth()/2)-(townNameText->getWidth()/2), AXWindow::getHeight()-townNameText->getHeight()-45); 	
+		AXGraphics::drawTexture(townNameText, (AXWindow::getWidth()/2)-(townNameText->getWidth()/2), AXWindow::getHeight()-townNameText->getHeight()-60); 	
 	}
 	//show the description text
 	if(descriptionText){
@@ -315,7 +315,7 @@ void GUI::bakeObjectInfoStrings(int objectID, bool placing){
 		if(objectID == 0){
 			detailText1 = fontSmall->bakeTexture("This building gives you "+std::to_string(world->allowedHomeDistance)+" tiles to build on.", blackColour);
 		}else{
-			detailText1 = fontSmall->bakeTexture("If you destroy this, you'll get $"+std::to_string((int)selected->moneyCost/2), blackColour);
+			detailText1 = fontSmall->bakeTexture("Currently worth $"+std::to_string((int)selected->moneyCost/2), blackColour);
 		}
 	}
 	//create a temporary string to hold the details
