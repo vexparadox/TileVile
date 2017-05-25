@@ -3,7 +3,9 @@
 Object::Object(AXXMLnode_iterator& it){
 	this->id = it->attribute("id").as_int();
 	this->food = it->attribute("food").as_int();
-	this->cost = it->attribute("cost").as_int();
+	this->moneyCost = it->attribute("moneyCost").as_int();
+	this->stoneCost = it->attribute("stoneCost").as_int();
+	this->woodCost = it->attribute("woodCost").as_int();
 	this->wood = it->attribute("wood").as_int();
 	this->pop = it->attribute("pop").as_int();
 	this->stone = it->attribute("stone").as_int();

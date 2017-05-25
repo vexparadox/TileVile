@@ -315,11 +315,20 @@ void GUI::bakeObjectInfoStrings(int objectID, bool placing){
 		if(objectID == 0){
 			detailText1 = fontSmall->bakeTexture("This building gives you "+std::to_string(world->allowedHomeDistance)+" tiles to build on.", blackColour);
 		}else{
-			detailText1 = fontSmall->bakeTexture("If you destroy this, you'll get $"+std::to_string((int)selected->cost/2), blackColour);
+			detailText1 = fontSmall->bakeTexture("If you destroy this, you'll get $"+std::to_string((int)selected->moneyCost/2), blackColour);
 		}
 	}
 	//create a temporary string to hold the details
-	std::string detailText2String = "Cost | $"+std::to_string(selected->cost);
+	std::string detailText2String = "Costs";
+	if(selected->moneyCost != 0){
+		detailText2String.append(" | $"+std::to_string(selected->moneyCost));
+	}
+	if(selected->stoneCost != 0){
+		detailText2String.append(" | Stone: "+std::to_string(selected->stoneCost));
+	}
+	if(selected->woodCost != 0){
+		detailText2String.append(" | Wood: "+std::to_string(selected->woodCost));
+	}
 	detailText2 = fontSmall->bakeTexture(detailText2String, blackColour);
 	//a string for the production
 	std::string detailText3String = "Per Tick";

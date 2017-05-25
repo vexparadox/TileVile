@@ -19,11 +19,11 @@ World::World(int tilesize) : tilesize(tilesize){
 	//starting resources
 	currentMoney = 500;
 	moneyIncome = 0;
-	currentFood = 15;
+	currentFood = 20;
 	foodIncome = 0;
-	currentWood = 20;
+	currentWood = 80;
 	woodIncome = 0;
-	currentStone = 20;
+	currentStone = 40;
 	stoneIncome = 0;
 	currentPop = 0;
 	townSize = 0;
@@ -173,7 +173,9 @@ void World::tick(){
 			//and we're close enough to the home
 			if(getMousedTile()->type == objects[selectedObject]->requiredType 
 				&& !getMousedTile()->object 
-				&& objects[selectedObject]->cost <= currentMoney){
+				&& objects[selectedObject]->moneyCost <= currentMoney
+				&& objects[selectedObject]->woodCost <= currentWood
+				&& objects[selectedObject]->stoneCost <= currentStone){
 				//if the home has been set check the distance
 				if(homeSet){
 					if(AXMath::absolute(homeDistance.x) <= allowedHomeDistance && AXMath::absolute(homeDistance.y) <= allowedHomeDistance){
@@ -249,7 +251,9 @@ void World::placeObject(){
 	stoneIncome += objects[selectedObject]->stone;
 	currentPop += objects[selectedObject]->pop;
 	//take away the cost
-	currentMoney -= objects[selectedObject]->cost;
+	currentMoney -= objects[selectedObject]->moneyCost;
+	currentWood -= objects[selectedObject]->woodCost;
+	currentStone -= objects[selectedObject]->stoneCost;
 	AXAudio::playAudioChunk(objects[selectedObject]->placeSound);
 	this->townSize = getTownSize();
 	//update the incomes
@@ -268,7 +272,7 @@ void World::deleteObject(){
 	stoneIncome -= objects[selectedID]->stone;
 	currentPop -= objects[selectedID]->pop;
 	//take away the cost
-	currentMoney += (int)objects[selectedID]->cost/2;
+	currentMoney += (int)objects[selectedID]->moneyCost/2;
 	AXAudio::playAudioChunk(gui->destructionSound);
 	this->townSize = getTownSize();
 	//update the incomes

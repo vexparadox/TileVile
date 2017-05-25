@@ -3,7 +3,8 @@
 #include <Axilya/AXMain.h>
 class Object{
 public:
-	int id, money, food, wood, stone, pop, cost, requiredType;
+	int id, money, food, wood, stone, pop, requiredType;
+	int moneyCost, woodCost, stoneCost;
 	AXTexture* texture;
 	AXAudioChunk* placeSound; // played when placed
 	std::string description, name;
