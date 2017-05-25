@@ -77,13 +77,15 @@ void GUI::tick(Tile* tile){
 	}
 
 	//do the object selection with numbers
-	if(world->selectedObject < 0){
+	if(world->homeSet){
 		for(int i = 1; i < world->objects.size(); i++){
 			//get the input on the numbers
 			if(AXInput::getValue(std::to_string(i))){
-				world->selectedObject = i;
-				bakeObjectInfoStrings(i, true); // bake the info strings
-				AXAudio::playAudioChunk(pickupSound); // play the pickup sound
+				if(world->selectedObject != i){
+					world->selectedObject = i;
+					bakeObjectInfoStrings(i, true); // bake the info strings
+					AXAudio::playAudioChunk(pickupSound); // play the pickup sound
+				}
 				break;
 			}
 		}

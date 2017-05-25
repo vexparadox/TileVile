@@ -78,12 +78,12 @@ void World::draw(){
 
 			//if the home has been set, and you're placing
 			//cover the area you can't place
-			if(homeSet && selectedObject > 0){
+			if(homeSet){
 				if(AXMath::absolute(i-homePosition.x) > allowedHomeDistance || AXMath::absolute(j-homePosition.y) > allowedHomeDistance){
 					AXGraphics::fill(100, 100, 100, 150);
 					AXGraphics::drawRect((row*tilesize), (col*tilesize), tilesize, tilesize);
 				}			
-			}else if(selectedObject == 0){
+			}else{
 				//else if the home hasn't been set, show the workable area for the townhall
 				if(AXMath::absolute(i-(mousePosition.x+currentOffset.x)) <= allowedHomeDistance && AXMath::absolute(j-(mousePosition.y+currentOffset.y)) <= allowedHomeDistance){
 					AXGraphics::fill(0, 255, 0, 100);
