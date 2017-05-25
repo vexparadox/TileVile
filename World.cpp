@@ -21,9 +21,9 @@ World::World(int tilesize) : tilesize(tilesize){
 	moneyIncome = 0;
 	currentFood = 20;
 	foodIncome = 0;
-	currentWood = 80;
+	currentWood = 200;
 	woodIncome = 0;
-	currentStone = 40;
+	currentStone = 100;
 	stoneIncome = 0;
 	currentPop = 0;
 	townSize = 0;
