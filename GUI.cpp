@@ -9,6 +9,8 @@ GUI::GUI(World* world) : world(world){
 	cancelPickupSound = new AXAudioChunk("audio/cancelpickupsound.wav");
 	//destruction sond
 	destructionSound = new AXAudioChunk("audio/cancelpickupsound.wav");
+	//the sound when you select something
+	selectionSound = new AXAudioChunk("audio/cancelpickupsound.wav");
 	//black colour for text rendering
 	blackColour = AXColour(0, 0, 0);
 	//red colour

@@ -11,6 +11,7 @@ Object::Object(AXXMLnode_iterator& it){
 	this->stone = it->attribute("stone").as_int();
 	this->requiredType = it->attribute("requires").as_int();
 	this->money = it->attribute("money").as_int();
+	this->upgradeID = it->attribute("upgradesTo").as_int();
 
 	//get the name and description
 	this->name = it->attribute("name").as_string();

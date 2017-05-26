@@ -11,6 +11,7 @@
 	requires
 
 	Optional:
+	upgradesTo
 	pop
 	food
 	stone
@@ -34,6 +35,7 @@
 	filename="house.png"
 	placeSound="house.wav"
 	requires="0"
+	upgradesTo="5"
 	moneyCost="50"
 	woodCost="25"
 	stoneCost="10"
@@ -78,4 +80,18 @@
 	money="-2"
 	stone="6"
 	description="Takes stone from the ground for building."/>
+	
+	<object id="5"
+	name="Town House"
+	filename="townhouse.png"
+	placeSound="house.wav"
+	requires="0"
+	moneyCost="250"
+	woodCost="100"
+	stoneCost="80"
+	pop="15"
+	money="7"
+	food="-3"
+	description="A large town house, it holds a several families."/>
+
 </objects>

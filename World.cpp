@@ -191,8 +191,10 @@ void World::tick(){
 			//if you have nothing selected
 			if(getMousedTile()->object){
 				selectedTile = getMousedTile();
-			}else{
+				AXAudio::playAudioChunk(gui->selectionSound);
+			}else if(selectedTile != nullptr){
 				selectedTile = nullptr;
+				AXAudio::playAudioChunk(gui->cancelPickupSound);
 			}
 		}
 	}

@@ -28,9 +28,6 @@ class GUI {
 	Tile* lastTileHovered;
 	Tile* lastTileSelected;
 
-	//Audio
-	AXAudioChunk* pickupSound; // played when the user selects and object
-	AXAudioChunk* cancelPickupSound; // played when the user cancels
 	AXColour blackColour, redColour;
 	int lastObjectID;
 	//draws the grid of objects users can pick from
@@ -40,7 +37,11 @@ class GUI {
 	//returns the ID of which object is moused over in the GUI
 	int whichObjectMousedOver();
 public:
+	//Audio
+	AXAudioChunk* pickupSound; // played when the user selects and object
+	AXAudioChunk* cancelPickupSound; // played when the user cancels
 	AXAudioChunk* destructionSound;
+	AXAudioChunk* selectionSound;
 	//bakes the currently selected information, boolean for if placing or not
 	void bakeObjectInfoStrings(int objectID, bool placing);
 	void bakeTownText();
