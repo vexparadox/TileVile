@@ -38,8 +38,8 @@
 	woodCost="25"
 	stoneCost="10"
 	pop="5"
-	money="4"
-	food="-2"
+	money="5"
+	food="-1"
 	description="A small house, it holds a family."/>
 
 	<object id="2"

@@ -116,7 +116,7 @@ void GUI::tick(Tile* tile){
 
 	//if there's a tile selected, and they click the bit X delete button
 	if(lastTileSelected){
-		if(AXInput::getValue("MB1") && lastTileSelected->id != 0 && AXMath::isInsideQuad(AXInput::mouseX, AXInput::mouseY, AXWindow::getWidth()/2-32, AXWindow::getHeight()-80, AXWindow::getWidth()/2+32, AXWindow::getHeight()-16)){
+		if(AXInput::getValue("MB1") && lastTileSelected->object->id != 0 && AXMath::isInsideQuad(AXInput::mouseX, AXInput::mouseY, AXWindow::getWidth()/2-32, AXWindow::getHeight()-80, AXWindow::getWidth()/2+32, AXWindow::getHeight()-16)){
 			world->deleteObject();
 		}
 	}
