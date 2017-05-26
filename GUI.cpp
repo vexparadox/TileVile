@@ -50,14 +50,14 @@ GUI::GUI(World* world) : world(world){
 	popText = nullptr;
 	
 	//load the resource icons
-	foodIcon = new AXTexture("images/icons/meat.png");
-	woodIcon = new AXTexture("images/icons/wood.png");
-	stoneIcon = new AXTexture("images/icons/stone.png");
-	popIcon = new AXTexture("images/icons/population.png");
+	foodIcon = std::make_unique<AXTexture>("images/icons/meat.png");
+	woodIcon = std::make_unique<AXTexture>("images/icons/wood.png");
+	stoneIcon = std::make_unique<AXTexture>("images/icons/stone.png");
+	popIcon = std::make_unique<AXTexture>("images/icons/population.png");
 	//used when deleting
-	deleteIcon = new AXTexture("images/icons/delete.png");
+	deleteIcon = std::make_unique<AXTexture>("images/icons/delete.png");
 	//the background to the gui
-	backgroundIMG = new AXTexture("images/guibackground.png");
+	backgroundIMG = std::make_unique<AXTexture>("images/guibackground.png");
 	updateResources();
 	bakeTownText();
 	bakeObjectInfoStrings(world->selectedObject, true);
@@ -147,7 +147,7 @@ void GUI::tick(Tile* tile){
 
 void GUI::draw(){
 	//draw the background image
-	AXGraphics::drawTexture(backgroundIMG, 0, AXWindow::getHeight()-(2*world->tilesize), AXWindow::getWidth(), 2*world->tilesize);
+	AXGraphics::drawTexture(backgroundIMG.get(), 0, AXWindow::getHeight()-(2*world->tilesize), AXWindow::getWidth(), 2*world->tilesize);
 
 
 	//if you're placing an object or have a tile selected
@@ -166,7 +166,7 @@ void GUI::draw(){
 	if(world->selectedTile){
 		//you can't delete the townhall
 		if(world->selectedTile->object->id != 0){
-			AXGraphics::drawTexture(deleteIcon, AXWindow::getWidth()/2-32, AXWindow::getHeight()-64, 64, 64); 
+			AXGraphics::drawTexture(deleteIcon.get(), AXWindow::getWidth()/2-32, AXWindow::getHeight()-64, 64, 64); 
 		}
 	}
 
@@ -187,20 +187,20 @@ void GUI::draw(){
 	//The money text
 	AXGraphics::drawTexture(moneyText, AXWindow::getWidth()-moneyText->getWidth()-foodText->getWidth()-60, AXWindow::getHeight()-moneyText->getHeight()-80); 
 	//the food logo
-	AXGraphics::drawTexture(foodIcon, AXWindow::getWidth()-foodText->getWidth()-45, AXWindow::getHeight()-foodText->getHeight()-75, 24, 24); 
+	AXGraphics::drawTexture(foodIcon.get(), AXWindow::getWidth()-foodText->getWidth()-45, AXWindow::getHeight()-foodText->getHeight()-75, 24, 24); 
 	//the food text
 	AXGraphics::drawTexture(foodText, AXWindow::getWidth()-foodText->getWidth()-20, AXWindow::getHeight()-foodText->getHeight()-80); 
 
 	//the wood icon
-	AXGraphics::drawTexture(woodIcon, AXWindow::getWidth()-woodText->getWidth()-60, AXWindow::getHeight()-woodText->getHeight()-45, 48, 48); 
+	AXGraphics::drawTexture(woodIcon.get(), AXWindow::getWidth()-woodText->getWidth()-60, AXWindow::getHeight()-woodText->getHeight()-45, 48, 48); 
 	//the wood text
 	AXGraphics::drawTexture(woodText, AXWindow::getWidth()-woodText->getWidth()-20, AXWindow::getHeight()-woodText->getHeight()-35); 
 	//the stone icon
-	AXGraphics::drawTexture(stoneIcon, AXWindow::getWidth()-stoneText->getWidth()-woodText->getWidth()-100, AXWindow::getHeight()-woodText->getHeight()-45, 48, 48); 
+	AXGraphics::drawTexture(stoneIcon.get(), AXWindow::getWidth()-stoneText->getWidth()-woodText->getWidth()-100, AXWindow::getHeight()-woodText->getHeight()-45, 48, 48); 
 	//the stone text
 	AXGraphics::drawTexture(stoneText, AXWindow::getWidth()-stoneText->getWidth()-woodText->getWidth()-60, AXWindow::getHeight()-woodText->getHeight()-35); 
 	//the stone icon
-	AXGraphics::drawTexture(popIcon, AXWindow::getWidth()-popText->getWidth()-stoneText->getWidth()-woodText->getWidth()-140, AXWindow::getHeight()-woodText->getHeight()-45, 48, 48); 
+	AXGraphics::drawTexture(popIcon.get(), AXWindow::getWidth()-popText->getWidth()-stoneText->getWidth()-woodText->getWidth()-140, AXWindow::getHeight()-woodText->getHeight()-45, 48, 48); 
 	//the stone text
 	AXGraphics::drawTexture(popText, AXWindow::getWidth()-popText->getWidth()-stoneText->getWidth()-woodText->getWidth()-100, AXWindow::getHeight()-woodText->getHeight()-35); 
 }
@@ -359,7 +359,6 @@ void GUI::bakeTownText(){
 
 GUI::~GUI(){
 	//delete all the shit
-	delete backgroundIMG;
 	delete instructionText;
 	delete detailText1;
 	delete detailText2;
@@ -368,14 +367,9 @@ GUI::~GUI(){
 	delete townNameText;
 	delete moneyText;
 	delete foodText;
-	delete foodIcon;
 	delete woodText;
-	delete woodIcon;
 	delete stoneText;
-	delete stoneIcon;
-	delete deleteIcon;
 	delete popText;
-	delete popIcon;
 	delete fontBig;
 	delete fontSmall;
 	delete pickupSound;

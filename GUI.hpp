@@ -1,11 +1,12 @@
 #pragma once
 #include <Axilya/AXMain.h>
 #include "Tile.hpp"
+#include <memory>
 class World;
 class GUI {
 	std::vector<std::string> types; // ground type strings
 	std::vector<std::string> townsizes; // ground type strings
-	AXTexture* backgroundIMG; // background image for the GUI
+	std::unique_ptr<AXTexture> backgroundIMG; // background image for the GUI
 	AXTexture* instructionText; // used to give instructions
 	AXTexture* detailText1; // used to give instructions
 	AXTexture* detailText2; // used to give instructions
@@ -14,14 +15,14 @@ class GUI {
 	AXTexture* townNameText; // used to describe the size of the town
 	AXTexture* moneyText; // the current cash
 	AXTexture* foodText; // the current food
-	AXTexture* foodIcon; // the food icon
+	std::unique_ptr<AXTexture> foodIcon; // the food icon
 	AXTexture* woodText; // the current wood
-	AXTexture* woodIcon; // the wood icon
+	std::unique_ptr<AXTexture> woodIcon; // the wood icon
 	AXTexture* stoneText; //the current stone
-	AXTexture* stoneIcon; // the stone icon
-	AXTexture* deleteIcon; // the delete icon
+	std::unique_ptr<AXTexture> stoneIcon; // the stone icon
+	std::unique_ptr<AXTexture> deleteIcon; // the delete icon
 	AXTexture* popText; // the delete icon
-	AXTexture* popIcon; // the delete icon
+	std::unique_ptr<AXTexture> popIcon; // the delete icon
 	AXFont* fontBig;
 	AXFont* fontSmall;
 	World* world;

@@ -4,6 +4,7 @@
 class Object{
 public:
 	int id, money, food, wood, stone, pop, requiredType;
+	int upgradeID;
 	int moneyCost, woodCost, stoneCost;
 	AXTexture* texture;
 	AXAudioChunk* placeSound; // played when placed
