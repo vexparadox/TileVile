@@ -5,6 +5,7 @@
 #include "Object.hpp"
 #include "GUI.hpp"
 #include <random>
+#include <memory>
 #include <vector>
 extern int gameState;
 class World{
@@ -52,7 +53,7 @@ class World{
 	//which tile the mouse is on
 	AXVector2D mousePosition;
 	// the GUI to be drawn
-	GUI* gui;
+	std::unique_ptr<GUI> gui;
 	//timer used to call inGameTick
 	AXTimer timer;
 	//loads the tiles

@@ -8,8 +8,6 @@ World::~World(){
 	for(auto& o : objects){
 		delete o->texture;
 	}
-	//remove the GUI
-	delete gui;
 }
 
 World::World(int tilesize) : tilesize(tilesize){
@@ -53,7 +51,7 @@ World::World(int tilesize) : tilesize(tilesize){
 		AXLog::log("World", "You can't make a map that's smaller than the screen.", AX_LOG_ERROR);
 	}
 	//create the GUI
-	gui = new GUI(this); // has to be last, it uses object and tile arrays
+	gui = std::make_unique<GUI>(this); // has to be last, it uses object and tile arrays
 	timer.start();
 }
 

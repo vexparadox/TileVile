@@ -7,28 +7,28 @@ class GUI {
 	std::vector<std::string> types; // ground type strings
 	std::vector<std::string> townsizes; // ground type strings
 	std::unique_ptr<AXTexture> backgroundIMG; // background image for the GUI
-	AXTexture* instructionText; // used to give instructions
-	AXTexture* detailText1; // used to give instructions
-	AXTexture* detailText2; // used to give instructions
-	AXTexture* detailText3; // used to give instructions
-	AXTexture* descriptionText; // used to describe what the user is selecting
-	AXTexture* townNameText; // used to describe the size of the town
-	AXTexture* moneyText; // the current cash
-	AXTexture* foodText; // the current food
+	std::unique_ptr<AXTexture> instructionText; // used to give instructions
+	std::unique_ptr<AXTexture> detailText1; // used to give instructions
+	std::unique_ptr<AXTexture> detailText2; // used to give instructions
+	std::unique_ptr<AXTexture> detailText3; // used to give instructions
+	std::unique_ptr<AXTexture> descriptionText; // used to describe what the user is selecting
+	std::unique_ptr<AXTexture> townNameText; // used to describe the size of the town
+	std::unique_ptr<AXTexture> moneyText; // the current cash
+	std::unique_ptr<AXTexture> foodText; // the current food
 	std::unique_ptr<AXTexture> foodIcon; // the food icon
-	AXTexture* woodText; // the current wood
+	std::unique_ptr<AXTexture> woodText; // the current wood
 	std::unique_ptr<AXTexture> woodIcon; // the wood icon
-	AXTexture* stoneText; //the current stone
+	std::unique_ptr<AXTexture> stoneText; //the current stone
 	std::unique_ptr<AXTexture> stoneIcon; // the stone icon
 	std::unique_ptr<AXTexture> deleteIcon; // the delete icon
-	AXTexture* popText; // the delete icon
+	std::unique_ptr<AXTexture> popText; // the delete icon
 	std::unique_ptr<AXTexture> popIcon; // the delete icon
-	AXFont* fontBig;
-	AXFont* fontSmall;
+	std::unique_ptr<AXFont> fontBig;
+	std::unique_ptr<AXFont> fontSmall;
 	World* world;
 	Tile* lastTileHovered;
 	Tile* lastTileSelected;
-
+	
 	AXColour blackColour, redColour;
 	int lastObjectID;
 	//draws the grid of objects users can pick from
