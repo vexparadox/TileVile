@@ -39,15 +39,14 @@ class GUI {
 	int whichObjectMousedOver();
 public:
 	//Audio
-	AXAudioChunk* pickupSound; // played when the user selects and object
-	AXAudioChunk* cancelPickupSound; // played when the user cancels
-	AXAudioChunk* destructionSound;
-	AXAudioChunk* selectionSound;
+	std::unique_ptr<AXAudioChunk> pickupSound; // played when the user selects and object
+	std::unique_ptr<AXAudioChunk> cancelPickupSound; // played when the user cancels
+	std::unique_ptr<AXAudioChunk> destructionSound;
+	std::unique_ptr<AXAudioChunk> selectionSound;
 	//bakes the currently selected information, boolean for if placing or not
 	void bakeObjectInfoStrings(int objectID, bool placing);
 	void bakeTownText();
 	bool onGUI; // if the mouse is over the GUI or not
-	~GUI();
 	GUI(World* world);
 	void draw();
 	void tick(Tile* tile);

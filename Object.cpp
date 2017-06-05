@@ -22,7 +22,7 @@ Object::Object(AXXMLnode_iterator& it){
 
 	std::string placeSoundFilename = "audio/placesounds/";
 	placeSoundFilename.append(it->attribute("placeSound").as_string());
-	this->placeSound = new AXAudioChunk(placeSoundFilename);
+	this->placeSound = std::make_shared<AXAudioChunk>(placeSoundFilename);
 }
 
 

@@ -5,12 +5,12 @@ GUI::GUI(World* world) : world(world){
 	fontBig = std::make_unique<AXFont>("font/Ayuthaya.ttf", 22);
 	fontSmall = std::make_unique<AXFont>("font/Ayuthaya.ttf", 14);
 	//load pickup sound
-	pickupSound = new AXAudioChunk("audio/pickupsound.wav");
-	cancelPickupSound = new AXAudioChunk("audio/cancelpickupsound.wav");
+	pickupSound = std::make_unique<AXAudioChunk>("audio/pickupsound.wav");
+	cancelPickupSound = std::make_unique<AXAudioChunk>("audio/cancelpickupsound.wav");
 	//destruction sond
-	destructionSound = new AXAudioChunk("audio/destructionsound.wav");
+	destructionSound = std::make_unique<AXAudioChunk>("audio/destructionsound.wav");
 	//the sound when you select something
-	selectionSound = new AXAudioChunk("audio/selectsound.wav");
+	selectionSound = std::make_unique<AXAudioChunk>("audio/selectsound.wav");
 	//black colour for text rendering
 	blackColour = AXColour(0, 0, 0);
 	//red colour
@@ -131,11 +131,11 @@ void GUI::draw(){
 	//these strings are baked in bakeObjectInfoStrings
 	if(world->selectedObject >= 0 || world->selectedTile){
 		//the instruction text tells em
-		AXGraphics::drawTexture(instructionText.get(), 20, AXWindow::getHeight()-instructionText->getHeight()-80); 
+		AXGraphics::drawTexture(instructionText, 20, AXWindow::getHeight()-instructionText->getHeight()-80); 
 		if(detailText1 && detailText2){
-			AXGraphics::drawTexture(detailText1.get(), 20, AXWindow::getHeight()-detailText1->getHeight()-55); 
-			AXGraphics::drawTexture(detailText2.get(), 20, AXWindow::getHeight()-detailText2->getHeight()-32); 
-			AXGraphics::drawTexture(detailText3.get(), 20, AXWindow::getHeight()-detailText3->getHeight()-12); 
+			AXGraphics::drawTexture(detailText1, 20, AXWindow::getHeight()-detailText1->getHeight()-55); 
+			AXGraphics::drawTexture(detailText2, 20, AXWindow::getHeight()-detailText2->getHeight()-32); 
+			AXGraphics::drawTexture(detailText3, 20, AXWindow::getHeight()-detailText3->getHeight()-12); 
 		}
 	}
 
@@ -143,7 +143,7 @@ void GUI::draw(){
 	if(world->selectedTile){
 		//you can't delete the townhall
 		if(world->selectedTile->object->id != 0){
-			AXGraphics::drawTexture(deleteIcon.get(), AXWindow::getWidth()/2-32, AXWindow::getHeight()-64, 64, 64); 
+			AXGraphics::drawTexture(deleteIcon, AXWindow::getWidth()/2-32, AXWindow::getHeight()-64, 64, 64); 
 		}
 	}
 
@@ -154,32 +154,32 @@ void GUI::draw(){
 
 	//show the town name text
 	if(townNameText){
-		AXGraphics::drawTexture(townNameText.get(), (AXWindow::getWidth()/2)-(townNameText->getWidth()/2), AXWindow::getHeight()-townNameText->getHeight()-60); 	
+		AXGraphics::drawTexture(townNameText, (AXWindow::getWidth()/2)-(townNameText->getWidth()/2), AXWindow::getHeight()-townNameText->getHeight()-60); 	
 	}
 	//show the description text
 	if(descriptionText){
-		AXGraphics::drawTexture(descriptionText.get(), AXWindow::getWidth()-descriptionText->getWidth()-20, AXWindow::getHeight()-descriptionText->getHeight()-10); 
+		AXGraphics::drawTexture(descriptionText, AXWindow::getWidth()-descriptionText->getWidth()-20, AXWindow::getHeight()-descriptionText->getHeight()-10); 
 	}
 	//show the resources
 	//The money text
-	AXGraphics::drawTexture(moneyText.get(), AXWindow::getWidth()-moneyText->getWidth()-foodText->getWidth()-60, AXWindow::getHeight()-moneyText->getHeight()-80); 
+	AXGraphics::drawTexture(moneyText, AXWindow::getWidth()-moneyText->getWidth()-foodText->getWidth()-60, AXWindow::getHeight()-moneyText->getHeight()-80); 
 	//the food logo
-	AXGraphics::drawTexture(foodIcon.get(), AXWindow::getWidth()-foodText->getWidth()-45, AXWindow::getHeight()-foodText->getHeight()-75, 24, 24); 
+	AXGraphics::drawTexture(foodIcon, AXWindow::getWidth()-foodText->getWidth()-45, AXWindow::getHeight()-foodText->getHeight()-75, 24, 24); 
 	//the food text
-	AXGraphics::drawTexture(foodText.get(), AXWindow::getWidth()-foodText->getWidth()-20, AXWindow::getHeight()-foodText->getHeight()-80); 
+	AXGraphics::drawTexture(foodText, AXWindow::getWidth()-foodText->getWidth()-20, AXWindow::getHeight()-foodText->getHeight()-80); 
 
 	//the wood icon
-	AXGraphics::drawTexture(woodIcon.get(), AXWindow::getWidth()-woodText->getWidth()-60, AXWindow::getHeight()-woodText->getHeight()-45, 48, 48); 
+	AXGraphics::drawTexture(woodIcon, AXWindow::getWidth()-woodText->getWidth()-60, AXWindow::getHeight()-woodText->getHeight()-45, 48, 48); 
 	//the wood text
-	AXGraphics::drawTexture(woodText.get(), AXWindow::getWidth()-woodText->getWidth()-20, AXWindow::getHeight()-woodText->getHeight()-35); 
+	AXGraphics::drawTexture(woodText, AXWindow::getWidth()-woodText->getWidth()-20, AXWindow::getHeight()-woodText->getHeight()-35); 
 	//the stone icon
-	AXGraphics::drawTexture(stoneIcon.get(), AXWindow::getWidth()-stoneText->getWidth()-woodText->getWidth()-100, AXWindow::getHeight()-woodText->getHeight()-45, 48, 48); 
+	AXGraphics::drawTexture(stoneIcon, AXWindow::getWidth()-stoneText->getWidth()-woodText->getWidth()-100, AXWindow::getHeight()-woodText->getHeight()-45, 48, 48); 
 	//the stone text
-	AXGraphics::drawTexture(stoneText.get(), AXWindow::getWidth()-stoneText->getWidth()-woodText->getWidth()-60, AXWindow::getHeight()-woodText->getHeight()-35); 
+	AXGraphics::drawTexture(stoneText, AXWindow::getWidth()-stoneText->getWidth()-woodText->getWidth()-60, AXWindow::getHeight()-woodText->getHeight()-35); 
 	//the stone icon
-	AXGraphics::drawTexture(popIcon.get(), AXWindow::getWidth()-popText->getWidth()-stoneText->getWidth()-woodText->getWidth()-140, AXWindow::getHeight()-woodText->getHeight()-45, 48, 48); 
+	AXGraphics::drawTexture(popIcon, AXWindow::getWidth()-popText->getWidth()-stoneText->getWidth()-woodText->getWidth()-140, AXWindow::getHeight()-woodText->getHeight()-45, 48, 48); 
 	//the stone text
-	AXGraphics::drawTexture(popText.get(), AXWindow::getWidth()-popText->getWidth()-stoneText->getWidth()-woodText->getWidth()-100, AXWindow::getHeight()-woodText->getHeight()-35); 
+	AXGraphics::drawTexture(popText, AXWindow::getWidth()-popText->getWidth()-stoneText->getWidth()-woodText->getWidth()-100, AXWindow::getHeight()-woodText->getHeight()-35); 
 }
 
 int GUI::whichObjectMousedOver(){
@@ -270,7 +270,7 @@ void GUI::bakeObjectInfoStrings(int objectID, bool placing){
 		AXLog::log("Bake Object Info", "You're trying to bake info strings when there's no object selected.", AX_LOG_ERROR);
 		return;
 	}
-	Object* selected = world->objects[objectID]; // get a temp object
+	std::shared_ptr<Object> selected = world->objects[objectID]; // get a temp object
 	//if you're placing, give an instruction, otherwise give a statement
 	if(placing){
 		instructionText.reset(fontBig->bakeTexture("Click to place a "+selected->name+"!", blackColour));
@@ -322,10 +322,4 @@ void GUI::bakeObjectInfoStrings(int objectID, bool placing){
 
 void GUI::bakeTownText(){
 	townNameText.reset(fontBig->bakeTexture(townsizes[world->townSize], blackColour));
-}
-
-GUI::~GUI(){
-	//delete all the shit
-	delete pickupSound;
-	delete cancelPickupSound;
 }

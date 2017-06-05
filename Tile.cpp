@@ -1,7 +1,6 @@
 #include "Tile.hpp"
 
 Tile::Tile(AXXMLnode_iterator& it){
-	object = nullptr;
 	this->id = it->attribute("id").as_int();
 	this->type = it->attribute("type").as_int();
 	std::string filename = it->attribute("filename").as_string();

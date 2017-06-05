@@ -5,9 +5,6 @@ World::~World(){
 	for(auto& t : tiles){
 		delete t->texture;
 	}
-	for(auto& o : objects){
-		delete o->texture;
-	}
 }
 
 World::World(int tilesize) : tilesize(tilesize){
@@ -237,13 +234,13 @@ void World::loadObjects(){
 	AXXMLnode objectnode = xml.child("objects");
 	//loop through the "tiles"
 	for (AXXMLnode_iterator it = objectnode.begin(); it != objectnode.end(); ++it){
-		objects.push_back(new Object(it));
+		objects.push_back(std::make_shared<Object>(it));
 	}
 }
 
 void World::placeObject(){
 	//update the tile with the selected object
-	getMousedTile()->object = new Object(objects[selectedObject]);
+	getMousedTile()->object = objects[selectedObject];
 	//get the incomes from the objects
 	moneyIncome += objects[selectedObject]->money;
 	foodIncome += objects[selectedObject]->food;
@@ -254,7 +251,7 @@ void World::placeObject(){
 	currentMoney -= objects[selectedObject]->moneyCost;
 	currentWood -= objects[selectedObject]->woodCost;
 	currentStone -= objects[selectedObject]->stoneCost;
-	AXAudio::playAudioChunk(objects[selectedObject]->placeSound);
+	AXAudio::playAudioChunk(objects[selectedObject]->placeSound.get());
 	this->townSize = getTownSize();
 	//update the incomes
 	gui->updateResources();
@@ -279,8 +276,7 @@ void World::deleteObject(){
 	gui->updateResources();
 	gui->bakeTownText();
 	//turn it so we're not holding it anymore
-	delete selectedTile->object;
-	selectedTile->object = nullptr;
+	selectedTile->object.reset();
 	selectedTile = nullptr;
 }
 

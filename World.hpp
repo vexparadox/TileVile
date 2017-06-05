@@ -47,7 +47,7 @@ class World{
 	//this is the tiles that are available, the map is copies of theses
 	std::vector<Tile*> tiles;
 	//if the objects that have been loaded
-	std::vector<Object*> objects;
+	std::vector<std::shared_ptr<Object> > objects;
 	// the current offset
 	AXVector2D currentOffset; 
 	//which tile the mouse is on

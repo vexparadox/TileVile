@@ -7,7 +7,7 @@ public:
 	int upgradeID;
 	int moneyCost, woodCost, stoneCost;
 	AXTexture* texture;
-	AXAudioChunk* placeSound; // played when placed
+	std::shared_ptr<AXAudioChunk> placeSound; // played when placed
 	std::string description, name;
 	Object(AXXMLnode_iterator& it);
 	Object(const Object* other);
