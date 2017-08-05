@@ -223,7 +223,7 @@ void World::loadMap(){
 }
 
 void World::loadTiles(){
-	AXXML xml("XML/tiles.xml");
+	AXXML xml("XML/Tiles.xml");
 	AXXMLnode tilenode = xml.child("tiles");
 	//loop through the "tiles"
 	for (AXXMLnode_iterator it = tilenode.begin(); it != tilenode.end(); ++it){
@@ -231,7 +231,7 @@ void World::loadTiles(){
 	}
 }
 void World::loadObjects(){
-	AXXML xml("XML/objects.xml");
+	AXXML xml("XML/Objects.xml");
 	AXXMLnode objectnode = xml.child("objects");
 	//loop through the "tiles"
 	for (AXXMLnode_iterator it = objectnode.begin(); it != objectnode.end(); ++it){
