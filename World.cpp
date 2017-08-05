@@ -71,8 +71,7 @@ void World::draw(){
 				}
 			}
 
-			//if the home has been set, and you're placing
-			//cover the area you can't place
+			//if the home has been set, cover the area you can't place
 			if(homeSet){
 				if(AXMath::absolute(i-homePosition.x) > allowedHomeDistance || AXMath::absolute(j-homePosition.y) > allowedHomeDistance){
 					AXGraphics::fill(100, 100, 100, 150);
@@ -92,10 +91,12 @@ void World::draw(){
 					//if it's placeable, make it red!
 					if(objects[selectedObject]->requiredType != map[i][j]->type || map[i][j]->object){
 						AXGraphics::fill(255, 0, 0, 200);
-					}else{
+					}else{ // else make it green
 						AXGraphics::fill(0, 255, 0, 150);
 					}
 				}else{
+					//or if we don't have an object selected
+					//just highlight slightly
 					AXGraphics::fill(0, 255, 0, 100);
 				}
 				AXGraphics::drawRect((row*tilesize), (col*tilesize), tilesize, tilesize);
@@ -151,7 +152,7 @@ void World::tick(){
 		mousePosition.y = maxOnScreenY-1;
 	}
 
-	//get the current distance from the mouse to home
+	//get the current distance from the mouse to home, this is used for placing
 	if(homeSet){
 		homeDistance.x = homePosition.x - (mousePosition.x+currentOffset.x);
 		homeDistance.y = homePosition.y - (mousePosition.y+currentOffset.y);
