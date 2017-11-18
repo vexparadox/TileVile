@@ -29,7 +29,7 @@ class World{
 	AXVector2D homePosition; // where the townhall has been placed
 	AXVector2D homeDistance; // the current distance to the townhall
 	//which object, if any is selected
-	int selectedObject;
+	std::shared_ptr<Object> selectedObject;
 	Tile* selectedTile; // the tile that's currently selected
 	//if the home as been set
 	bool homeSet;
@@ -57,7 +57,12 @@ class World{
 	void loadMap();
 	//returns the tile pointer to the tile the mouse is over
 	Tile* getMousedTile();
+
 	void inGameTick();
+
+	void HandleMouseClicks();
+
+	bool InHomeBounds();
 
 	void placeObject();
 	//returns the townsize and sets the allowed home distance

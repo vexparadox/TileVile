@@ -47,8 +47,8 @@ void GUI::tick(Tile* tile){
 	onGUI = isMouseOverGUI();
 
 	//let the user cancel their pickup
-	if(AXInput::getValue("ESC") && world->homeSet && world->selectedObject >= 0){
-		world->selectedObject = -1;
+	if(AXInput::getValue("ESC") && world->homeSet && world->selectedObject){
+		world->selectedObject.reset();
 		AXAudio::playAudioChunk(cancelPickupSound);
 	}
 
@@ -63,9 +63,9 @@ void GUI::tick(Tile* tile){
 		for(int i = 1; i < world->objects.size(); i++){
 			//get the input on the numbers
 			if(AXInput::getValue(std::to_string(i))){
-				if(world->selectedObject != i){
-					world->selectedObject = i;
-					bakeObjectInfoStrings(i, true); // bake the info strings
+				if(world->selectedObject != world->objects.at(i)){
+					world->selectedObject = world->objects.at(i);
+					bakeObjectInfoStrings(world->selectedObject, true); // bake the info strings
 					AXAudio::playAudioChunk(pickupSound); // play the pickup sound
 				}
 				break;
@@ -91,7 +91,7 @@ void GUI::tick(Tile* tile){
 		lastTileSelected = world->selectedTile;
 		//if it's changing to a tile, not a null
 		if(lastTileSelected){
-			bakeObjectInfoStrings(lastTileSelected->object->id, false);
+			bakeObjectInfoStrings(lastTileSelected->object, false);
 		}
 	}
 
@@ -103,23 +103,23 @@ void GUI::tick(Tile* tile){
 	}
 
 	//if the user has nothing selected
-	if(world->selectedObject < 0 && onGUI){
+	if(world->selectedObject == nullptr && onGUI){
 		//if they are moused over something and the mouse is pressed!
-		int objectID = whichObjectMousedOver();
-		if(objectID >= 0){
-			if(objectID != lastObjectID){	
+		std::shared_ptr<Object> objectPtr = whichObjectMousedOver();
+		if(objectPtr){
+			if(objectPtr != objectPtr){	
 				//show the description of the object
-				descriptionText.reset(fontSmall->bakeTexture(world->objects[objectID]->description, blackColour));
+				descriptionText.reset(fontSmall->bakeTexture(objectPtr->description, blackColour));
 			}
 			//if they click on an object
 			if(AXInput::getValue("MB1")){
 				//set the selected object to the one we clicked on
-				world->selectedObject = objectID; 
-				bakeObjectInfoStrings(objectID, true); // bake the info strings
+				world->selectedObject = objectPtr; 
+				bakeObjectInfoStrings(objectPtr, true); // bake the info strings
 				AXAudio::playAudioChunk(pickupSound); // play the pickup sound
 			}
 		}
-		lastObjectID = objectID;
+		objectPtr = objectPtr;
 	}
 }
 
@@ -130,7 +130,7 @@ void GUI::draw(){
 
 	//if you're placing an object or have a tile selected
 	//these strings are baked in bakeObjectInfoStrings
-	if(world->selectedObject >= 0 || world->selectedTile){
+	if(world->selectedObject || world->selectedTile){
 		//the instruction text tells em
 		AXGraphics::drawTexture(instructionText, 20, AXWindow::getHeight()-instructionText->getHeight()-80); 
 		if(detailText1 && detailText2){
@@ -149,7 +149,7 @@ void GUI::draw(){
 	}
 
 	//if there's no object or tile selected show the object selection
-	if(world->selectedObject < 0 && !world->selectedTile){
+	if(world->selectedObject == nullptr && !world->selectedTile){
 		drawObjectSelect();
 	}
 
@@ -183,7 +183,7 @@ void GUI::draw(){
 	AXGraphics::drawTexture(popText, AXWindow::getWidth()-popText->getWidth()-stoneText->getWidth()-woodText->getWidth()-100, AXWindow::getHeight()-woodText->getHeight()-35); 
 }
 
-int GUI::whichObjectMousedOver(){
+std::shared_ptr<Object> GUI::whichObjectMousedOver(){
 	int row = 0;
 	int col = -1; // starts by being incrememted
 	int numPerRow = 6; // it's actually 1 less than this
@@ -202,11 +202,11 @@ int GUI::whichObjectMousedOver(){
 		//do a simple mouse in box using the dimensions used by drawObjectSelect
 		if(AXInput::mouseX > 20+(world->tilesize*col) && AXInput::mouseX < 20+(world->tilesize*col)+world->tilesize){
 			if(AXInput::mouseY > AXWindow::getHeight()-(120-(world->tilesize*row)) && AXInput::mouseY < AXWindow::getHeight()-(120-(world->tilesize*row))+world->tilesize){
-				return i;
+				return world->objects.at(i);
 			}
 		}
 	}
-	return -1;
+	return nullptr;
 
 }
 
@@ -266,12 +266,12 @@ void GUI::updateResources(){
 }
 
 
-void GUI::bakeObjectInfoStrings(int objectID, bool placing){
-	if(objectID < 0){
+void GUI::bakeObjectInfoStrings(std::shared_ptr<Object> obj, bool placing){
+	if(!obj){
 		AXLog::log("Bake Object Info", "You're trying to bake info strings when there's no object selected.", AX_LOG_ERROR);
 		return;
 	}
-	std::shared_ptr<Object> selected = world->objects[objectID]; // get a temp object
+	std::shared_ptr<Object> selected = obj; // get a temp object
 	//if you're placing, give an instruction, otherwise give a statement
 	if(placing){
 		instructionText.reset(fontBig->bakeTexture("Click to place a "+selected->name+"!", blackColour));
@@ -283,7 +283,7 @@ void GUI::bakeObjectInfoStrings(int objectID, bool placing){
 		detailText1.reset(fontSmall->bakeTexture("Tile Type: "+types[selected->requiredType], blackColour));
 	}else{
 		//YOU CANT DELETE THE TOWN HALL
-		if(objectID == 0){
+		if(obj->id == 0){
 			detailText1.reset(fontSmall->bakeTexture("This building gives you "+std::to_string(world->allowedHomeDistance)+" tiles to build on.", blackColour));
 		}else{
 			detailText1.reset(fontSmall->bakeTexture("Currently worth $"+std::to_string((int)selected->cost.money/2), blackColour));

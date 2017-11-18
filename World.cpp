@@ -8,9 +8,6 @@ World::~World(){
 }
 
 World::World(int tilesize) : tilesize(tilesize){
-	//if the home as been picked
-	homeSet = false;
-	selectedObject = 0; // the town center
 
 	//starting resources
 	townSize = 0;
@@ -33,6 +30,10 @@ World::World(int tilesize) : tilesize(tilesize){
 	//load in objects
 	loadObjects();
 
+	//if the home as been picked
+	homeSet = false;
+	selectedObject = objects.at(0); // pick the town center
+
 	//load in the map and genertae
 	loadMap();
 
@@ -51,13 +52,14 @@ void World::draw(){
 		int col = 0;
 		for(int j = currentOffset.y; j < maxOnScreenY+currentOffset.y; j++){
 			//draw the background
-			AXGraphics::drawTexture(map[i][j]->texture, (row*tilesize), (col*tilesize), tilesize, tilesize);
-			if(map[i][j]->object){
-				AXGraphics::drawTexture(map[i][j]->object->texture, (row*tilesize), (col*tilesize), tilesize, tilesize);
+			Tile* curr_tile = map[i][j];
+			AXGraphics::drawTexture(curr_tile->texture, (row*tilesize), (col*tilesize), tilesize, tilesize);
+			if(curr_tile->object){
+				AXGraphics::drawTexture(curr_tile->object->texture, (row*tilesize), (col*tilesize), tilesize, tilesize);
 			}
 			//if currently selected, highlight it
 			if(selectedTile){
-				if(selectedTile == map[i][j]){
+				if(selectedTile == curr_tile){
 					AXGraphics::fill(0, 255, 0, 50);
 					AXGraphics::drawRect((row*tilesize), (col*tilesize), tilesize, tilesize);
 				}
@@ -79,9 +81,9 @@ void World::draw(){
 
 			//mouse over!
 			if(i == mousePosition.x+currentOffset.x && j == mousePosition.y+currentOffset.y && !gui->onGUI){
-				if(selectedObject >= 0){
+				if(selectedObject){
 					//if it's placeable, make it red!
-					if(objects[selectedObject]->requiredType != map[i][j]->type || map[i][j]->object){
+					if(selectedObject->requiredType != curr_tile->type || curr_tile->object){
 						AXGraphics::fill(255, 0, 0, 200);
 					}else{ // else make it green
 						AXGraphics::fill(0, 255, 0, 150);
@@ -99,8 +101,8 @@ void World::draw(){
 	}
 	
 	AXGraphics::fill(255, 255, 255, 255);
-	if(selectedObject >= 0){
-		AXGraphics::drawTexture(objects[selectedObject]->texture, (mousePosition.x*tilesize), (mousePosition.y*tilesize), tilesize, tilesize);
+	if(selectedObject){
+		AXGraphics::drawTexture(selectedObject->texture, (mousePosition.x*tilesize), (mousePosition.y*tilesize), tilesize, tilesize);
 	}
 
 	//draw the gui
@@ -150,22 +152,34 @@ void World::tick(){
 		homeDistance.y = homePosition.y - (mousePosition.y+currentOffset.y);
 	}
 
+	HandleMouseClicks();
+	
+	//gui takes a tile pointer, this is what the user is moused over
+	gui->tick(getMousedTile());
+	if(timer.elapsedTime() > 2000){
+		timer.reset();
+		timer.start();
+		inGameTick();
+	}
+}
 
+void World::HandleMouseClicks()
+{
 	// if the mouse is pressed on the map
 	if(AXInput::getValue("MB1") && AXInput::mouseY < maxOnScreenY*tilesize && !mouseClicked){
 		mouseClicked = true;
-		if(selectedObject >= 0){
+		if(selectedObject){
 			//check if the type is correct
 			//if there's already an object
 			//if we can afford
 			//and we're close enough to the home
-			if(getMousedTile()->type == objects[selectedObject]->requiredType 
+			if(getMousedTile()->type == selectedObject->requiredType 
 				&& !getMousedTile()->object 
-				&& resource_pool.CanAfford(objects[selectedObject]->cost))
+				&& resource_pool.CanAfford(selectedObject->cost))
 				{
 				//if the home has been set check the distance
 				if(homeSet){
-					if(AXMath::absolute(homeDistance.x) <= allowedHomeDistance && AXMath::absolute(homeDistance.y) <= allowedHomeDistance){
+					if(InHomeBounds()){
 						placeObject();
 					}
 				}else{
@@ -189,13 +203,11 @@ void World::tick(){
 		mouseClicked = false;
 	}
 
-	//gui takes a tile pointer, this is what the user is moused over
-	gui->tick(getMousedTile());
-	if(timer.elapsedTime() > 2000){
-		timer.reset();
-		timer.start();
-		inGameTick();
-	}
+}
+
+bool World::InHomeBounds()
+{
+	return AXMath::absolute(homeDistance.x) <= allowedHomeDistance && AXMath::absolute(homeDistance.y) <= allowedHomeDistance;
 }
 
 void World::loadMap(){
@@ -232,26 +244,24 @@ void World::loadObjects(){
 
 void World::placeObject(){
 	//update the tile with the selected object
-	getMousedTile()->object = objects[selectedObject];
-	auto curr_obj = objects[selectedObject];
+	getMousedTile()->object = selectedObject;
+	auto curr_obj = selectedObject;
 	//get the incomes from the objects
 	resource_pool.GainIncome(curr_obj->income);
 	//take away the cost
 	resource_pool.Spend(curr_obj->cost);
 
-	AXAudio::playAudioChunk(objects[selectedObject]->placeSound.get());
+	AXAudio::playAudioChunk(curr_obj->placeSound.get());
 	this->townSize = getTownSize();
 	//update the incomes
 	gui->updateResources();
 	gui->bakeTownText();
 	//turn it so we're not holding it anymore
-	selectedObject = -1;
+	selectedObject.reset();
 }
 
 void World::deleteObject(){
-	//get the incomes from the objects
-	int selectedID = selectedTile->object->id;
-	auto curr_obj = objects[selectedID];
+	auto curr_obj = selectedTile->object;
 	//lose the income of the object
 	resource_pool.LoseIncome(curr_obj->income);	
 	//get the income of half the original cost

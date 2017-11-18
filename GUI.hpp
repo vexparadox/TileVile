@@ -30,13 +30,13 @@ class GUI {
 	Tile* lastTileSelected;
 	
 	AXColour blackColour, redColour;
-	int lastObjectID;
+	std::shared_ptr<Object> lastObjectID;
 	//draws the grid of objects users can pick from
 	void drawObjectSelect();
 	//returns if the mouse is over the GUI or not, stored in onGUI
 	bool isMouseOverGUI();
-	//returns the ID of which object is moused over in the GUI
-	int whichObjectMousedOver();
+	//returns the object which moused over in the GUI
+	std::shared_ptr<Object> whichObjectMousedOver();
 public:
 	//Audio
 	std::unique_ptr<AXAudioChunk> pickupSound; // played when the user selects and object
@@ -44,7 +44,7 @@ public:
 	std::unique_ptr<AXAudioChunk> destructionSound;
 	std::unique_ptr<AXAudioChunk> selectionSound;
 	//bakes the currently selected information, boolean for if placing or not
-	void bakeObjectInfoStrings(int objectID, bool placing);
+	void bakeObjectInfoStrings(std::shared_ptr<Object>, bool placing);
 	void bakeTownText();
 	bool onGUI; // if the mouse is over the GUI or not
 	GUI(World* world);
