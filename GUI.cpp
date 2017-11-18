@@ -1,5 +1,6 @@
 #include "GUI.hpp"
 #include "World.hpp"
+#include "ResourcePool.hpp"
 GUI::GUI(World* world) : world(world){
 	//load in the two fonts
 	fontBig = std::make_unique<AXFont>("font/Ayuthaya.ttf", 22);
@@ -236,31 +237,31 @@ bool GUI::isMouseOverGUI(){
 	return false;
 }
 void GUI::updateResources(){
-	if(world->moneyIncome < 0){
-		moneyText.reset(fontBig->bakeTexture("$"+std::to_string(world->currentMoney)+"("+std::to_string(world->moneyIncome)+")", redColour));
+	if(world->resource_pool.moneyIncome < 0){
+		moneyText.reset(fontBig->bakeTexture("$"+std::to_string(world->resource_pool.money)+"("+std::to_string(world->resource_pool.moneyIncome)+")", redColour));
 	}else{
-		moneyText.reset(fontBig->bakeTexture("$"+std::to_string(world->currentMoney)+"(+"+std::to_string(world->moneyIncome)+")", blackColour));
+		moneyText.reset(fontBig->bakeTexture("$"+std::to_string(world->resource_pool.money)+"(+"+std::to_string(world->resource_pool.moneyIncome)+")", blackColour));
 	}
-	if(world->foodIncome < 0){
-		foodText.reset(fontBig->bakeTexture(std::to_string(world->currentFood)+"("+std::to_string(world->foodIncome)+")", redColour));
+	if(world->resource_pool.foodIncome < 0){
+		foodText.reset(fontBig->bakeTexture(std::to_string(world->resource_pool.food)+"("+std::to_string(world->resource_pool.foodIncome)+")", redColour));
 	}else{
-		foodText.reset(fontBig->bakeTexture(std::to_string(world->currentFood)+"(+"+std::to_string(world->foodIncome)+")", blackColour));
+		foodText.reset(fontBig->bakeTexture(std::to_string(world->resource_pool.food)+"(+"+std::to_string(world->resource_pool.foodIncome)+")", blackColour));
 	}
-	if(world->woodIncome < 0){
-		woodText.reset(fontBig->bakeTexture(std::to_string(world->currentWood)+"("+std::to_string(world->woodIncome)+")", redColour));
+	if(world->resource_pool.woodIncome < 0){
+		woodText.reset(fontBig->bakeTexture(std::to_string(world->resource_pool.wood)+"("+std::to_string(world->resource_pool.woodIncome)+")", redColour));
 	}else{
-		woodText.reset(fontBig->bakeTexture(std::to_string(world->currentWood)+"(+"+std::to_string(world->woodIncome)+")", blackColour));
+		woodText.reset(fontBig->bakeTexture(std::to_string(world->resource_pool.wood)+"(+"+std::to_string(world->resource_pool.woodIncome)+")", blackColour));
 	}
-	if(world->stoneIncome < 0){
-		stoneText.reset(fontBig->bakeTexture(std::to_string(world->currentStone)+"("+std::to_string(world->stoneIncome)+")", redColour));
+	if(world->resource_pool.stoneIncome < 0){
+		stoneText.reset(fontBig->bakeTexture(std::to_string(world->resource_pool.stone)+"("+std::to_string(world->resource_pool.stoneIncome)+")", redColour));
 	}else{
-		stoneText.reset(fontBig->bakeTexture(std::to_string(world->currentStone)+"(+"+std::to_string(world->stoneIncome)+")", blackColour));
+		stoneText.reset(fontBig->bakeTexture(std::to_string(world->resource_pool.stone)+"(+"+std::to_string(world->resource_pool.stoneIncome)+")", blackColour));
 	}
 	//if there's not enough food, show that people die
-	if(world->currentFood < 0){
-		popText.reset(fontBig->bakeTexture(std::to_string(world->currentPop)+"(-2)", redColour));
+	if(world->resource_pool.food < 0){
+		popText.reset(fontBig->bakeTexture(std::to_string(world->resource_pool.population)+"(-2)", redColour));
 	}else{
-		popText.reset(fontBig->bakeTexture(std::to_string(world->currentPop), blackColour));
+		popText.reset(fontBig->bakeTexture(std::to_string(world->resource_pool.population), blackColour));
 	}
 }
 
@@ -285,37 +286,37 @@ void GUI::bakeObjectInfoStrings(int objectID, bool placing){
 		if(objectID == 0){
 			detailText1.reset(fontSmall->bakeTexture("This building gives you "+std::to_string(world->allowedHomeDistance)+" tiles to build on.", blackColour));
 		}else{
-			detailText1.reset(fontSmall->bakeTexture("Currently worth $"+std::to_string((int)selected->moneyCost/2), blackColour));
+			detailText1.reset(fontSmall->bakeTexture("Currently worth $"+std::to_string((int)selected->cost.money/2), blackColour));
 		}
 	}
 	//create a temporary string to hold the details
 	std::string detailText2String = "Costs";
-	if(selected->moneyCost != 0){
-		detailText2String.append(" | $"+std::to_string(selected->moneyCost));
+	if(selected->cost.money != 0){
+		detailText2String.append(" | $"+std::to_string(selected->cost.money));
 	}
-	if(selected->stoneCost != 0){
-		detailText2String.append(" | Stone: "+std::to_string(selected->stoneCost));
+	if(selected->cost.stone != 0){
+		detailText2String.append(" | Stone: "+std::to_string(selected->cost.stone));
 	}
-	if(selected->woodCost != 0){
-		detailText2String.append(" | Wood: "+std::to_string(selected->woodCost));
+	if(selected->cost.wood != 0){
+		detailText2String.append(" | Wood: "+std::to_string(selected->cost.wood));
 	}
 	detailText2.reset(fontSmall->bakeTexture(detailText2String, blackColour));
 	//a string for the production
 	std::string detailText3String = "Per Tick";
-	if(selected->money != 0){
-		detailText3String.append(" | $"+std::to_string(selected->money));
+	if(selected->income.money != 0){
+		detailText3String.append(" | $"+std::to_string(selected->income.money));
 	}
-	if(selected->food != 0){
-		detailText3String.append(" | Food: "+std::to_string(selected->food));
+	if(selected->income.food != 0){
+		detailText3String.append(" | Food: "+std::to_string(selected->income.food));
 	}
-	if(selected->pop != 0){
-		detailText3String.append(" | Population: "+std::to_string(selected->pop));
+	if(selected->income.population != 0){
+		detailText3String.append(" | Population: "+std::to_string(selected->income.population));
 	}
-	if(selected->wood != 0){
-		detailText3String.append(" | Wood: "+std::to_string(selected->wood));
+	if(selected->income.wood != 0){
+		detailText3String.append(" | Wood: "+std::to_string(selected->income.wood));
 	}
-	if(selected->stone != 0){
-		detailText3String.append(" | Stone: "+std::to_string(selected->stone));
+	if(selected->income.stone != 0){
+		detailText3String.append(" | Stone: "+std::to_string(selected->income.stone));
 	}
 	detailText3.reset(fontSmall->bakeTexture(detailText3String, blackColour));
 }

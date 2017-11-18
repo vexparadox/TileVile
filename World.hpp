@@ -3,6 +3,7 @@
 #include <Axilya/AXCSVLoader.hpp>
 #include "Tile.hpp"
 #include "Object.hpp"
+#include "ResourcePool.hpp"
 #include "GUI.hpp"
 #include <random>
 #include <memory>
@@ -18,15 +19,7 @@ class World{
 	int maxOnScreenX, maxOnScreenY;	
 
 	//player resources
-	int currentMoney;
-	int moneyIncome;
-	int currentFood;
-	int foodIncome;
-	int currentWood;
-	int woodIncome;
-	int currentStone;
-	int stoneIncome;
-	int currentPop;
+	ResourcePool resource_pool;
 
 	int townSize; // the town size
 

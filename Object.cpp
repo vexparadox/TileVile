@@ -1,16 +1,11 @@
 #include "Object.hpp"
 
-Object::Object(AXXMLnode_iterator& it){
+Object::Object(AXXMLnode_iterator& it) :
+cost(it->attribute("woodCost").as_int(), it->attribute("stoneCost").as_int(), it->attribute("moneyCost").as_int()),
+income(it->attribute("food").as_int(), it->attribute("wood").as_int(), it->attribute("stone").as_int(), it->attribute("money").as_int(), it->attribute("pop").as_int())
+	{
 	this->id = it->attribute("id").as_int();
-	this->food = it->attribute("food").as_int();
-	this->moneyCost = it->attribute("moneyCost").as_int();
-	this->stoneCost = it->attribute("stoneCost").as_int();
-	this->woodCost = it->attribute("woodCost").as_int();
-	this->wood = it->attribute("wood").as_int();
-	this->pop = it->attribute("pop").as_int();
-	this->stone = it->attribute("stone").as_int();
 	this->requiredType = it->attribute("requires").as_int();
-	this->money = it->attribute("money").as_int();
 	this->upgradeID = it->attribute("upgradesTo").as_int();
 
 	//get the name and description
@@ -32,9 +27,7 @@ Object::Object(const Object* other){
 	this->description = other->description;
 	this->placeSound = other->placeSound;
 	this->name = other->name;
-	this->money = other->money;
-	this->food = other->food;
-	this->wood = other->wood;
-	this->stone = other->stone;
+	this->cost = other->cost;
+	this->income = other->income;
 	this->requiredType = other->requiredType;
 }

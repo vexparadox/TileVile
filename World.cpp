@@ -11,16 +11,8 @@ World::World(int tilesize) : tilesize(tilesize){
 	//if the home as been picked
 	homeSet = false;
 	selectedObject = 0; // the town center
+
 	//starting resources
-	currentMoney = 600;
-	moneyIncome = 0;
-	currentFood = 20;
-	foodIncome = 0;
-	currentWood = 200;
-	woodIncome = 0;
-	currentStone = 150;
-	stoneIncome = 0;
-	currentPop = 0;
 	townSize = 0;
 	//set the allowed home distance
 	allowedHomeDistance = 5;
@@ -169,9 +161,8 @@ void World::tick(){
 			//and we're close enough to the home
 			if(getMousedTile()->type == objects[selectedObject]->requiredType 
 				&& !getMousedTile()->object 
-				&& objects[selectedObject]->moneyCost <= currentMoney
-				&& objects[selectedObject]->woodCost <= currentWood
-				&& objects[selectedObject]->stoneCost <= currentStone){
+				&& resource_pool.CanAfford(objects[selectedObject]->cost))
+				{
 				//if the home has been set check the distance
 				if(homeSet){
 					if(AXMath::absolute(homeDistance.x) <= allowedHomeDistance && AXMath::absolute(homeDistance.y) <= allowedHomeDistance){
@@ -242,16 +233,12 @@ void World::loadObjects(){
 void World::placeObject(){
 	//update the tile with the selected object
 	getMousedTile()->object = objects[selectedObject];
+	auto curr_obj = objects[selectedObject];
 	//get the incomes from the objects
-	moneyIncome += objects[selectedObject]->money;
-	foodIncome += objects[selectedObject]->food;
-	woodIncome += objects[selectedObject]->wood;
-	stoneIncome += objects[selectedObject]->stone;
-	currentPop += objects[selectedObject]->pop;
+	resource_pool.GainIncome(curr_obj->income);
 	//take away the cost
-	currentMoney -= objects[selectedObject]->moneyCost;
-	currentWood -= objects[selectedObject]->woodCost;
-	currentStone -= objects[selectedObject]->stoneCost;
+	resource_pool.Spend(curr_obj->cost);
+
 	AXAudio::playAudioChunk(objects[selectedObject]->placeSound.get());
 	this->townSize = getTownSize();
 	//update the incomes
@@ -264,13 +251,11 @@ void World::placeObject(){
 void World::deleteObject(){
 	//get the incomes from the objects
 	int selectedID = selectedTile->object->id;
-	moneyIncome -= objects[selectedID]->money;
-	foodIncome -= objects[selectedID]->food;
-	woodIncome -= objects[selectedID]->wood;
-	stoneIncome -= objects[selectedID]->stone;
-	currentPop -= objects[selectedID]->pop;
-	//take away the cost
-	currentMoney += (int)objects[selectedID]->moneyCost/2;
+	auto curr_obj = objects[selectedID];
+	//lose the income of the object
+	resource_pool.LoseIncome(curr_obj->income);	
+	//get the income of half the original cost
+	resource_pool.GainMoney(curr_obj->cost.money/2);
 	AXAudio::playAudioChunk(gui->destructionSound);
 	this->townSize = getTownSize();
 	//update the incomes
@@ -282,6 +267,7 @@ void World::deleteObject(){
 }
 
 int World::getTownSize(){
+	int currentPop = resource_pool.population;
 	if(currentPop < 0){
 		gameState = 0;
 		return 0;
@@ -306,13 +292,7 @@ Tile* World::getMousedTile(){
 }
 
 void World::inGameTick(){
-	currentMoney += moneyIncome;
-	currentFood += foodIncome;
-	currentWood += woodIncome;
-	currentStone += stoneIncome;
-	//people die with no food
-	if(currentFood < 0){
-		currentPop -= 2;
-	}
+	resource_pool.ProcessIncome();
+
 	gui->updateResources();
 }

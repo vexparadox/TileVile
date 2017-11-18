@@ -1,11 +1,13 @@
 #ifndef Object_hpp
 #define Object_hpp
 #include <Axilya/AXMain.h>
+#include "ResourcePool.hpp"
 class Object{
 public:
-	int id, money, food, wood, stone, pop, requiredType;
+	int id, requiredType;
 	int upgradeID;
-	int moneyCost, woodCost, stoneCost;
+	ResourceCost cost;
+	ResourceIncome income;
 	AXTexture* texture;
 	std::shared_ptr<AXAudioChunk> placeSound; // played when placed
 	std::string description, name;

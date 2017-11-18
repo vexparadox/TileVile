@@ -23,7 +23,7 @@
 	 -->
 	<object id="0"
 	name="Town Hall"
-	filename="townhall.png"
+	filename="house.png"
 	placeSound="townhall.wav"
 	requires="0"
 	pop="10"
