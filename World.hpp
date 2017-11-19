@@ -26,7 +26,7 @@ class World{
 	int maxOnScreenX, maxOnScreenY;	
 	int guiTileSize = 3;// how many "tiles" the gui takes up
 
-	TICK_SPEED current_speed = TICK_SPEED::SLOW;
+	TICK_SPEED current_speed = TICK_SPEED::MEDIUM;
 	//player resources
 	ResourcePool resource_pool;
 
