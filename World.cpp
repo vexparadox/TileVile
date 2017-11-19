@@ -1,5 +1,22 @@
 #include "World.hpp"
 
+namespace{
+	int time_from_enum(TICK_SPEED speed)
+	{
+		switch(speed){
+			case SLOW:
+				return 5000;
+			break;
+			case MEDIUM:
+				return 2500;
+			break;
+			case FAST:
+				return 500;
+			break;
+		}
+	}
+}
+
 World::~World(){
 	//delete the textures off the original tiles and objects
 	for(auto& t : tiles){
@@ -20,7 +37,7 @@ World::World(int tilesize) : tilesize(tilesize){
 
 	//set how many can be on screen at once
 	maxOnScreenX = AXWindow::getWidth()/tilesize;
-	maxOnScreenY = (AXWindow::getHeight()/tilesize)-2;
+	maxOnScreenY = (AXWindow::getHeight()/tilesize)-guiTileSize;
 	selectedTile = nullptr;
 
 	mouseClicked = false;
@@ -156,7 +173,7 @@ void World::tick(){
 	
 	//gui takes a tile pointer, this is what the user is moused over
 	gui->tick(getMousedTile());
-	if(timer.elapsedTime() > 2000){
+	if(timer.elapsedTime() > time_from_enum(current_speed)){
 		timer.reset();
 		timer.start();
 		inGameTick();
@@ -190,6 +207,7 @@ void World::HandleMouseClicks()
 			}
 		}else{
 			//if you have nothing selected
+			//you can then select the tile IF it has an object on it
 			if(getMousedTile()->object){
 				selectedTile = getMousedTile();
 				AXAudio::playAudioChunk(gui->selectionSound);
@@ -303,6 +321,5 @@ Tile* World::getMousedTile(){
 
 void World::inGameTick(){
 	resource_pool.ProcessIncome();
-
 	gui->updateResources();
 }

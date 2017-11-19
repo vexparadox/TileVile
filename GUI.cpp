@@ -1,6 +1,24 @@
 #include "GUI.hpp"
 #include "World.hpp"
 #include "ResourcePool.hpp"
+
+namespace{
+	std::string name_from_speed_enum(TICK_SPEED speed)
+	{
+		switch(speed){
+			case SLOW:
+				return "Slow";
+			break;
+			case MEDIUM:
+				return "Medium";
+			break;
+			case FAST:
+				return "Fast";
+			break;
+		}
+	}
+}
+
 GUI::GUI(World* world) : world(world){
 	//load in the two fonts
 	fontBig = std::make_unique<AXFont>("font/Ayuthaya.ttf", 22);
@@ -124,19 +142,22 @@ void GUI::tick(Tile* tile){
 }
 
 void GUI::draw(){
+
+	int topYofGUI = AXWindow::getHeight()-(world->guiTileSize*world->tilesize);
 	//draw the background image
-	AXGraphics::drawTexture(backgroundIMG.get(), 0, AXWindow::getHeight()-(2*world->tilesize), AXWindow::getWidth(), 2*world->tilesize);
+	AXGraphics::drawTexture(backgroundIMG.get(), 0, topYofGUI, AXWindow::getWidth(), world->maxOnScreenY*world->tilesize);
 
 
 	//if you're placing an object or have a tile selected
 	//these strings are baked in bakeObjectInfoStrings
 	if(world->selectedObject || world->selectedTile){
 		//the instruction text tells em
-		AXGraphics::drawTexture(instructionText, 20, AXWindow::getHeight()-instructionText->getHeight()-80); 
+		//spacing of 25
+		AXGraphics::drawTexture(instructionText, 20, topYofGUI+2); 
 		if(detailText1 && detailText2){
-			AXGraphics::drawTexture(detailText1, 20, AXWindow::getHeight()-detailText1->getHeight()-55); 
-			AXGraphics::drawTexture(detailText2, 20, AXWindow::getHeight()-detailText2->getHeight()-32); 
-			AXGraphics::drawTexture(detailText3, 20, AXWindow::getHeight()-detailText3->getHeight()-12); 
+			AXGraphics::drawTexture(detailText1, 20, topYofGUI+40); 
+			AXGraphics::drawTexture(detailText2, 20, topYofGUI+65); 
+			AXGraphics::drawTexture(detailText3, 20, topYofGUI+90); 
 		}
 	}
 
@@ -144,7 +165,7 @@ void GUI::draw(){
 	if(world->selectedTile){
 		//you can't delete the townhall
 		if(world->selectedTile->object->id != 0){
-			AXGraphics::drawTexture(deleteIcon, AXWindow::getWidth()/2-32, AXWindow::getHeight()-64, 64, 64); 
+			AXGraphics::drawTexture(deleteIcon, AXWindow::getWidth()/2-32, topYofGUI+(AXWindow::getHeight()-topYofGUI/2), 64, 64); 
 		}
 	}
 
@@ -155,38 +176,39 @@ void GUI::draw(){
 
 	//show the town name text
 	if(townNameText){
-		AXGraphics::drawTexture(townNameText, (AXWindow::getWidth()/2)-(townNameText->getWidth()/2), AXWindow::getHeight()-townNameText->getHeight()-60); 	
+		AXGraphics::drawTexture(townNameText, (AXWindow::getWidth()/2)-(townNameText->getWidth()/2), topYofGUI+20); 	
 	}
 	//show the description text
 	if(descriptionText){
-		AXGraphics::drawTexture(descriptionText, AXWindow::getWidth()-descriptionText->getWidth()-20, AXWindow::getHeight()-descriptionText->getHeight()-10); 
+		AXGraphics::drawTexture(descriptionText, AXWindow::getWidth()-descriptionText->getWidth()-10, AXWindow::getHeight()-descriptionText->getHeight()); 
 	}
 	//show the resources
 	//The money text
-	AXGraphics::drawTexture(moneyText, AXWindow::getWidth()-moneyText->getWidth()-foodText->getWidth()-60, AXWindow::getHeight()-moneyText->getHeight()-80); 
+	AXGraphics::drawTexture(moneyText, AXWindow::getWidth()-moneyText->getWidth()-foodText->getWidth()-60, topYofGUI+30); 
 	//the food logo
-	AXGraphics::drawTexture(foodIcon, AXWindow::getWidth()-foodText->getWidth()-45, AXWindow::getHeight()-foodText->getHeight()-75, 24, 24); 
+	AXGraphics::drawTexture(foodIcon, AXWindow::getWidth()-foodText->getWidth()-45, topYofGUI+35, 24, 24); 
 	//the food text
-	AXGraphics::drawTexture(foodText, AXWindow::getWidth()-foodText->getWidth()-20, AXWindow::getHeight()-foodText->getHeight()-80); 
+	AXGraphics::drawTexture(foodText, AXWindow::getWidth()-foodText->getWidth()-20, topYofGUI+30); 
 
 	//the wood icon
-	AXGraphics::drawTexture(woodIcon, AXWindow::getWidth()-woodText->getWidth()-60, AXWindow::getHeight()-woodText->getHeight()-45, 48, 48); 
+	AXGraphics::drawTexture(woodIcon, AXWindow::getWidth()-woodText->getWidth()-60, topYofGUI+70, 48, 48); 
 	//the wood text
-	AXGraphics::drawTexture(woodText, AXWindow::getWidth()-woodText->getWidth()-20, AXWindow::getHeight()-woodText->getHeight()-35); 
+	AXGraphics::drawTexture(woodText, AXWindow::getWidth()-woodText->getWidth()-20, topYofGUI+75); 
 	//the stone icon
-	AXGraphics::drawTexture(stoneIcon, AXWindow::getWidth()-stoneText->getWidth()-woodText->getWidth()-100, AXWindow::getHeight()-woodText->getHeight()-45, 48, 48); 
+	AXGraphics::drawTexture(stoneIcon, AXWindow::getWidth()-stoneText->getWidth()-woodText->getWidth()-100, topYofGUI+70, 48, 48); 
 	//the stone text
-	AXGraphics::drawTexture(stoneText, AXWindow::getWidth()-stoneText->getWidth()-woodText->getWidth()-60, AXWindow::getHeight()-woodText->getHeight()-35); 
+	AXGraphics::drawTexture(stoneText, AXWindow::getWidth()-stoneText->getWidth()-woodText->getWidth()-60, topYofGUI+75); 
 	//the stone icon
-	AXGraphics::drawTexture(popIcon, AXWindow::getWidth()-popText->getWidth()-stoneText->getWidth()-woodText->getWidth()-140, AXWindow::getHeight()-woodText->getHeight()-45, 48, 48); 
+	AXGraphics::drawTexture(popIcon, AXWindow::getWidth()-popText->getWidth()-stoneText->getWidth()-woodText->getWidth()-140, topYofGUI+70, 48, 48); 
 	//the stone text
-	AXGraphics::drawTexture(popText, AXWindow::getWidth()-popText->getWidth()-stoneText->getWidth()-woodText->getWidth()-100, AXWindow::getHeight()-woodText->getHeight()-35); 
+	AXGraphics::drawTexture(popText, AXWindow::getWidth()-popText->getWidth()-stoneText->getWidth()-woodText->getWidth()-100, topYofGUI+75); 
 }
 
 std::shared_ptr<Object> GUI::whichObjectMousedOver(){
 	int row = 0;
 	int col = -1; // starts by being incrememted
 	int numPerRow = 6; // it's actually 1 less than this
+	int topYofGUI = AXWindow::getHeight()-(world->guiTileSize*world->tilesize);
 	//start from one, because they can't place another town center
 	for(int i = 1; i < world->objects.size(); i++){
 		//increase the row count for every 4 objects
@@ -201,7 +223,7 @@ std::shared_ptr<Object> GUI::whichObjectMousedOver(){
 		}
 		//do a simple mouse in box using the dimensions used by drawObjectSelect
 		if(AXInput::mouseX > 20+(world->tilesize*col) && AXInput::mouseX < 20+(world->tilesize*col)+world->tilesize){
-			if(AXInput::mouseY > AXWindow::getHeight()-(120-(world->tilesize*row)) && AXInput::mouseY < AXWindow::getHeight()-(120-(world->tilesize*row))+world->tilesize){
+			if(AXInput::mouseY > topYofGUI+(world->tilesize*row)+20 && AXInput::mouseY < topYofGUI+(world->tilesize*row)+20+world->tilesize){
 				return world->objects.at(i);
 			}
 		}
@@ -214,6 +236,7 @@ void GUI::drawObjectSelect(){
 	int row = 0;
 	int col = -1; // starts by being incrememted
 	int numPerRow = 6; // it's actually 1 less than this
+	int topYofGUI = AXWindow::getHeight()-(world->guiTileSize*world->tilesize);
 	//start from one, because they can't place another town center
 	for(int i = 1; i < world->objects.size(); i++){
 		//increase the row count for every 4 objects
@@ -226,7 +249,7 @@ void GUI::drawObjectSelect(){
 		}else{
 			col = 0;
 		}
-		AXGraphics::drawTexture(world->objects[i]->texture, 20+(world->tilesize*col), AXWindow::getHeight()-(120-(world->tilesize*row)), world->tilesize, world->tilesize); 
+		AXGraphics::drawTexture(world->objects[i]->texture, 20+(world->tilesize*col), topYofGUI+(world->tilesize*row)+20, world->tilesize, world->tilesize); 
 	}
 }
 

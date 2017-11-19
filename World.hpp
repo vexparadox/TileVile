@@ -9,6 +9,13 @@
 #include <memory>
 #include <vector>
 extern int gameState;
+
+enum TICK_SPEED
+{
+	SLOW,
+	MEDIUM,
+	FAST	
+};
 class World{
 	friend class GUI;
 	//the width and height of the map vector
@@ -17,7 +24,9 @@ class World{
 	int tilesize;
 	//how many tiles can fit on screen in each direction
 	int maxOnScreenX, maxOnScreenY;	
+	int guiTileSize = 3;// how many "tiles" the gui takes up
 
+	TICK_SPEED current_speed = TICK_SPEED::SLOW;
 	//player resources
 	ResourcePool resource_pool;
 

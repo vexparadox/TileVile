@@ -4,7 +4,7 @@ std::unique_ptr<Menu> menu;
 int gameState;
 Mix_Music* mainTheme;
 int main(int argc, char const *argv[]){
-	AXWindow::init(1200, 840, "Game", AX_DEFAULT, setup, update, draw);
+	AXWindow::init(1500, 1200, "Game", AX_DEFAULT, setup, update, draw);
 	int ret = AXWindow::run();
 	Mix_FreeMusic(mainTheme);
 	return ret;
