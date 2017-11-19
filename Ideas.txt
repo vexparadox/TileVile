@@ -1,0 +1,7 @@
+Tiles have resource counts, means things can be exhausted, will need new resource changes
+
+Lock buildings by city level? Easy to do
+
+When deleting you should be able to get more than just $$ backs
+
+storage buildings
