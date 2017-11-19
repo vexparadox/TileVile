@@ -173,7 +173,7 @@ void World::tick(){
 	
 	//gui takes a tile pointer, this is what the user is moused over
 	gui->tick(getMousedTile());
-	if(timer.elapsedTime() > time_from_enum(current_speed)){
+	if(timer.elapsedTime() > time_from_enum(current_tick_speed)){
 		timer.reset();
 		timer.start();
 		inGameTick();

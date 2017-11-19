@@ -12,6 +12,7 @@ class GUI {
 	std::unique_ptr<AXTexture> detailText2; // used to give instructions
 	std::unique_ptr<AXTexture> detailText3; // used to give instructions
 	std::unique_ptr<AXTexture> descriptionText; // used to describe what the user is selecting
+	std::unique_ptr<AXTexture> worldSpeedText; // used to describe the current tick speed
 	std::unique_ptr<AXTexture> townNameText; // used to describe the size of the town
 	std::unique_ptr<AXTexture> moneyText; // the current cash
 	std::unique_ptr<AXTexture> foodText; // the current food
@@ -46,6 +47,7 @@ public:
 	//bakes the currently selected information, boolean for if placing or not
 	void bakeObjectInfoStrings(std::shared_ptr<Object>, bool placing);
 	void bakeTownText();
+	void bakeSpeedText();
 	bool onGUI; // if the mouse is over the GUI or not
 	GUI(World* world);
 	void draw();

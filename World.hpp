@@ -12,9 +12,9 @@ extern int gameState;
 
 enum TICK_SPEED
 {
-	SLOW,
-	MEDIUM,
-	FAST	
+	SLOW = 1,
+	MEDIUM = 2,
+	FAST = 3
 };
 class World{
 	friend class GUI;
@@ -26,7 +26,7 @@ class World{
 	int maxOnScreenX, maxOnScreenY;	
 	int guiTileSize = 3;// how many "tiles" the gui takes up
 
-	TICK_SPEED current_speed = TICK_SPEED::MEDIUM;
+	TICK_SPEED current_tick_speed = TICK_SPEED::MEDIUM;
 	//player resources
 	ResourcePool resource_pool;
 

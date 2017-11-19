@@ -7,13 +7,13 @@ namespace{
 	{
 		switch(speed){
 			case SLOW:
-				return "Slow";
+				return "Relaxing";
 			break;
 			case MEDIUM:
-				return "Medium";
+				return "Casual";
 			break;
 			case FAST:
-				return "Fast";
+				return "Exhilarating";
 			break;
 		}
 	}
@@ -58,6 +58,7 @@ GUI::GUI(World* world) : world(world){
 	backgroundIMG = std::make_unique<AXTexture>("images/guibackground.png");
 	updateResources();
 	bakeTownText();
+	bakeSpeedText();
 	bakeObjectInfoStrings(world->selectedObject, true);
 }
 
@@ -76,20 +77,29 @@ void GUI::tick(Tile* tile){
 		AXAudio::playAudioChunk(cancelPickupSound);
 	}
 
-	//do the object selection with numbers
-	if(world->homeSet){
-		for(int i = 1; i < world->objects.size(); i++){
-			//get the input on the numbers
-			if(AXInput::getValue(std::to_string(i))){
-				if(world->selectedObject != world->objects.at(i)){
-					world->selectedObject = world->objects.at(i);
-					bakeObjectInfoStrings(world->selectedObject, true); // bake the info strings
-					AXAudio::playAudioChunk(pickupSound); // play the pickup sound
-				}
-				break;
-			}
+	//change speed using the numbers
+	for(int i = 1; i < 4; i ++)
+	{
+		if(world->current_tick_speed != i && AXInput::getValue(std::to_string(i))){
+			world->current_tick_speed = TICK_SPEED(i);
+			bakeSpeedText();
+			break;
 		}
 	}
+	//do the object selection with numbers
+	// if(world->homeSet){
+	// 	for(int i = 1; i < world->objects.size(); i++){
+	// 		//get the input on the numbers
+	// 		if(AXInput::getValue(std::to_string(i))){
+	// 			if(world->selectedObject != world->objects.at(i)){
+	// 				world->selectedObject = world->objects.at(i);
+	// 				bakeObjectInfoStrings(world->selectedObject, true); // bake the info strings
+	// 				AXAudio::playAudioChunk(pickupSound); // play the pickup sound
+	// 			}
+	// 			break;
+	// 		}
+	// 	}
+	// }
 
 	// if the tilebeing hovered over has changed
 	// rebake the strings
@@ -165,7 +175,7 @@ void GUI::draw(){
 	if(world->selectedTile){
 		//you can't delete the townhall
 		if(world->selectedTile->object->id != 0){
-			AXGraphics::drawTexture(deleteIcon, AXWindow::getWidth()/2-32, topYofGUI+(AXWindow::getHeight()-topYofGUI/2), 64, 64); 
+			AXGraphics::drawTexture(deleteIcon, AXWindow::getWidth()/2-32, topYofGUI+20+townNameText->getHeight(), 64, 64); 
 		}
 	}
 
@@ -178,6 +188,13 @@ void GUI::draw(){
 	if(townNameText){
 		AXGraphics::drawTexture(townNameText, (AXWindow::getWidth()/2)-(townNameText->getWidth()/2), topYofGUI+20); 	
 	}
+
+	//show the speed text
+	if(worldSpeedText)
+	{
+		AXGraphics::drawTexture(worldSpeedText, AXWindow::getWidth()-200, topYofGUI+5); 
+	}
+
 	//show the description text
 	if(descriptionText){
 		AXGraphics::drawTexture(descriptionText, AXWindow::getWidth()-descriptionText->getWidth()-10, AXWindow::getHeight()-descriptionText->getHeight()); 
@@ -346,4 +363,8 @@ void GUI::bakeObjectInfoStrings(std::shared_ptr<Object> obj, bool placing){
 
 void GUI::bakeTownText(){
 	townNameText.reset(fontBig->bakeTexture(townsizes[world->townSize], blackColour));
+}
+
+void GUI::bakeSpeedText(){
+	worldSpeedText.reset(fontSmall->bakeTexture("Speed: "+name_from_speed_enum(world->current_tick_speed), blackColour));
 }
