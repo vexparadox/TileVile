@@ -63,6 +63,7 @@ GUI::GUI(World* world) : world(world){
 }
 
 void GUI::tick(Tile* tile){
+	int topYofGUI = AXWindow::getHeight()-(world->guiTileSize*world->tilesize);
 	onGUI = isMouseOverGUI();
 
 	//let the user cancel their pickup
@@ -78,28 +79,24 @@ void GUI::tick(Tile* tile){
 	}
 
 	//change speed using the numbers
-	for(int i = 1; i < 4; i ++)
-	{
-		if(world->current_tick_speed != i && AXInput::getValue(std::to_string(i))){
-			world->current_tick_speed = TICK_SPEED(i);
-			bakeSpeedText();
-			break;
+	// if(world->current_tick_speed != i && AXInput::getValue(std::to_string(i))){
+	// 	world->current_tick_speed = TICK_SPEED(i);
+	// 	bakeSpeedText();
+	// }
+	//do the object selection with numbers
+	if(world->homeSet){
+		for(int i = 1; i < world->objects.size(); i++){
+			//get the input on the numbers
+			if(AXInput::getValue(std::to_string(i))){
+				if(world->selectedObject != world->objects.at(i)){
+					world->selectedObject = world->objects.at(i);
+					bakeObjectInfoStrings(world->selectedObject, true); // bake the info strings
+					AXAudio::playAudioChunk(pickupSound); // play the pickup sound
+				}
+				break;
+			}
 		}
 	}
-	//do the object selection with numbers
-	// if(world->homeSet){
-	// 	for(int i = 1; i < world->objects.size(); i++){
-	// 		//get the input on the numbers
-	// 		if(AXInput::getValue(std::to_string(i))){
-	// 			if(world->selectedObject != world->objects.at(i)){
-	// 				world->selectedObject = world->objects.at(i);
-	// 				bakeObjectInfoStrings(world->selectedObject, true); // bake the info strings
-	// 				AXAudio::playAudioChunk(pickupSound); // play the pickup sound
-	// 			}
-	// 			break;
-	// 		}
-	// 	}
-	// }
 
 	// if the tilebeing hovered over has changed
 	// rebake the strings
@@ -125,7 +122,7 @@ void GUI::tick(Tile* tile){
 
 	//if there's a tile selected, and they click the bit X delete button
 	if(lastTileSelected){
-		if(AXInput::getValue("MB1") && lastTileSelected->object->id != 0 && AXMath::isInsideQuad(AXInput::mouseX, AXInput::mouseY, AXWindow::getWidth()/2-32, AXWindow::getHeight()-80, AXWindow::getWidth()/2+32, AXWindow::getHeight()-16)){
+		if(AXInput::getValue("MB1") && lastTileSelected->object->id != 0 && AXMath::isInsideQuad(AXInput::mouseX, AXInput::mouseY, AXWindow::getWidth()/2-32, topYofGUI+20+townNameText->getHeight(), AXWindow::getWidth()/2+32, topYofGUI+64+townNameText->getHeight())){
 			world->deleteObject();
 		}
 	}
@@ -326,19 +323,26 @@ void GUI::bakeObjectInfoStrings(std::shared_ptr<Object> obj, bool placing){
 		if(obj->id == 0){
 			detailText1.reset(fontSmall->bakeTexture("This building gives you "+std::to_string(world->allowedHomeDistance)+" tiles to build on.", blackColour));
 		}else{
-			detailText1.reset(fontSmall->bakeTexture("Currently worth $"+std::to_string((int)selected->cost.money/2), blackColour));
+			detailText1.reset(fontSmall->bakeTexture("You'll get some resources back if you sell this building.", blackColour));
 		}
 	}
 	//create a temporary string to hold the details
-	std::string detailText2String = "Costs";
-	if(selected->cost.money != 0){
-		detailText2String.append(" | $"+std::to_string(selected->cost.money));
-	}
-	if(selected->cost.stone != 0){
-		detailText2String.append(" | Stone: "+std::to_string(selected->cost.stone));
-	}
-	if(selected->cost.wood != 0){
-		detailText2String.append(" | Wood: "+std::to_string(selected->cost.wood));
+	std::string detailText2String;
+	if(selected->HasCost())
+	{
+		detailText2String = "Costs";
+		if(selected->cost.money != 0){
+			detailText2String.append(" | $"+std::to_string(selected->cost.money));
+		}
+		if(selected->cost.stone != 0){
+			detailText2String.append(" | Stone: "+std::to_string(selected->cost.stone));
+		}
+		if(selected->cost.wood != 0){
+			detailText2String.append(" | Wood: "+std::to_string(selected->cost.wood));
+		}	
+	}else
+	{
+		detailText2String.append("Free!");
 	}
 	detailText2.reset(fontSmall->bakeTexture(detailText2String, blackColour));
 	//a string for the production

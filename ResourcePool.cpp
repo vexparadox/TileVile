@@ -43,11 +43,9 @@ bool ResourcePool::CanAfford(const ResourceCost& cost)
 	return money >= cost.money && stone >= cost.stone && wood >= cost.wood;
 }
 
-
-void ResourcePool::GainMoney(int inc)
+void ResourcePool::SellObject(const ResourceCost& cost)
 {
-	if(inc > 0)
-	{
-		money += inc;
-	}
+	stone -= cost.stone*0.25;
+	money -= cost.money*0.5;
+	wood -= cost.wood*0.25;
 }

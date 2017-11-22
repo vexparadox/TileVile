@@ -26,11 +26,11 @@ class ResourcePool
 public:
 	ResourcePool();
 	void Spend(const ResourceCost& cost);
+	void SellObject(const ResourceCost& cost);
 	void ProcessIncome();
 	void GainIncome(const ResourceIncome& income);
 	void LoseIncome(const ResourceIncome& income);
 	bool CanAfford(const ResourceCost& cost);
-	void GainMoney(int);
 
 	int food = 20;
 	int wood = 200;

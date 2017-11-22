@@ -13,5 +13,7 @@ public:
 	std::string description, name;
 	Object(AXXMLnode_iterator& it);
 	Object(const Object* other);
+
+	bool HasCost();
 };
 #endif

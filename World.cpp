@@ -63,6 +63,7 @@ World::World(int tilesize) : tilesize(tilesize){
 }
 
 void World::draw(){
+	//we need to use seperate rows/cols ints as we're drawing a section of the whole map
 	int row = 0;
 	//this loop will go from the offset to the maxonScreen+offset, meaning it draws the visible porition of the world
 	for(int i = currentOffset.x; i < maxOnScreenX+currentOffset.x; i++){
@@ -70,7 +71,9 @@ void World::draw(){
 		for(int j = currentOffset.y; j < maxOnScreenY+currentOffset.y; j++){
 			//draw the background
 			Tile* curr_tile = map[i][j];
+			//draw the tile
 			AXGraphics::drawTexture(curr_tile->texture, (row*tilesize), (col*tilesize), tilesize, tilesize);
+			//draw the object
 			if(curr_tile->object){
 				AXGraphics::drawTexture(curr_tile->object->texture, (row*tilesize), (col*tilesize), tilesize, tilesize);
 			}
@@ -283,7 +286,7 @@ void World::deleteObject(){
 	//lose the income of the object
 	resource_pool.LoseIncome(curr_obj->income);	
 	//get the income of half the original cost
-	resource_pool.GainMoney(curr_obj->cost.money/2);
+	resource_pool.SellObject(curr_obj->cost);
 	AXAudio::playAudioChunk(gui->destructionSound);
 	this->townSize = getTownSize();
 	//update the incomes

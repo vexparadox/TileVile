@@ -31,3 +31,8 @@ Object::Object(const Object* other){
 	this->income = other->income;
 	this->requiredType = other->requiredType;
 }
+
+
+bool Object::HasCost(){
+	return cost.wood != 0 || cost.stone != 0 || cost.money != 0;
+}

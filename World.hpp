@@ -39,7 +39,7 @@ class World{
 	AXVector2D homeDistance; // the current distance to the townhall
 	//which object, if any is selected
 	std::shared_ptr<Object> selectedObject;
-	Tile* selectedTile; // the tile that's currently selected
+	Tile* selectedTile = nullptr; // the tile that's currently selected
 	//if the home as been set
 	bool homeSet;
 	int allowedHomeDistance; // the allowed home distance

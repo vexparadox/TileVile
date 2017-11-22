@@ -13,9 +13,6 @@
 	Optional:
 	upgradesTo
 	pop
-	food
-	stone
-	wood
 	money
 	woodCost
 	moneyCost
