@@ -21,8 +21,8 @@ namespace{
 
 GUI::GUI(World* world) : world(world){
 	//load in the two fonts
-	fontBig = std::make_unique<AXFont>("font/Ayuthaya.ttf", 22);
-	fontSmall = std::make_unique<AXFont>("font/Ayuthaya.ttf", 14);
+	fontBig = std::make_shared<AXFont>("font/Ayuthaya.ttf", 22);
+	fontSmall = std::make_shared<AXFont>("font/Ayuthaya.ttf", 14);
 	//load pickup sound
 	pickupSound = std::make_unique<AXAudioChunk>("audio/pickupsound.wav");
 	cancelPickupSound = std::make_unique<AXAudioChunk>("audio/cancelpickupsound.wav");
@@ -52,6 +52,22 @@ GUI::GUI(World* world) : world(world){
 	woodIcon = std::make_unique<AXTexture>("images/icons/wood.png");
 	stoneIcon = std::make_unique<AXTexture>("images/icons/stone.png");
 	popIcon = std::make_unique<AXTexture>("images/icons/population.png");
+
+
+	instructionText = std::make_unique<Text>(fontBig);
+	detailText1 = std::make_unique<Text>(fontSmall);
+	detailText2 = std::make_unique<Text>(fontSmall);
+	detailText3 = std::make_unique<Text>(fontSmall);
+	descriptionText = std::make_unique<Text>(fontSmall);
+	worldSpeedText = std::make_unique<Text>(fontSmall);
+	townNameText = std::make_unique<Text>(fontBig);
+	moneyText = std::make_unique<Text>(fontSmall);
+	foodText = std::make_unique<Text>(fontSmall);
+	woodText = std::make_unique<Text>(fontSmall);
+	stoneText = std::make_unique<Text>(fontSmall);
+	popText = std::make_unique<Text>(fontSmall);
+
+
 	//used when deleting
 	deleteIcon = std::make_unique<AXTexture>("images/icons/delete.png");
 	//the background to the gui
@@ -104,9 +120,9 @@ void GUI::tick(Tile* tile){
 		lastTileHovered = tile;
 		//if the tile has an object on it, show that description instead
 		if(tile->object){
-			descriptionText.reset(fontSmall->bakeTexture(tile->object->description, blackColour));
+			descriptionText->SetText(tile->object->description);
 		}else{
-			descriptionText.reset(fontSmall->bakeTexture(tile->description, blackColour));
+			descriptionText->SetText(tile->description);
 		}
 	}
 
@@ -134,7 +150,7 @@ void GUI::tick(Tile* tile){
 		if(objectPtr){
 			if(objectPtr != objectPtr){	
 				//show the description of the object
-				descriptionText.reset(fontSmall->bakeTexture(objectPtr->description, blackColour));
+				descriptionText->SetText(objectPtr->description);
 			}
 			//if they click on an object
 			if(AXInput::getValue("MB1")){
@@ -149,10 +165,10 @@ void GUI::tick(Tile* tile){
 }
 
 void GUI::draw(){
-
+	using namespace AXGraphics;
 	int topYofGUI = AXWindow::getHeight()-(world->guiTileSize*world->tilesize);
 	//draw the background image
-	AXGraphics::drawTexture(backgroundIMG.get(), 0, topYofGUI, AXWindow::getWidth(), world->maxOnScreenY*world->tilesize);
+	drawTexture(backgroundIMG.get(), 0, topYofGUI, AXWindow::getWidth(), world->maxOnScreenY*world->tilesize);
 
 
 	//if you're placing an object or have a tile selected
@@ -160,11 +176,11 @@ void GUI::draw(){
 	if(world->selectedObject || world->selectedTile){
 		//the instruction text tells em
 		//spacing of 25
-		AXGraphics::drawTexture(instructionText, 20, topYofGUI+2); 
+		drawTexture(instructionText->GetTexture(), 20, topYofGUI+2); 
 		if(detailText1 && detailText2){
-			AXGraphics::drawTexture(detailText1, 20, topYofGUI+40); 
-			AXGraphics::drawTexture(detailText2, 20, topYofGUI+65); 
-			AXGraphics::drawTexture(detailText3, 20, topYofGUI+90); 
+			drawTexture(detailText1->GetTexture(), 20, topYofGUI+40); 
+			drawTexture(detailText2->GetTexture(), 20, topYofGUI+65); 
+			drawTexture(detailText3->GetTexture(), 20, topYofGUI+90); 
 		}
 	}
 
@@ -172,7 +188,7 @@ void GUI::draw(){
 	if(world->selectedTile){
 		//you can't delete the townhall
 		if(world->selectedTile->object->id != 0){
-			AXGraphics::drawTexture(deleteIcon, AXWindow::getWidth()/2-32, topYofGUI+20+townNameText->getHeight(), 64, 64); 
+			drawTexture(deleteIcon, AXWindow::getWidth()/2-32, topYofGUI+20+townNameText->getHeight(), 64, 64); 
 		}
 	}
 
@@ -182,40 +198,40 @@ void GUI::draw(){
 	}
 
 	//show the town name text
-	if(townNameText){
-		AXGraphics::drawTexture(townNameText, (AXWindow::getWidth()/2)-(townNameText->getWidth()/2), topYofGUI+20); 	
+	if(townNameText->GetTexture()){
+		drawTexture(townNameText->GetTexture(), (AXWindow::getWidth()/2)-(townNameText->getWidth()/2), topYofGUI+20); 	
 	}
 
 	//show the speed text
-	if(worldSpeedText)
+	if(worldSpeedText->GetTexture())
 	{
-		AXGraphics::drawTexture(worldSpeedText, AXWindow::getWidth()-200, topYofGUI+5); 
+		drawTexture(worldSpeedText->GetTexture(), AXWindow::getWidth()-200, topYofGUI+5); 
 	}
 
 	//show the description text
-	if(descriptionText){
-		AXGraphics::drawTexture(descriptionText, AXWindow::getWidth()-descriptionText->getWidth()-10, AXWindow::getHeight()-descriptionText->getHeight()); 
+	if(descriptionText->GetTexture()){
+		drawTexture(descriptionText->GetTexture(), AXWindow::getWidth()-descriptionText->getWidth()-10, AXWindow::getHeight()-descriptionText->getHeight()); 
 	}
 	//show the resources
 	//The money text
-	AXGraphics::drawTexture(moneyText, AXWindow::getWidth()-moneyText->getWidth()-foodText->getWidth()-60, topYofGUI+30); 
+	drawTexture(moneyText->GetTexture(), AXWindow::getWidth()-moneyText->getWidth()-foodText->getWidth()-60, topYofGUI+30); 
 	//the food logo
-	AXGraphics::drawTexture(foodIcon, AXWindow::getWidth()-foodText->getWidth()-45, topYofGUI+35, 24, 24); 
+	drawTexture(foodIcon, AXWindow::getWidth()-foodText->getWidth()-45, topYofGUI+35, 24, 24); 
 	//the food text
-	AXGraphics::drawTexture(foodText, AXWindow::getWidth()-foodText->getWidth()-20, topYofGUI+30); 
+	drawTexture(foodText->GetTexture(), AXWindow::getWidth()-foodText->getWidth()-20, topYofGUI+30); 
 
 	//the wood icon
-	AXGraphics::drawTexture(woodIcon, AXWindow::getWidth()-woodText->getWidth()-60, topYofGUI+70, 48, 48); 
+	drawTexture(woodIcon, AXWindow::getWidth()-woodText->getWidth()-60, topYofGUI+70, 48, 48); 
 	//the wood text
-	AXGraphics::drawTexture(woodText, AXWindow::getWidth()-woodText->getWidth()-20, topYofGUI+75); 
+	drawTexture(woodText->GetTexture(), AXWindow::getWidth()-woodText->getWidth()-20, topYofGUI+75); 
 	//the stone icon
-	AXGraphics::drawTexture(stoneIcon, AXWindow::getWidth()-stoneText->getWidth()-woodText->getWidth()-100, topYofGUI+70, 48, 48); 
+	drawTexture(stoneIcon, AXWindow::getWidth()-stoneText->getWidth()-woodText->getWidth()-100, topYofGUI+70, 48, 48); 
 	//the stone text
-	AXGraphics::drawTexture(stoneText, AXWindow::getWidth()-stoneText->getWidth()-woodText->getWidth()-60, topYofGUI+75); 
+	drawTexture(stoneText->GetTexture(), AXWindow::getWidth()-stoneText->getWidth()-woodText->getWidth()-60, topYofGUI+75); 
 	//the stone icon
-	AXGraphics::drawTexture(popIcon, AXWindow::getWidth()-popText->getWidth()-stoneText->getWidth()-woodText->getWidth()-140, topYofGUI+70, 48, 48); 
+	drawTexture(popIcon, AXWindow::getWidth()-popText->getWidth()-stoneText->getWidth()-woodText->getWidth()-140, topYofGUI+70, 48, 48); 
 	//the stone text
-	AXGraphics::drawTexture(popText, AXWindow::getWidth()-popText->getWidth()-stoneText->getWidth()-woodText->getWidth()-100, topYofGUI+75); 
+	drawTexture(popText->GetTexture(), AXWindow::getWidth()-popText->getWidth()-stoneText->getWidth()-woodText->getWidth()-100, topYofGUI+75); 
 }
 
 std::shared_ptr<Object> GUI::whichObjectMousedOver(){
@@ -275,30 +291,30 @@ bool GUI::isMouseOverGUI(){
 }
 void GUI::updateResources(){
 	if(world->resource_pool.moneyIncome < 0){
-		moneyText.reset(fontBig->bakeTexture("$"+std::to_string(world->resource_pool.money)+"("+std::to_string(world->resource_pool.moneyIncome)+")", redColour));
+		moneyText->SetText("$"+std::to_string(world->resource_pool.money)+"("+std::to_string(world->resource_pool.moneyIncome)+")", redColour);
 	}else{
-		moneyText.reset(fontBig->bakeTexture("$"+std::to_string(world->resource_pool.money)+"(+"+std::to_string(world->resource_pool.moneyIncome)+")", blackColour));
+		moneyText->SetText("$"+std::to_string(world->resource_pool.money)+"(+"+std::to_string(world->resource_pool.moneyIncome)+")");
 	}
 	if(world->resource_pool.foodIncome < 0){
-		foodText.reset(fontBig->bakeTexture(std::to_string(world->resource_pool.food)+"("+std::to_string(world->resource_pool.foodIncome)+")", redColour));
+		foodText->SetText(std::to_string(world->resource_pool.food)+"("+std::to_string(world->resource_pool.foodIncome)+")", redColour);
 	}else{
-		foodText.reset(fontBig->bakeTexture(std::to_string(world->resource_pool.food)+"(+"+std::to_string(world->resource_pool.foodIncome)+")", blackColour));
+		foodText->SetText(std::to_string(world->resource_pool.food)+"(+"+std::to_string(world->resource_pool.foodIncome)+")");
 	}
 	if(world->resource_pool.woodIncome < 0){
-		woodText.reset(fontBig->bakeTexture(std::to_string(world->resource_pool.wood)+"("+std::to_string(world->resource_pool.woodIncome)+")", redColour));
+		woodText->SetText(std::to_string(world->resource_pool.wood)+"("+std::to_string(world->resource_pool.woodIncome)+")", redColour);
 	}else{
-		woodText.reset(fontBig->bakeTexture(std::to_string(world->resource_pool.wood)+"(+"+std::to_string(world->resource_pool.woodIncome)+")", blackColour));
+		woodText->SetText(std::to_string(world->resource_pool.wood)+"(+"+std::to_string(world->resource_pool.woodIncome)+")");
 	}
 	if(world->resource_pool.stoneIncome < 0){
-		stoneText.reset(fontBig->bakeTexture(std::to_string(world->resource_pool.stone)+"("+std::to_string(world->resource_pool.stoneIncome)+")", redColour));
+		stoneText->SetText(std::to_string(world->resource_pool.stone)+"("+std::to_string(world->resource_pool.stoneIncome)+")", redColour);
 	}else{
-		stoneText.reset(fontBig->bakeTexture(std::to_string(world->resource_pool.stone)+"(+"+std::to_string(world->resource_pool.stoneIncome)+")", blackColour));
+		stoneText->SetText(std::to_string(world->resource_pool.stone)+"(+"+std::to_string(world->resource_pool.stoneIncome)+")");
 	}
 	//if there's not enough food, show that people die
 	if(world->resource_pool.food < 0){
-		popText.reset(fontBig->bakeTexture(std::to_string(world->resource_pool.population)+"(-2)", redColour));
+		popText->SetText(std::to_string(world->resource_pool.population)+"(-2)", redColour);
 	}else{
-		popText.reset(fontBig->bakeTexture(std::to_string(world->resource_pool.population), blackColour));
+		popText->SetText(std::to_string(world->resource_pool.population));
 	}
 }
 
@@ -311,19 +327,19 @@ void GUI::bakeObjectInfoStrings(std::shared_ptr<Object> obj, bool placing){
 	std::shared_ptr<Object> selected = obj; // get a temp object
 	//if you're placing, give an instruction, otherwise give a statement
 	if(placing){
-		instructionText.reset(fontBig->bakeTexture("Click to place a "+selected->name+"!", blackColour));
+		instructionText->SetText("Click to place a "+selected->name+"!");
 	}else{
-		instructionText.reset(fontBig->bakeTexture("A "+selected->name+"!", blackColour));
+		instructionText->SetText("A "+selected->name+"!");
 	}
 	//bake the detail1 string, it will say the type it requires or how to delete
 	if(placing){
-		detailText1.reset(fontSmall->bakeTexture("Tile Type: "+types[selected->requiredType], blackColour));
+		detailText1->SetText("Tile Type: "+types[selected->requiredType]);
 	}else{
 		//YOU CANT DELETE THE TOWN HALL
 		if(obj->id == 0){
-			detailText1.reset(fontSmall->bakeTexture("This building gives you "+std::to_string(world->allowedHomeDistance)+" tiles to build on.", blackColour));
+			detailText1->SetText("This building gives you "+std::to_string(world->allowedHomeDistance)+" tiles to build on.");
 		}else{
-			detailText1.reset(fontSmall->bakeTexture("You'll get some resources back if you sell this building.", blackColour));
+			detailText1->SetText("You'll get some resources back if you sell this building.");
 		}
 	}
 	//create a temporary string to hold the details
@@ -344,7 +360,7 @@ void GUI::bakeObjectInfoStrings(std::shared_ptr<Object> obj, bool placing){
 	{
 		detailText2String.append("Free!");
 	}
-	detailText2.reset(fontSmall->bakeTexture(detailText2String, blackColour));
+	detailText2->SetText(detailText2String);
 	//a string for the production
 	std::string detailText3String = "Per Tick";
 	if(selected->income.money != 0){
@@ -362,13 +378,13 @@ void GUI::bakeObjectInfoStrings(std::shared_ptr<Object> obj, bool placing){
 	if(selected->income.stone != 0){
 		detailText3String.append(" | Stone: "+std::to_string(selected->income.stone));
 	}
-	detailText3.reset(fontSmall->bakeTexture(detailText3String, blackColour));
+	detailText3->SetText(detailText3String);
 }
 
 void GUI::bakeTownText(){
-	townNameText.reset(fontBig->bakeTexture(townsizes[world->townSize], blackColour));
+	townNameText->SetText(townsizes[world->townSize]);
 }
 
 void GUI::bakeSpeedText(){
-	worldSpeedText.reset(fontSmall->bakeTexture("Speed: "+name_from_speed_enum(world->current_tick_speed), blackColour));
+	worldSpeedText->SetText("Speed: "+name_from_speed_enum(world->current_tick_speed));
 }

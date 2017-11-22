@@ -1,5 +1,6 @@
 #pragma once
 #include <Axilya/AXMain.h>
+#include "Text.hpp"
 #include "Tile.hpp"
 #include <memory>
 class World;
@@ -7,25 +8,28 @@ class GUI {
 	std::vector<std::string> types; // ground type strings
 	std::vector<std::string> townsizes; // ground type strings
 	std::unique_ptr<AXTexture> backgroundIMG; // background image for the GUI
-	std::unique_ptr<AXTexture> instructionText; // used to give instructions
-	std::unique_ptr<AXTexture> detailText1; // used to give instructions
-	std::unique_ptr<AXTexture> detailText2; // used to give instructions
-	std::unique_ptr<AXTexture> detailText3; // used to give instructions
-	std::unique_ptr<AXTexture> descriptionText; // used to describe what the user is selecting
-	std::unique_ptr<AXTexture> worldSpeedText; // used to describe the current tick speed
-	std::unique_ptr<AXTexture> townNameText; // used to describe the size of the town
-	std::unique_ptr<AXTexture> moneyText; // the current cash
-	std::unique_ptr<AXTexture> foodText; // the current food
+
+	std::unique_ptr<Text> instructionText; // used to give instructions
+	std::unique_ptr<Text> detailText1; // used to give instructions
+	std::unique_ptr<Text> detailText2; // used to give instructions
+	std::unique_ptr<Text> detailText3; // used to give instructions
+	std::unique_ptr<Text> descriptionText; // used to describe what the user is selecting
+	std::unique_ptr<Text> worldSpeedText; // used to describe the current tick speed
+	std::unique_ptr<Text> townNameText; // used to describe the size of the town
+	std::unique_ptr<Text> moneyText; // the current cash
+	std::unique_ptr<Text> foodText; // the current food
+	std::unique_ptr<Text> woodText; // the current wood
+	std::unique_ptr<Text> stoneText; //the current stone
+	std::unique_ptr<Text> popText; // the population text
+
 	std::unique_ptr<AXTexture> foodIcon; // the food icon
-	std::unique_ptr<AXTexture> woodText; // the current wood
 	std::unique_ptr<AXTexture> woodIcon; // the wood icon
-	std::unique_ptr<AXTexture> stoneText; //the current stone
 	std::unique_ptr<AXTexture> stoneIcon; // the stone icon
-	std::unique_ptr<AXTexture> deleteIcon; // the delete icon
-	std::unique_ptr<AXTexture> popText; // the delete icon
+	std::unique_ptr<AXTexture> deleteIcon; // the delete icon	
 	std::unique_ptr<AXTexture> popIcon; // the delete icon
-	std::unique_ptr<AXFont> fontBig;
-	std::unique_ptr<AXFont> fontSmall;
+
+	std::shared_ptr<AXFont> fontBig;
+	std::shared_ptr<AXFont> fontSmall;
 	World* world;
 	Tile* lastTileHovered;
 	Tile* lastTileSelected;
